@@ -1,0 +1,1054 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGZ7EHLP4',{anonymize_ip:true});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>הוספת עסק לאתר | אופקים שלי</title>
+<meta name="description" content="הוסף את העסק שלך לפלטפורמת אופקים שלי - כרטיס מקצועי עם תמונות, קופונים, מידע מלא ושעות פתיחה.">
+<meta property="og:title" content="הוספת עסק | אופקים שלי">
+<meta property="og:description" content="קבל חשיפה לתושבי אופקים - כרטיס עסק מלא עם תמונות, קופונים, מידע ושעות פתיחה.">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+<link rel="canonical" href="https://myofaqim.co.il/biz-register">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, #F5F5F0 0%, #FFFFFF 100%); }
+
+  /* ── HERO ── */
+  .reg-hero {
+    background: linear-gradient(135deg, #1A2E5C 0%, #243B6E 50%, #2563EB 100%);
+    color: #fff; padding: 36px 20px 60px;
+    position: relative; overflow: hidden;
+  }
+  .reg-hero::before {
+    content: ''; position: absolute; top: -120px; left: 50%;
+    transform: translateX(-50%); width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+  }
+  .reg-hero-inner {
+    max-width: 720px; margin: 0 auto;
+    position: relative; z-index: 1; text-align: center;
+  }
+  .reg-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    color: #F59E0B; margin-bottom: 12px; text-transform: uppercase;
+  }
+  .reg-hero h1 {
+    font-size: clamp(26px, 5vw, 36px); font-weight: 900;
+    margin: 0 0 10px; letter-spacing: -0.02em;
+  }
+  .reg-hero p { opacity: 0.88; font-size: 15px; margin: 0; line-height: 1.6; }
+
+  /* ── BENEFITS ── */
+  .benefits-row {
+    display: flex; gap: 24px; justify-content: center;
+    margin-top: 20px; flex-wrap: wrap;
+  }
+  .benefit-item {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700;
+    color: rgba(255,255,255,0.95);
+  }
+  .benefit-item svg { color: #F59E0B; }
+
+  /* ── CONTAINER ── */
+  .reg-container {
+    max-width: 720px; margin: -40px auto 80px;
+    padding: 0 16px; position: relative; z-index: 2;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar {
+    background: #fff; border-radius: 16px;
+    padding: 20px 24px; margin-bottom: 16px;
+    box-shadow: 0 4px 20px rgba(26,46,92,0.1);
+  }
+  .progress-steps {
+    display: flex; align-items: center; justify-content: space-between;
+    position: relative; margin-bottom: 12px;
+  }
+  .progress-steps::before {
+    content: ''; position: absolute;
+    top: 18px; left: 18px; right: 18px;
+    height: 2px; background: #E5E7EB;
+    z-index: 1;
+  }
+  .progress-fill {
+    position: absolute; top: 18px; right: 18px;
+    height: 2px; background: linear-gradient(90deg, #F59E0B 0%, #2563EB 100%);
+    z-index: 2; transition: width 0.3s;
+  }
+  .step {
+    position: relative; z-index: 3;
+    display: flex; flex-direction: column; align-items: center; gap: 6px;
+  }
+  .step-circle {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: #fff; border: 2px solid #E5E7EB;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 900;
+    color: #94A3B8; transition: all 0.3s;
+  }
+  .step.active .step-circle {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C; border-color: #F59E0B;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.3);
+  }
+  .step.done .step-circle {
+    background: #2563EB; color: #fff; border-color: #2563EB;
+  }
+  .step-label {
+    font-size: 10px; font-weight: 800; color: #94A3B8;
+    text-align: center; max-width: 70px; line-height: 1.2;
+  }
+  .step.active .step-label, .step.done .step-label { color: #1A2E5C; }
+
+  /* ── FORM CARD ── */
+  .form-card {
+    background: #fff; border-radius: 18px;
+    padding: 28px 30px; box-shadow: 0 4px 20px rgba(26,46,92,0.08);
+  }
+  .form-card h2 {
+    font-size: 20px; font-weight: 900; color: #1A2E5C;
+    margin: 0 0 6px;
+  }
+  .form-card .subtitle {
+    font-size: 14px; color: #6B7280; margin: 0 0 22px;
+  }
+
+  .field { margin-bottom: 16px; }
+  .field label {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 13px; font-weight: 800; color: #1A2E5C;
+    margin-bottom: 7px;
+  }
+  .field label .required { color: #DC2626; font-size: 14px; }
+  .field input, .field select, .field textarea {
+    width: 100%; padding: 12px 14px;
+    border: 1.5px solid #E5E7EB; border-radius: 10px;
+    font-family: inherit; font-size: 14px;
+    background: #fff; transition: border 0.15s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: #2563EB;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+  }
+  .field textarea { min-height: 90px; resize: vertical; }
+  .field small { display: block; margin-top: 4px; font-size: 11px; color: #94A3B8; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── IMAGE UPLOAD ── */
+  .img-upload {
+    border: 2px dashed #D1D5DB; border-radius: 12px;
+    padding: 24px; text-align: center; cursor: pointer;
+    transition: all 0.15s; background: #F8FAFC;
+    position: relative;
+  }
+  .img-upload:hover { border-color: #2563EB; background: #EFF6FF; }
+  .img-upload.has-img { padding: 8px; background: #fff; border-style: solid; }
+  .img-upload img {
+    max-width: 100%; max-height: 180px;
+    border-radius: 8px; display: block; margin: 0 auto;
+  }
+  .img-upload input[type=file] { display: none; }
+  .img-upload-text {
+    color: #6B7280; font-size: 14px;
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+  }
+  .img-upload-text svg { color: #94A3B8; }
+  .img-upload-text strong { color: #1A2E5C; font-weight: 800; }
+  .img-upload .change-img {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(0,0,0,0.7); color: #fff;
+    padding: 4px 10px; border-radius: 6px;
+    font-size: 11px; font-weight: 700; display: none;
+  }
+  .img-upload.has-img .change-img { display: block; }
+
+  /* ── CHECKBOXES ── */
+  .check-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+  }
+  .check-row {
+    display: flex; align-items: center; gap: 8px;
+    padding: 10px 14px; background: #F8FAFC;
+    border-radius: 10px; cursor: pointer;
+    font-size: 13px; font-weight: 700; color: #1A2E5C;
+    border: 1.5px solid transparent; transition: all 0.15s;
+  }
+  .check-row:hover { background: #EFF6FF; border-color: #2563EB; }
+  .check-row input { width: auto; margin: 0; }
+  .check-row input:checked + span { color: #2563EB; }
+
+  /* ── HOURS GRID ── */
+  .hours-row {
+    display: grid; grid-template-columns: 80px 1fr 1fr;
+    gap: 8px; align-items: center; margin-bottom: 8px;
+    padding: 8px 12px; background: #F8FAFC; border-radius: 10px;
+  }
+  .hours-day {
+    font-weight: 800; color: #1A2E5C; font-size: 13px; text-align: center;
+  }
+  .hours-row input[type="time"] {
+    padding: 7px 8px; border: 1px solid #E5E7EB;
+    border-radius: 8px; font-family: inherit; font-size: 12px;
+  }
+  .hours-row.closed { opacity: 0.5; }
+  .hours-row.closed input { background: #F0F2F5; }
+  .closed-toggle {
+    display: flex; align-items: center; gap: 4px;
+    font-size: 11px; font-weight: 700; color: #6B7280;
+    cursor: pointer; padding: 4px 8px;
+    grid-column: 2 / span 2;
+  }
+
+  /* ── NAVIGATION ── */
+  .nav-buttons {
+    display: flex; gap: 12px; margin-top: 24px;
+    padding-top: 20px; border-top: 1px solid #F0F2F5;
+  }
+  .btn-back, .btn-next, .btn-submit {
+    flex: 1; padding: 14px;
+    font-family: inherit; font-weight: 900; font-size: 14px;
+    border-radius: 12px; cursor: pointer; border: none;
+    transition: all 0.2s;
+  }
+  .btn-back {
+    background: #F5F5F0; color: #1A2E5C;
+    border: 1.5px solid #E5E7EB;
+  }
+  .btn-back:hover { border-color: #94A3B8; }
+  .btn-next {
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.3);
+  }
+  .btn-next:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(37,99,235,0.4); }
+  .btn-submit {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C;
+  }
+  .btn-submit:hover { transform: translateY(-1px); }
+  .btn-submit:disabled { opacity: 0.6; cursor: default; }
+
+  /* ── NOT LOGGED IN ── */
+  .login-required {
+    background: #fff; border-radius: 18px;
+    padding: 50px 30px; text-align: center;
+    box-shadow: 0 4px 20px rgba(26,46,92,0.08);
+  }
+  .login-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C; margin: 0 auto 18px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .login-required h2 {
+    font-size: 22px; font-weight: 900; color: #1A2E5C;
+    margin: 0 0 8px;
+  }
+  .login-required p {
+    color: #6B7280; margin: 0 0 20px;
+    font-size: 14px; line-height: 1.6;
+  }
+  .btn-google {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: #fff; border: 2px solid #E5E7EB;
+    padding: 14px 28px; border-radius: 12px;
+    font-family: inherit; font-weight: 800; font-size: 15px;
+    color: #1A2E5C; cursor: pointer;
+  }
+  .btn-google:hover { border-color: #2563EB; }
+
+  /* ── SUCCESS SCREEN ── */
+  .success-screen {
+    background: #fff; border-radius: 18px;
+    padding: 50px 30px; text-align: center;
+    box-shadow: 0 4px 20px rgba(26,46,92,0.08);
+  }
+  .success-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    color: #fff; margin: 0 auto 20px;
+    display: flex; align-items: center; justify-content: center;
+    animation: bounce 0.6s;
+  }
+  @keyframes bounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .success-screen h2 { color: #1A2E5C; font-size: 24px; margin: 0 0 10px; font-weight: 900; }
+  .success-screen p { color: #6B7280; margin: 0 0 24px; font-size: 14px; line-height: 1.6; }
+  .success-info {
+    background: #F8FAFC; border-radius: 12px;
+    padding: 16px; margin: 20px 0;
+    border-right: 4px solid #F59E0B;
+    text-align: right;
+  }
+  .success-info strong { color: #1A2E5C; }
+
+  /* ── PRICE TAG ── */
+  .price-tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    color: #fff; padding: 4px 12px; border-radius: 100px;
+    font-size: 11px; font-weight: 900; letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1A2E5C; color: #fff;
+    padding: 12px 24px; border-radius: 100px;
+    font-weight: 700; font-size: 14px;
+    z-index: 99998; transition: transform .3s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #DC2626; }
+  .toast.success { background: #16A34A; }
+
+  @media (max-width: 600px) {
+    .form-card { padding: 20px 18px; }
+    .field-row { grid-template-columns: 1fr; }
+    .progress-bar { padding: 14px 16px; }
+    .step-label { font-size: 9px; }
+    .step-circle { width: 30px; height: 30px; font-size: 12px; }
+    .progress-steps::before, .progress-fill { top: 15px; left: 15px; right: 15px; }
+    .check-grid { grid-template-columns: 1fr; }
+    .nav-buttons { flex-direction: column-reverse; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="reg-hero">
+    <div class="reg-hero-inner">
+      <div class="reg-eyebrow">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/></svg>
+        בעלי עסקים באופקים
+      </div>
+      <h1>הוספת עסק לאתר</h1>
+      <p>בנה לעסק שלך כרטיס מקצועי באתר אופקים שלי - 5 דקות, פשוט וקל</p>
+      <div class="benefits-row">
+        <div class="benefit-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          חשיפה לתושבי העיר
+        </div>
+        <div class="benefit-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          כרטיס עסק מקצועי
+        </div>
+        <div class="benefit-item">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          סטטיסטיקות מהאתר
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="reg-container">
+
+    <!-- Not Logged In State -->
+    <div id="login-required" class="login-required" style="display:none">
+      <div class="login-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <h2>נדרשת התחברות</h2>
+      <p>כדי להירשם כעסק יש להתחבר תחילה דרך Google.<br>זה לוקח 30 שניות.</p>
+      <button class="btn-google" onclick="if(typeof mofOpenAuth==='function')mofOpenAuth()">
+        <svg width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+          <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+          <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+          <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+        </svg>
+        המשך עם Google
+      </button>
+    </div>
+
+    <!-- Loading -->
+    <div id="loading" style="text-align:center;padding:60px 20px"><p>טוען...</p></div>
+
+    <!-- Wizard -->
+    <div id="wizard" style="display:none">
+      <div class="progress-bar">
+        <div class="progress-steps">
+          <div class="progress-fill" id="progress-fill" style="width:0%"></div>
+          <div class="step active" data-step="1">
+            <div class="step-circle">1</div>
+            <div class="step-label">פרטים בסיסיים</div>
+          </div>
+          <div class="step" data-step="2">
+            <div class="step-circle">2</div>
+            <div class="step-label">תמונות</div>
+          </div>
+          <div class="step" data-step="3">
+            <div class="step-circle">3</div>
+            <div class="step-label">יצירת קשר</div>
+          </div>
+          <div class="step" data-step="4">
+            <div class="step-circle">4</div>
+            <div class="step-label">שעות פתיחה</div>
+          </div>
+          <div class="step" data-step="5">
+            <div class="step-circle">5</div>
+            <div class="step-label">סיום</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card" id="form-card">
+        <!-- תוכן יוטען דינמית -->
+      </div>
+    </div>
+
+    <!-- Success Screen -->
+    <div id="success-screen" class="success-screen" style="display:none">
+      <div class="success-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2>העסק נשלח בהצלחה!</h2>
+      <p>תודה רבה על ההרשמה. <br>הצוות שלנו יבדוק את הפרטים ויאשר את העסק תוך 24-48 שעות.</p>
+      <div class="success-info">
+        <strong>מה הלאה?</strong>
+        <p style="margin:8px 0 0;color:#4B5563">
+          1. נבדוק את הפרטים שמילאת<br>
+          2. נאמת את העסק (לעיתים נצור קשר טלפוני)<br>
+          3. הכרטיס יעלה לאתר ויהיה גלוי לתושבי אופקים<br>
+          4. תקבל אימייל כשהעסק עולה לאוויר
+        </p>
+      </div>
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px">
+        <a href="/" class="btn-google" style="border-color:#2563EB;color:#2563EB">חזרה לדף הבית</a>
+        <a href="/biz-register" class="btn-google" style="background:#1A2E5C;color:#fff;border-color:#1A2E5C">רישום עסק נוסף</a>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// משתמש ב-window.SB_URL ו-window.SB_KEY מ-site.js
+
+let sb = null;
+let currentUser = null;
+let currentStep = 1;
+const totalSteps = 5;
+const formData = {
+  business_name: '', category: '', sub_category: '',
+  short_description: '', description: '', tags: '',
+  logo_url: '', cover_image_url: '', gallery_urls: [],
+  address: '', city: 'אופקים', phone: '', phone_secondary: '',
+  whatsapp: '', email: '', website: '',
+  facebook_url: '', instagram_url: '',
+  has_parking: false, has_accessibility: false,
+  has_delivery: false, has_takeaway: false, accepts_credit: false,
+  kosher_certificate: '', price_range: '',
+  opening_hours: {}
+};
+
+const BIZ_CATEGORIES = [
+  ['restaurant', 'מסעדה'], ['cafe', 'בית קפה'], ['bakery', 'מאפיה'],
+  ['supermarket', 'סופרמרקט'], ['butcher', 'אטליז'], ['grocery', 'מכולת'],
+  ['fashion', 'אופנה'], ['shoes', 'נעליים'], ['kids', 'ילדים'],
+  ['gifts', 'מתנות'], ['electronics', 'אלקטרוניקה'], ['cosmetics', 'קוסמטיקה'],
+  ['barber', 'מספרה'], ['gym', 'חדר כושר'], ['health', 'בריאות'],
+  ['pharmacy', 'בית מרקחת'], ['judaica', 'יודאיקה'], ['flowers', 'פרחים'],
+  ['legal', 'עורכי דין'], ['accountant', 'רואי חשבון'], ['realestate', 'נדל"ן'],
+  ['insurance', 'ביטוח'], ['education', 'חינוך'], ['other', 'אחר']
+];
+
+const DAYS = [
+  ['sun', 'ראשון'], ['mon', 'שני'], ['tue', 'שלישי'],
+  ['wed', 'רביעי'], ['thu', 'חמישי'], ['fri', 'שישי'], ['sat', 'שבת']
+];
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+function toast(msg, type) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+async function init() {
+  // אם supabase-js עוד לא נטען - נסה כל 200ms עד 8 שניות
+  if (!window.supabase) {
+    if (!window._biz_init_attempts) window._biz_init_attempts = 0;
+    window._biz_init_attempts++;
+    if (window._biz_init_attempts > 40) { // 8 שניות
+      $('loading').innerHTML = '<p style="color:#DC2626">שגיאה בטעינת המערכת. אנא רענן את הדף.</p>';
+      return;
+    }
+    setTimeout(init, 200);
+    return;
+  }
+
+  try {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    const { data: { session } } = await sb.auth.getSession();
+
+    $('loading').style.display = 'none';
+
+    if (!session) {
+      $('login-required').style.display = '';
+      return;
+    }
+
+    currentUser = session.user;
+    $('wizard').style.display = '';
+    renderStep();
+
+    // האזן להתחברות בזמן אמת - אם המשתמש מתחבר בחלון אחר/אחרי auth, רענן
+    sb.auth.onAuthStateChange((event, newSession) => {
+      if (event === 'SIGNED_IN' && newSession) {
+        currentUser = newSession.user;
+        $('login-required').style.display = 'none';
+        $('wizard').style.display = '';
+        renderStep();
+      }
+    });
+  } catch (e) {
+    console.error('Init error:', e);
+    $('loading').innerHTML = `<p style="color:#DC2626">שגיאה: ${e.message}. אנא רענן את הדף.</p>`;
+  }
+}
+
+function renderStep() {
+  // עדכן progress
+  document.querySelectorAll('.step').forEach(s => {
+    const step = parseInt(s.dataset.step, 10);
+    s.classList.toggle('active', step === currentStep);
+    s.classList.toggle('done', step < currentStep);
+  });
+  const pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+  $('progress-fill').style.width = pct + '%';
+
+  // רנדר תוכן
+  const card = $('form-card');
+  if (currentStep === 1) card.innerHTML = renderStep1();
+  else if (currentStep === 2) card.innerHTML = renderStep2();
+  else if (currentStep === 3) card.innerHTML = renderStep3();
+  else if (currentStep === 4) card.innerHTML = renderStep4();
+  else if (currentStep === 5) card.innerHTML = renderStep5();
+
+  // גלול למעלה
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ═══════════ STEP 1: פרטים בסיסיים ═══════════
+function renderStep1() {
+  return `
+    <h2>פרטי העסק</h2>
+    <p class="subtitle">נתחיל עם הפרטים הבסיסיים של העסק שלך</p>
+
+    <div class="field">
+      <label>שם העסק <span class="required">*</span></label>
+      <input type="text" id="f-business_name" value="${esc(formData.business_name)}" placeholder="לדוגמה: פיצה שמש אופקים" maxlength="100">
+      <small>השם המלא של העסק כפי שהלקוחות מכירים אותו</small>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>קטגוריה <span class="required">*</span></label>
+        <select id="f-category">
+          <option value="">בחר קטגוריה</option>
+          ${BIZ_CATEGORIES.map(([v,l]) => `<option value="${v}" ${formData.category === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}
+        </select>
+      </div>
+      <div class="field">
+        <label>תת קטגוריה</label>
+        <input type="text" id="f-sub_category" value="${esc(formData.sub_category)}" placeholder="לדוגמה: פיצה איטלקית">
+        <small>אופציונלי - לפירוט נוסף</small>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>תיאור קצר <span class="required">*</span></label>
+      <input type="text" id="f-short_description" value="${esc(formData.short_description)}" maxlength="120" placeholder="עד 120 תווים שיופיעו ברשימת העסקים">
+      <small>שורה אחת קצרה שמתארת את העסק</small>
+    </div>
+
+    <div class="field">
+      <label>תיאור מלא</label>
+      <textarea id="f-description" maxlength="800" placeholder="ספר על העסק - ההיסטוריה, המומחיות, מה מייחד אותך, השירותים שלך...">${esc(formData.description)}</textarea>
+      <small>טקסט עשיר שיופיע בכרטיס העסק (אופציונלי)</small>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>טווח מחירים</label>
+        <select id="f-price_range">
+          <option value="" ${!formData.price_range ? 'selected' : ''}>לא רוצה לציין</option>
+          <option value="$" ${formData.price_range === '$' ? 'selected' : ''}>$ - זול</option>
+          <option value="$$" ${formData.price_range === '$$' ? 'selected' : ''}>$$ - בינוני</option>
+          <option value="$$$" ${formData.price_range === '$$$' ? 'selected' : ''}>$$$ - יקר</option>
+          <option value="$$$$" ${formData.price_range === '$$$$' ? 'selected' : ''}>$$$$ - יוקרתי</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>תגיות</label>
+        <input type="text" id="f-tags" value="${esc(formData.tags)}" placeholder="כשר, חלבי, משפחתי...">
+        <small>הפרד בפסיק</small>
+      </div>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-next" onclick="nextStep()">המשך →</button>
+    </div>
+  `;
+}
+
+// ═══════════ STEP 2: תמונות ═══════════
+function renderStep2() {
+  return `
+    <h2>תמונות העסק</h2>
+    <p class="subtitle">תמונות הן הדבר הכי חשוב לעסק - הן יוצרות אמון ומכירות. <strong>אפשר לדלג ולהעלות מאוחר יותר</strong>.</p>
+
+    <div class="field">
+      <label>לוגו העסק</label>
+      <label class="img-upload ${formData.logo_url ? 'has-img' : ''}" for="up-logo">
+        ${formData.logo_url ? `
+          <img src="${esc(formData.logo_url)}">
+          <span class="change-img">שנה תמונה</span>
+        ` : `
+          <div class="img-upload-text">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+              <polyline points="17 8 12 3 7 8"/>
+              <line x1="12" y1="3" x2="12" y2="15"/>
+            </svg>
+            <div><strong>לחץ או גרור תמונה</strong></div>
+            <div>תמונה ריבועית - לוגו, סמל או צילום מייצג</div>
+            <small>עד 2MB · JPG, PNG, WebP</small>
+          </div>
+        `}
+        <input type="file" id="up-logo" accept="image/*" onchange="uploadImg('logo_url','business-logos',this)">
+      </label>
+    </div>
+
+    <div class="field">
+      <label>תמונת קאבר (רחבה)</label>
+      <label class="img-upload ${formData.cover_image_url ? 'has-img' : ''}" for="up-cover">
+        ${formData.cover_image_url ? `
+          <img src="${esc(formData.cover_image_url)}">
+          <span class="change-img">שנה תמונה</span>
+        ` : `
+          <div class="img-upload-text">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <polyline points="21 15 16 10 5 21"/>
+            </svg>
+            <div><strong>לחץ או גרור תמונה</strong></div>
+            <div>תמונה רחבה (16:9) שתופיע בראש הכרטיס</div>
+            <small>עד 5MB · מומלץ 1200x675</small>
+          </div>
+        `}
+        <input type="file" id="up-cover" accept="image/*" onchange="uploadImg('cover_image_url','business-covers',this)">
+      </label>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep()">← חזור</button>
+      <button class="btn-next" onclick="nextStep()">המשך →</button>
+    </div>
+  `;
+}
+
+// ═══════════ STEP 3: יצירת קשר ═══════════
+function renderStep3() {
+  return `
+    <h2>פרטי יצירת קשר</h2>
+    <p class="subtitle">איך לקוחות יוכלו ליצור איתך קשר</p>
+
+    <div class="field">
+      <label>כתובת מלאה <span class="required">*</span></label>
+      <input type="text" id="f-address" value="${esc(formData.address)}" placeholder="רחוב הרצל 45, אופקים">
+      <small>כתובת מדויקת עם מספר בית - יופיע במפת ניווט</small>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>טלפון ראשי <span class="required">*</span></label>
+        <input type="tel" id="f-phone" value="${esc(formData.phone)}" placeholder="08-9999999" dir="ltr">
+      </div>
+      <div class="field">
+        <label>טלפון משני</label>
+        <input type="tel" id="f-phone_secondary" value="${esc(formData.phone_secondary)}" placeholder="054-1234567" dir="ltr">
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>WhatsApp</label>
+        <input type="tel" id="f-whatsapp" value="${esc(formData.whatsapp)}" placeholder="0541234567" dir="ltr">
+        <small>כפתור צ׳אט יוצג בכרטיס</small>
+      </div>
+      <div class="field">
+        <label>אימייל</label>
+        <input type="email" id="f-email" value="${esc(formData.email)}" placeholder="info@example.com" dir="ltr">
+      </div>
+    </div>
+
+    <div class="field">
+      <label>אתר אינטרנט</label>
+      <input type="url" id="f-website" value="${esc(formData.website)}" placeholder="https://example.com" dir="ltr">
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label>פייסבוק</label>
+        <input type="url" id="f-facebook_url" value="${esc(formData.facebook_url)}" placeholder="https://facebook.com/..." dir="ltr">
+      </div>
+      <div class="field">
+        <label>אינסטגרם</label>
+        <input type="url" id="f-instagram_url" value="${esc(formData.instagram_url)}" placeholder="https://instagram.com/..." dir="ltr">
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:24px">
+      <label style="margin-bottom:10px">מאפיינים נוספים</label>
+      <div class="check-grid">
+        <label class="check-row">
+          <input type="checkbox" id="f-has_parking" ${formData.has_parking ? 'checked' : ''}>
+          <span>חניה זמינה</span>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" id="f-has_accessibility" ${formData.has_accessibility ? 'checked' : ''}>
+          <span>נגיש לנכים</span>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" id="f-has_delivery" ${formData.has_delivery ? 'checked' : ''}>
+          <span>משלוחים</span>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" id="f-has_takeaway" ${formData.has_takeaway ? 'checked' : ''}>
+          <span>טייק אווי</span>
+        </label>
+        <label class="check-row">
+          <input type="checkbox" id="f-accepts_credit" ${formData.accepts_credit ? 'checked' : ''}>
+          <span>אשראי</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field" style="margin-top:14px">
+      <label>כשרות (אופציונלי)</label>
+      <input type="text" id="f-kosher_certificate" value="${esc(formData.kosher_certificate)}" placeholder="לדוגמה: בד&quot;ץ העדה החרדית">
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep()">← חזור</button>
+      <button class="btn-next" onclick="nextStep()">המשך →</button>
+    </div>
+  `;
+}
+
+// ═══════════ STEP 4: שעות פתיחה ═══════════
+function renderStep4() {
+  return `
+    <h2>שעות פתיחה</h2>
+    <p class="subtitle">הגדר באילו ימים ושעות העסק פתוח. <strong>אפשר לדלג</strong>.</p>
+
+    <div style="display:flex;flex-direction:column;gap:6px">
+      ${DAYS.map(([key, label]) => {
+        const d = formData.opening_hours[key] || {};
+        const isClosed = d.closed === true;
+        return `
+          <div class="hours-row ${isClosed ? 'closed' : ''}" id="row-${key}">
+            <div class="hours-day">${label}</div>
+            <input type="time" id="h-${key}-open" value="${esc(d.open || '')}" ${isClosed ? 'disabled' : ''} placeholder="09:00">
+            <input type="time" id="h-${key}-close" value="${esc(d.close || '')}" ${isClosed ? 'disabled' : ''} placeholder="22:00">
+            <label class="closed-toggle">
+              <input type="checkbox" ${isClosed ? 'checked' : ''} onchange="toggleClosed('${key}', this.checked)">
+              סגור היום
+            </label>
+          </div>
+        `;
+      }).join('')}
+    </div>
+
+    <p style="margin-top:14px;font-size:12px;color:#94A3B8">
+      💡 טיפ: אפשר תמיד לערוך את השעות מאוחר יותר באזור האישי.
+    </p>
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep()">← חזור</button>
+      <button class="btn-next" onclick="nextStep()">המשך →</button>
+    </div>
+  `;
+}
+
+function toggleClosed(day, isClosed) {
+  if (!formData.opening_hours[day]) formData.opening_hours[day] = {};
+  formData.opening_hours[day].closed = isClosed;
+  const row = $('row-' + day);
+  row.classList.toggle('closed', isClosed);
+  row.querySelectorAll('input[type="time"]').forEach(i => i.disabled = isClosed);
+}
+
+// ═══════════ STEP 5: סיכום ושליחה ═══════════
+function renderStep5() {
+  return `
+    <h2>סיכום ושליחה</h2>
+    <p class="subtitle">בדוק שהפרטים נכונים ולחץ "שלח להמתנה לאישור"</p>
+
+    <div style="background:#F8FAFC;border-radius:12px;padding:18px;margin-bottom:18px">
+      <div style="display:flex;gap:14px;align-items:center;margin-bottom:14px">
+        ${formData.logo_url ? `<img src="${esc(formData.logo_url)}" style="width:56px;height:56px;border-radius:12px;object-fit:cover">` : `<div style="width:56px;height:56px;border-radius:12px;background:#E5E7EB;display:flex;align-items:center;justify-content:center;font-weight:900;color:#94A3B8;font-size:22px">${esc((formData.business_name || '?').charAt(0))}</div>`}
+        <div style="flex:1;min-width:0">
+          <div style="font-weight:900;font-size:16px;color:#1A2E5C;margin-bottom:3px">${esc(formData.business_name || 'ללא שם')}</div>
+          <div style="font-size:12px;color:#6B7280">${esc(getCategoryLabel(formData.category))}${formData.sub_category ? ' · ' + esc(formData.sub_category) : ''}</div>
+        </div>
+      </div>
+      ${formData.short_description ? `<div style="font-size:13px;color:#4B5563;line-height:1.5;padding-top:10px;border-top:1px solid #E5E7EB">${esc(formData.short_description)}</div>` : ''}
+      ${formData.address ? `<div style="font-size:12px;color:#6B7280;margin-top:8px;display:flex;align-items:center;gap:5px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${esc(formData.address)}
+      </div>` : ''}
+      ${formData.phone ? `<div style="font-size:12px;color:#6B7280;margin-top:4px;display:flex;align-items:center;gap:5px">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.7 19.79 19.79 0 0 1 1.62 4.13 2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        <span dir="ltr">${esc(formData.phone)}</span>
+      </div>` : ''}
+    </div>
+
+    <div style="background:linear-gradient(135deg,rgba(245,158,11,0.1) 0%,rgba(245,158,11,0.02) 100%);border:1.5px solid #F59E0B;border-radius:12px;padding:16px;margin-bottom:18px">
+      <div style="display:flex;align-items:flex-start;gap:10px">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F59E0B" stroke-width="2.5" style="flex-shrink:0;margin-top:1px"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        <div>
+          <div style="font-size:14px;font-weight:900;color:#1A2E5C;margin-bottom:4px">תהליך האישור</div>
+          <div style="font-size:13px;color:#4B5563;line-height:1.6">
+            לאחר השליחה, הצוות שלנו יבדוק את הפרטים תוך 24-48 שעות. <strong>הכרטיס יעלה לאוויר רק לאחר האישור</strong>. נצור איתך קשר אם צריך השלמת פרטים.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <label class="check-row" style="margin-bottom:0">
+      <input type="checkbox" id="agree-terms">
+      <span>אני מאשר את <a href="/terms" target="_blank" style="color:#2563EB;font-weight:800">תקנון השימוש</a> ואת <a href="/business-terms" target="_blank" style="color:#2563EB;font-weight:800">תנאי השירות לעסקים</a></span>
+    </label>
+
+    <div class="nav-buttons">
+      <button class="btn-back" onclick="prevStep()">← חזור</button>
+      <button class="btn-submit" id="submit-btn" onclick="submitForm()">שלח להמתנה לאישור</button>
+    </div>
+  `;
+}
+
+function getCategoryLabel(value) {
+  const cat = BIZ_CATEGORIES.find(([v]) => v === value);
+  return cat ? cat[1] : '';
+}
+
+// ═══════════ Save Current Step Data ═══════════
+function saveStepData() {
+  if (currentStep === 1) {
+    formData.business_name = $('f-business_name')?.value?.trim() || '';
+    formData.category = $('f-category')?.value || '';
+    formData.sub_category = $('f-sub_category')?.value?.trim() || '';
+    formData.short_description = $('f-short_description')?.value?.trim() || '';
+    formData.description = $('f-description')?.value?.trim() || '';
+    formData.price_range = $('f-price_range')?.value || '';
+    formData.tags = $('f-tags')?.value?.trim() || '';
+  } else if (currentStep === 3) {
+    formData.address = $('f-address')?.value?.trim() || '';
+    formData.phone = $('f-phone')?.value?.trim() || '';
+    formData.phone_secondary = $('f-phone_secondary')?.value?.trim() || '';
+    formData.whatsapp = $('f-whatsapp')?.value?.trim() || '';
+    formData.email = $('f-email')?.value?.trim() || '';
+    formData.website = $('f-website')?.value?.trim() || '';
+    formData.facebook_url = $('f-facebook_url')?.value?.trim() || '';
+    formData.instagram_url = $('f-instagram_url')?.value?.trim() || '';
+    formData.has_parking = $('f-has_parking')?.checked || false;
+    formData.has_accessibility = $('f-has_accessibility')?.checked || false;
+    formData.has_delivery = $('f-has_delivery')?.checked || false;
+    formData.has_takeaway = $('f-has_takeaway')?.checked || false;
+    formData.accepts_credit = $('f-accepts_credit')?.checked || false;
+    formData.kosher_certificate = $('f-kosher_certificate')?.value?.trim() || '';
+  } else if (currentStep === 4) {
+    DAYS.forEach(([key]) => {
+      if (!formData.opening_hours[key]) formData.opening_hours[key] = {};
+      if (!formData.opening_hours[key].closed) {
+        const open = $(`h-${key}-open`)?.value;
+        const close = $(`h-${key}-close`)?.value;
+        if (open && close) {
+          formData.opening_hours[key].open = open;
+          formData.opening_hours[key].close = close;
+        }
+      }
+    });
+  }
+}
+
+// ═══════════ Validate Current Step ═══════════
+function validateStep() {
+  if (currentStep === 1) {
+    if (!formData.business_name) { toast('יש למלא שם עסק', 'error'); return false; }
+    if (!formData.category) { toast('יש לבחור קטגוריה', 'error'); return false; }
+    if (!formData.short_description) { toast('יש לכתוב תיאור קצר', 'error'); return false; }
+  } else if (currentStep === 3) {
+    if (!formData.address) { toast('יש למלא כתובת', 'error'); return false; }
+    if (!formData.phone) { toast('יש למלא טלפון ראשי', 'error'); return false; }
+  }
+  return true;
+}
+
+function nextStep() {
+  saveStepData();
+  if (!validateStep()) return;
+  if (currentStep < totalSteps) {
+    currentStep++;
+    renderStep();
+  }
+}
+
+function prevStep() {
+  saveStepData();
+  if (currentStep > 1) {
+    currentStep--;
+    renderStep();
+  }
+}
+
+// ═══════════ Upload Image ═══════════
+async function uploadImg(field, bucket, input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 5 * 1024 * 1024) { toast('התמונה גדולה מדי (מקסימום 5MB)', 'error'); return; }
+
+  try {
+    toast('מעלה תמונה...');
+    const ext = file.name.split('.').pop().toLowerCase();
+    const fileName = `${currentUser.id}/${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+
+    const { error } = await sb.storage.from(bucket).upload(fileName, file, {
+      cacheControl: '3600', upsert: false
+    });
+    if (error) throw error;
+
+    const { data: { publicUrl } } = sb.storage.from(bucket).getPublicUrl(fileName);
+    formData[field] = publicUrl;
+    toast('תמונה הועלתה בהצלחה', 'success');
+    renderStep();
+  } catch (e) {
+    toast('שגיאת העלאה: ' + e.message, 'error');
+  }
+}
+
+// ═══════════ Submit ═══════════
+async function submitForm() {
+  if (!$('agree-terms')?.checked) { toast('יש לאשר את התקנון', 'error'); return; }
+
+  const btn = $('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+
+  try {
+    const slug = (formData.business_name || 'business').toLowerCase()
+      .replace(/[^a-zא-ת0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .slice(0, 40) + '-' + Date.now().toString(36).slice(-4);
+
+    const tagsArray = formData.tags
+      ? formData.tags.split(',').map(t => t.trim()).filter(Boolean)
+      : [];
+
+    const payload = {
+      owner_id: currentUser.id,
+      business_name: formData.business_name,
+      name: formData.business_name, // legacy
+      category: formData.category,
+      sub_category: formData.sub_category || null,
+      short_description: formData.short_description,
+      description: formData.description || null,
+      price_range: formData.price_range || null,
+      tags: tagsArray.length > 0 ? tagsArray : null,
+      logo_url: formData.logo_url || null,
+      cover_image_url: formData.cover_image_url || null,
+      address: formData.address,
+      city: formData.city || 'אופקים',
+      phone: formData.phone,
+      phone_secondary: formData.phone_secondary || null,
+      whatsapp: formData.whatsapp || null,
+      email: formData.email || null,
+      website: formData.website || null,
+      facebook_url: formData.facebook_url || null,
+      instagram_url: formData.instagram_url || null,
+      opening_hours: Object.keys(formData.opening_hours).length > 0 ? formData.opening_hours : null,
+      has_parking: formData.has_parking,
+      has_accessibility: formData.has_accessibility,
+      has_delivery: formData.has_delivery,
+      has_takeaway: formData.has_takeaway,
+      accepts_credit: formData.accepts_credit,
+      kosher_certificate: formData.kosher_certificate || null,
+      slug: slug,
+      is_active: false,
+      is_verified: false,
+      status: 'pending'
+    };
+
+    const { error } = await sb.from('businesses').insert(payload);
+    if (error) throw error;
+
+    $('wizard').style.display = 'none';
+    $('success-screen').style.display = '';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  } catch (e) {
+    console.error('Submit error', e);
+    toast('שגיאה: ' + (e.message || 'נכשל בשליחה'), 'error');
+    btn.disabled = false;
+    btn.textContent = 'שלח להמתנה לאישור';
+  }
+}
+
+window.nextStep = nextStep;
+window.prevStep = prevStep;
+window.uploadImg = uploadImg;
+window.submitForm = submitForm;
+window.toggleClosed = toggleClosed;
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>

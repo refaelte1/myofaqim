@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>קופונים והנחות באופקים | אופקים שלי</title>
+<meta name="description" content="קופוני הנחה בעסקים באופקים. הציגו את הקוד בחנות וקבלו הנחה מיידית.">
+<link rel="canonical" href="https://myofaqim.co.il/coupons">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="קופונים והנחות באופקים">
+<meta property="og:description" content="הנחות מיוחדות לתושבי אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<style>
+  /* Coupon card - מיוחד */
+  .coupon-card {
+    background: linear-gradient(135deg, #FFF 0%, #FEFAF3 100%);
+    border: 2px solid var(--line);
+    position: relative;
+  }
+  .coupon-card::before {
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange-light) 100%) !important;
+    opacity: 1 !important;
+    height: 4px !important;
+  }
+  .coupon-discount {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+    color: var(--navy);
+    padding: 14px 18px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 6px 0;
+  }
+  .coupon-discount-text {
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.2;
+  }
+  .coupon-biz-name {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+  }
+  .coupon-expires {
+    font-size: 12px;
+    color: var(--ink-mute);
+    background: var(--cream-warm);
+    padding: 6px 10px;
+    border-radius: 6px;
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+  .show-coupon-btn {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 100px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 14px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 4px;
+    transition: all .15s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .show-coupon-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(26,46,92,0.25);
+  }
+
+  /* Modal */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(13,27,62,0.6);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 16px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .coupon-modal {
+    background: #fff;
+    border-radius: 24px;
+    max-width: 440px;
+    width: 100%;
+    padding: 32px 28px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+    text-align: center;
+    position: relative;
+    animation: modalIn .25s cubic-bezier(.16,1,.3,1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-close {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    background: var(--cream-warm);
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .modal-ready {
+    background: linear-gradient(135deg, #FDF4E3 0%, #FEFAF3 100%);
+    border-radius: 16px;
+    padding: 14px;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 22px;
+  }
+  .modal-discount {
+    font-family: var(--sans);
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.25;
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+  }
+  .modal-biz {
+    font-size: 15px;
+    color: var(--ink-soft);
+    margin-bottom: 24px;
+  }
+  .modal-instructions {
+    font-size: 14px;
+    color: var(--ink-soft);
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .code-box {
+    background: var(--paper);
+    border: 2px dashed var(--blue);
+    border-radius: 14px;
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  .code-text {
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: 2px;
+    font-family: var(--sans);
+  }
+  .copy-btn {
+    background: var(--cream-warm);
+    border: none;
+    padding: 10px 18px;
+    border-radius: 100px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    color: var(--navy);
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all .15s;
+  }
+  .copy-btn:hover { background: var(--orange-soft); }
+  .copy-btn.copied {
+    background: #D1FAE5;
+    color: #166534;
+  }
+  .modal-tip {
+    font-size: 13px;
+    color: var(--ink-mute);
+    background: var(--cream);
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+  .modal-terms {
+    font-size: 11px;
+    color: var(--ink-mute);
+    line-height: 1.5;
+    margin-top: 14px;
+  }
+  .modal-cta {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    border: none;
+    padding: 14px 24px;
+    border-radius: 100px;
+    font-family: inherit;
+    font-weight: 800;
+    font-size: 15px;
+    cursor: pointer;
+    width: 100%;
+    text-decoration: none;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/deals">מבצעים</a> · <span>קופונים</span></div>
+    <h1>קופונים <em>והנחות</em> באופקים</h1>
+    <p>הציגו את הקוד <strong>MYOFAQIM</strong> בעסק וקבלו הנחה מיידית. הצטרפו לאתר וחסכו בכל קנייה.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="search" class="search-input" placeholder="חפשו לפי שם עסק..." oninput="renderCoupons()">
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all" onclick="filterCat('all', this)">הכל</button>
+      <button class="cat-chip" data-cat="food" onclick="filterCat('food', this)">מסעדות ואוכל</button>
+      <button class="cat-chip" data-cat="beauty" onclick="filterCat('beauty', this)">יופי וטיפוח</button>
+      <button class="cat-chip" data-cat="fashion" onclick="filterCat('fashion', this)">אופנה</button>
+      <button class="cat-chip" data-cat="electronics" onclick="filterCat('electronics', this)">חשמל</button>
+      <button class="cat-chip" data-cat="home" onclick="filterCat('home', this)">לבית</button>
+      <button class="cat-chip" data-cat="services" onclick="filterCat('services', this)">שירותים</button>
+      <button class="cat-chip" data-cat="general" onclick="filterCat('general', this)">כללי</button>
+    </div>
+
+    <div id="result-count" class="result-count"></div>
+
+    <div id="coupons-area" class="content-grid">
+      <div class="state-loading">טוען קופונים...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>אתם בעלי עסק ורוצים להציע קופון?</h3>
+      <p>פרסום קופונים מביא לקוחות חדשים. צרו קשר ונוסיף אתכם.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Modal: הצגת קוד הקופון -->
+<div class="modal-backdrop" id="coupon-modal-bg" onclick="closeCouponModal(event)">
+  <div class="coupon-modal" onclick="event.stopPropagation()">
+    <button class="modal-close" onclick="closeCouponModal()">&times;</button>
+    <div class="modal-ready">הקופון שלך מוכן</div>
+    <div class="modal-discount" id="m-discount">15% הנחה</div>
+    <div class="modal-biz" id="m-biz">שם העסק</div>
+
+    <div class="modal-instructions">
+      העתיקו את הקוד והציגו אותו בחנות, או הזכירו <strong>"אופקים שלי"</strong>
+    </div>
+
+    <div class="code-box">
+      <span class="code-text" id="m-code">MYOFAQIM</span>
+      <button class="copy-btn" id="copy-btn" onclick="copyCode()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        <span>העתק</span>
+      </button>
+    </div>
+
+    <div class="modal-tip" id="m-tip">הצגו את הקוד בעת התשלום בקופה.</div>
+
+    <a href="#" id="m-cta" class="modal-cta">מעבר לעמוד העסק</a>
+
+    <div class="modal-terms" id="m-terms"></div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+let cpSb, allCoupons = [], currentCat = 'all', currentCoupon = null;
+
+const CAT_LABELS = {
+  food: 'מסעדות', beauty: 'יופי', fashion: 'אופנה',
+  electronics: 'חשמל', home: 'לבית', services: 'שירותים', general: 'כללי'
+};
+
+async function initCp() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initCp, 100); return; }
+  cpSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadCoupons();
+}
+
+async function loadCoupons() {
+  try {
+    const now = new Date().toISOString();
+    const { data, error } = await cpSb.from('deals').select(`
+      *,
+      businesses (id, business_name, name, logo_url, category)
+    `)
+      .eq('type', 'coupon')
+      .eq('is_active', true)
+      .or(`expires_at.is.null,expires_at.gte.${now}`)
+      .order('is_featured', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    allCoupons = data || [];
+    renderCoupons();
+  } catch (e) {
+    console.error('[coupons] error:', e);
+    document.getElementById('coupons-area').innerHTML =
+      '<div class="state-empty"><h3>אין כרגע קופונים פעילים</h3><p>בקרוב יתווספו עוד מבצעים. חזרו לבדוק!</p></div>';
+  }
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderCoupons();
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }); }
+  catch { return ''; }
+}
+
+function renderCoupons() {
+  const search = (document.getElementById('search').value || '').toLowerCase();
+  let items = allCoupons;
+
+  if (currentCat !== 'all') items = items.filter(c => c.category === currentCat);
+
+  if (search) {
+    items = items.filter(c => {
+      const biz = c.businesses?.business_name || c.businesses?.name || '';
+      const text = [c.title, c.description, c.discount_text, biz].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  document.getElementById('result-count').innerHTML = `נמצאו <strong>${items.length}</strong> קופונים פעילים`;
+
+  const area = document.getElementById('coupons-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>לא נמצאו קופונים בקטגוריה זו</h3><p>נסו קטגוריה אחרת.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(c => {
+    const biz = c.businesses || {};
+    const bizName = biz.business_name || biz.name || 'עסק באופקים';
+    const catLabel = CAT_LABELS[c.category] || 'מבצע';
+    const expires = c.expires_at ? `בתוקף עד ${fmtDate(c.expires_at)}` : 'ללא הגבלת זמן';
+    const isFeatured = c.is_featured;
+
+    return `
+      <div class="content-card coupon-card ${isFeatured ? 'featured' : ''}">
+        <div class="content-card-header">
+          <span class="content-card-tag">${esc(catLabel)}</span>
+          ${isFeatured ? '<span class="content-card-tag" style="background:#FEE2E2;color:#991B1B">חם</span>' : ''}
+        </div>
+
+        ${c.image_url ? `<img src="${esc(c.image_url)}" alt="${esc(c.title)}" style="width:100%;height:140px;object-fit:cover;border-radius:10px" loading="lazy">` : ''}
+
+        <h3>${esc(c.title || 'מבצע מיוחד')}</h3>
+        ${c.description ? `<p>${esc(c.description)}</p>` : ''}
+
+        <div class="coupon-discount">
+          <div class="coupon-discount-text">${esc(c.discount_text || (c.discount_percent ? c.discount_percent + '%' : 'מבצע'))}</div>
+          <div class="coupon-biz-name">בעסק ${esc(bizName)}</div>
+        </div>
+
+        <div class="coupon-expires">⏱ ${expires}</div>
+
+        <button class="show-coupon-btn" onclick="showCoupon('${esc(c.id)}')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          <span>הצג קופון</span>
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function showCoupon(id) {
+  const c = allCoupons.find(x => x.id === id);
+  if (!c) return;
+  currentCoupon = c;
+
+  const biz = c.businesses || {};
+  const bizName = biz.business_name || biz.name || 'עסק באופקים';
+
+  document.getElementById('m-discount').textContent = c.title || c.discount_text || 'מבצע מיוחד';
+  document.getElementById('m-biz').textContent = bizName ? `בעסק: ${bizName}` : '';
+  document.getElementById('m-code').textContent = (c.coupon_code || 'MYOFAQIM').toUpperCase();
+  document.getElementById('m-terms').textContent = c.terms || '';
+  document.getElementById('m-tip').textContent = c.description || 'הציגו את הקוד בעת התשלום בקופה.';
+
+  const cta = document.getElementById('m-cta');
+  if (biz.id) {
+    cta.href = `/business/${biz.id}`;
+    cta.style.display = '';
+  } else {
+    cta.style.display = 'none';
+  }
+
+  // Reset copy button
+  const copyBtn = document.getElementById('copy-btn');
+  copyBtn.classList.remove('copied');
+  copyBtn.querySelector('span').textContent = 'העתק';
+
+  document.getElementById('coupon-modal-bg').classList.add('show');
+
+  // עדכון מונה צפיות
+  trackView(id);
+}
+
+function closeCouponModal(e) {
+  if (e && e.target.id !== 'coupon-modal-bg') return;
+  document.getElementById('coupon-modal-bg').classList.remove('show');
+}
+
+async function copyCode() {
+  if (!currentCoupon) return;
+  const code = (currentCoupon.coupon_code || 'MYOFAQIM').toUpperCase();
+  try {
+    await navigator.clipboard.writeText(code);
+    const btn = document.getElementById('copy-btn');
+    btn.classList.add('copied');
+    btn.querySelector('span').textContent = 'הועתק!';
+    setTimeout(() => {
+      btn.classList.remove('copied');
+      btn.querySelector('span').textContent = 'העתק';
+    }, 2000);
+
+    // עדכון מונה מימוש
+    trackRedeem(currentCoupon.id);
+  } catch (e) {
+    // fallback
+    const textArea = document.createElement('textarea');
+    textArea.value = code;
+    document.body.appendChild(textArea);
+    textArea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textArea);
+    alert('הקוד הועתק: ' + code);
+  }
+}
+
+async function trackView(id) {
+  try {
+    await cpSb.rpc('increment_deal_view', { deal_id: id }).then(() => {}).catch(() => {});
+  } catch {}
+}
+
+async function trackRedeem(id) {
+  try {
+    await cpSb.rpc('increment_deal_redeem', { deal_id: id }).then(() => {}).catch(() => {});
+  } catch {}
+}
+
+// ESC closes modal
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeCouponModal();
+});
+
+window.filterCat = filterCat;
+window.showCoupon = showCoupon;
+window.closeCouponModal = closeCouponModal;
+window.copyCode = copyCode;
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCp);
+} else {
+  initCp();
+}
+</script>
+</body>
+</html>

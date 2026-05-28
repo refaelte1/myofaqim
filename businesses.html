@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>אלפון עסקים באופקים | אופקים שלי</title>
+<meta name="description" content="אלפון העסקים של אופקים — מאות עסקים מקומיים בקטגוריות מגוונות. מצאו את העסק הקרוב אליכם, ראו דירוגים וקבלו פרטי קשר.">
+<link rel="canonical" href="https://myofaqim.co.il/businesses">
+<meta property="og:title" content="אלפון עסקים באופקים">
+<meta property="og:description" content="מאות עסקים מקומיים בקטגוריות מגוונות">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://myofaqim.co.il/businesses">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"CollectionPage","name":"אלפון עסקים באופקים","url":"https://myofaqim.co.il/businesses","inLanguage":"he-IL","about":"עסקים בעיר אופקים"}
+</script>
+
+<style>
+.search-box{background:var(--paper);border:1px solid var(--line);padding:20px;margin-bottom:24px;display:grid;grid-template-columns:1fr auto;gap:12px;align-items:end}
+@media(max-width:640px){.search-box{grid-template-columns:1fr}}
+.search-input{padding:14px 18px;border:1.5px solid var(--line);font-size:15px;font-family:var(--sans);background:var(--paper);outline:none;border-radius:2px;width:100%}
+.search-input:focus{border-color:var(--navy)}
+.search-btn{padding:14px 28px;background:var(--navy);color:var(--cream);font-weight:700;border-radius:2px;font-size:14px;letter-spacing:0.5px;border:none;cursor:pointer;font-family:var(--sans)}
+.search-btn:hover{background:var(--navy-700)}
+
+.cat-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;padding:14px;background:var(--paper);border:1px solid var(--line)}
+.cat-chip{padding:9px 18px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:var(--sans);transition:all .15s;letter-spacing:0.3px;border-radius:2px}
+.cat-chip:hover{background:var(--cream-warm);color:var(--navy)}
+.cat-chip.active{background:var(--navy);color:var(--cream)}
+
+.biz-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.biz-count{font-size:14px;color:var(--ink-soft)}
+.biz-count strong{color:var(--navy);font-weight:700}
+
+.biz-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:20px}
+.biz-card{background:var(--paper);border:1px solid var(--line);overflow:hidden;transition:all .25s;cursor:pointer;display:flex;flex-direction:column;position:relative}
+.biz-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(13,27,62,0.08);border-color:var(--gold)}
+.biz-card.featured{border:2px solid var(--gold);background:linear-gradient(180deg,var(--paper) 0%,#FCFAF5 100%)}
+.biz-card.enterprise{border:2px solid var(--navy)}
+
+.biz-img{width:100%;height:160px;background:var(--cream-warm);position:relative;overflow:hidden}
+.biz-img img{width:100%;height:100%;object-fit:cover}
+.biz-img-empty{height:100%;display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:48px;font-weight:900;color:var(--ink-mute);opacity:0.3}
+.biz-badges{position:absolute;top:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap}
+.biz-badge{font-size:10px;font-weight:800;padding:4px 10px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;backdrop-filter:blur(8px)}
+.biz-badge.vrf{background:rgba(26,122,74,0.92);color:#fff}
+.biz-badge.featured{background:var(--gold);color:var(--navy)}
+.biz-badge.enterprise{background:var(--navy);color:var(--gold)}
+
+.biz-body{padding:22px 24px;display:flex;flex-direction:column;gap:8px;flex:1}
+.biz-cat-tag{font-size:11px;font-weight:800;color:var(--gold-dk);letter-spacing:1.5px;text-transform:uppercase}
+.biz-name{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--navy);line-height:1.3;letter-spacing:-0.01em}
+.biz-desc{font-size:13px;color:var(--ink-soft);line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.biz-rating{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-mute);font-weight:600}
+.biz-stars{display:inline-flex;color:var(--gold)}
+
+.biz-meta{display:flex;flex-wrap:wrap;gap:10px;padding-top:12px;border-top:1px solid var(--line-soft);margin-top:auto;font-size:12px;color:var(--ink-mute);font-weight:600}
+.biz-meta-item{display:inline-flex;align-items:center;gap:4px}
+
+.biz-actions{padding:14px 24px;display:flex;gap:8px;border-top:1px solid var(--line-soft)}
+.biz-btn{flex:1;padding:11px;font-size:12px;font-weight:700;text-align:center;letter-spacing:0.5px;border-radius:2px;font-family:var(--sans);border:none;cursor:pointer}
+.biz-btn-view{background:var(--navy);color:var(--cream)}
+.biz-btn-phone{background:var(--cream-warm);color:var(--navy);border:1px solid var(--navy)}
+.biz-btn-wa{background:#25D366;color:#fff}
+
+@media(max-width:720px){.biz-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/">עסקים</a> · <span>אלפון עסקים</span></div>
+    <h1>אלפון <em>עסקים</em> באופקים</h1>
+    <p>מאות עסקים מקומיים בקטגוריות מגוונות. מצאו את העסק הקרוב אליכם, ראו דירוגים וקבלו פרטי קשר ישירים.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="search-box">
+      <div>
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--navy);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px">חפשו עסק</label>
+        <input type="text" id="search-q" class="search-input" placeholder="שם עסק, קטגוריה, או שירות...">
+      </div>
+      <button class="search-btn" onclick="applyFilters()">חפש</button>
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all">הכל</button>
+      <button class="cat-chip" data-cat="food">מסעדות ומזון</button>
+      <button class="cat-chip" data-cat="retail">קמעונאות</button>
+      <button class="cat-chip" data-cat="services">שירותים</button>
+      <button class="cat-chip" data-cat="beauty">יופי וטיפוח</button>
+      <button class="cat-chip" data-cat="health">בריאות</button>
+      <button class="cat-chip" data-cat="home">לבית והגן</button>
+      <button class="cat-chip" data-cat="education">חינוך</button>
+      <button class="cat-chip" data-cat="leisure">פנאי וספורט</button>
+      <button class="cat-chip" data-cat="automotive">רכב</button>
+      <button class="cat-chip" data-cat="other">אחר</button>
+    </div>
+
+    <div class="biz-toolbar">
+      <div class="biz-count"><strong id="biz-count">—</strong> עסקים</div>
+      <a href="/biz-signup" class="btn-gold">הצטרפו כעסק</a>
+    </div>
+
+    <div id="biz-area" class="biz-grid"><div class="loader" style="grid-column:1/-1">טוען עסקים...</div></div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  const CAT_LABELS = {
+    food:'מזון', retail:'קמעונאות', services:'שירותים', beauty:'יופי',
+    health:'בריאות', home:'בית וגן', education:'חינוך',
+    leisure:'פנאי', automotive:'רכב', other:'אחר'
+  };
+
+  let sb, allBiz = [], currentCat = 'all';
+
+  function stars(rating) {
+    if (!rating) return '';
+    const full = Math.floor(rating);
+    return '<span class="biz-stars">' + '★'.repeat(full) + '☆'.repeat(5 - full) + '</span>';
+  }
+
+  function bizCard(b) {
+    const phone = (b.phone || '').replace(/\D/g, '');
+    const wa = phone ? `https://wa.me/972${phone.replace(/^0/,'')}?text=${encodeURIComponent('היי, ראיתי אתכם באתר אופקים שלי')}` : '';
+    const isEnt = b.plan_tier === 'enterprise' || (b.subscription_notes || '').toUpperCase().includes('ENTERPRISE');
+
+    return `
+      <article class="biz-card ${isEnt ? 'enterprise' : ''} ${b.is_featured ? 'featured' : ''}" onclick="goToBiz('${b.slug || b.id}')">
+        ${mofHeartBtn('business', b.id, {title: b.business_name, description: b.description || '', category: b.category || ''})}
+        <div class="biz-img">
+          ${b.cover_image_url ? `<img src="${esc(b.cover_image_url)}" alt="${esc(b.business_name)}" loading="lazy">` : `<div class="biz-img-empty">${esc((b.business_name||'?').charAt(0))}</div>`}
+          <div class="biz-badges">
+            ${isEnt ? '<span class="biz-badge enterprise">ENTERPRISE</span>' : ''}
+            ${b.is_featured && !isEnt ? '<span class="biz-badge featured">מומלץ</span>' : ''}
+            ${b.is_verified ? '<span class="biz-badge vrf">מאומת</span>' : ''}
+          </div>
+        </div>
+        <div class="biz-body">
+          <div class="biz-cat-tag">${CAT_LABELS[b.category] || b.category || ''}</div>
+          <h3 class="biz-name">${esc(b.business_name)}</h3>
+          ${b.description ? `<p class="biz-desc">${esc(b.description)}</p>` : ''}
+          ${b.rating ? `<div class="biz-rating">${stars(b.rating)} <span>${b.rating}/5${b.rating_count ? ` (${b.rating_count})` : ''}</span></div>` : ''}
+          <div class="biz-meta">
+            ${b.address ? `<span class="biz-meta-item">${esc(b.address)}</span>` : ''}
+          </div>
+        </div>
+        <div class="biz-actions" onclick="event.stopPropagation()">
+          <a href="/business?id=${b.slug || b.id}" class="biz-btn biz-btn-view">לדף העסק</a>
+          ${phone ? `<a href="tel:${esc(phone)}" class="biz-btn biz-btn-phone" onclick="event.stopPropagation();if(typeof mofTrackClick==='function')mofTrackClick('${b.id}','phone','${esc(phone)}')">חיוג</a>` : ''}
+          ${wa ? `<a href="${wa}" target="_blank" rel="noopener" class="biz-btn biz-btn-wa">WA</a>` : ''}
+        </div>
+      </article>`;
+  }
+
+  function applyFilters() {
+    let items = allBiz.slice();
+    if (currentCat !== 'all') items = items.filter(b => b.category === currentCat);
+    const q = ($('search-q').value || '').trim().toLowerCase();
+    if (q) {
+      items = items.filter(b =>
+        (b.business_name || '').toLowerCase().includes(q) ||
+        (b.description || '').toLowerCase().includes(q) ||
+        (b.category || '').toLowerCase().includes(q) ||
+        (b.address || '').toLowerCase().includes(q)
+      );
+    }
+    // sort: enterprise > featured > others
+    items.sort((a, b) => {
+      const aE = a.plan_tier === 'enterprise' ? 2 : (a.is_featured ? 1 : 0);
+      const bE = b.plan_tier === 'enterprise' ? 2 : (b.is_featured ? 1 : 0);
+      return bE - aE;
+    });
+
+    $('biz-count').textContent = items.length;
+    const area = $('biz-area');
+    if (!items.length) {
+      area.innerHTML = '<div class="empty" style="grid-column:1/-1"><h3>לא נמצאו עסקים</h3><p>נסו לשנות את החיפוש או את הקטגוריה.</p></div>';
+      return;
+    }
+    area.innerHTML = items.map(bizCard).join('');
+  }
+
+  function goToBiz(slug) {
+    // tracking: צפייה בכרטיס לפני נסיעה לדף העסק
+    if (typeof mofTrackView === 'function') {
+      const biz = allBizs.find(b => (b.slug || b.id) === slug);
+      if (biz?.id) mofTrackView(biz.id);
+    }
+    window.location.href = '/business?id=' + encodeURIComponent(slug);
+  }
+
+  async function loadBiz() {
+    try {
+      const { data, error } = await sb.from('businesses').select('*')
+        .eq('is_active', true).eq('status', 'approved')
+        .order('is_featured', { ascending: false })
+        .order('rating', { ascending: false, nullsFirst: false })
+        .limit(500);
+      if (error) throw error;
+      allBiz = data || [];
+      applyFilters();
+    } catch(e) {
+      $('biz-area').innerHTML = '<div class="empty" style="grid-column:1/-1"><h3>שגיאת טעינה</h3><p>'+esc(e.message)+'</p></div>';
+    }
+  }
+
+  async function bizInit() {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    // URL params
+    const u = new URLSearchParams(window.location.search);
+    const qParam = u.get('q');
+    const catParam = u.get('cat');
+    if (qParam) $('search-q').value = qParam;
+    if (catParam) currentCat = catParam;
+
+    // chip events
+    document.querySelectorAll('.cat-chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        currentCat = chip.dataset.cat;
+        applyFilters();
+      });
+    });
+
+    // search on Enter
+    $('search-q').addEventListener('keypress', e => {
+      if (e.key === 'Enter') applyFilters();
+    });
+
+    loadBiz();
+  }
+
+  window.applyFilters = applyFilters;
+  window.goToBiz = goToBiz;
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) bizInit(); else window.addEventListener('load', bizInit, {once:true}); });
+  else { if(window.supabase) bizInit(); else window.addEventListener('load', bizInit, {once:true}); }
+</script>
+</body>
+</html>

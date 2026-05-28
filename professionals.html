@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>בעלי מקצוע באופקים | אופקים שלי</title>
+<meta name="description" content="אינדקס בעלי המקצוע של אופקים — שיפוצניקים, חשמלאים, אינסטלטורים, מתכנתים ועוד. כולל זמינות בזמן אמת ומערכת לידים ישירה.">
+<link rel="canonical" href="https://myofaqim.co.il/professionals">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="בעלי מקצוע באופקים">
+<meta property="og:description" content="בעלי מקצוע מקומיים — כולל זמינות בזמן אמת">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+.pro-toolbar{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px;flex-wrap:wrap;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.pro-count{font-size:14px;color:var(--ink-soft)}
+.pro-count strong{color:var(--navy);font-weight:700}
+
+.search-row{display:grid;grid-template-columns:1fr auto;gap:12px;margin-bottom:24px;background:var(--paper);border:1px solid var(--line);padding:18px}
+.search-row input{padding:12px 16px;border:1.5px solid var(--line);font-size:14px;font-family:var(--sans);outline:none;border-radius:2px}
+.search-row input:focus{border-color:var(--navy)}
+@media(max-width:640px){.search-row{grid-template-columns:1fr}}
+
+.cat-bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px;padding:14px;background:var(--paper);border:1px solid var(--line)}
+.cat-chip{padding:9px 16px;border:none;background:transparent;font-size:13px;font-weight:600;color:var(--ink-soft);cursor:pointer;font-family:var(--sans);transition:all .15s;border-radius:2px}
+.cat-chip:hover{background:var(--cream-warm);color:var(--navy)}
+.cat-chip.active{background:var(--navy);color:var(--cream)}
+
+.pro-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:20px}
+.pro-card{background:var(--paper);border:1px solid var(--line);padding:24px;transition:all .25s;display:flex;flex-direction:column;gap:14px;position:relative}
+.pro-card:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(13,27,62,0.08);border-color:var(--gold)}
+.pro-card.available{border-right:3px solid var(--green)}
+
+.pro-head{display:flex;gap:16px;align-items:flex-start}
+.pro-avatar{width:64px;height:64px;border-radius:50%;background:var(--cream-warm);display:flex;align-items:center;justify-content:center;font-family:var(--sans);font-size:24px;font-weight:700;color:var(--navy);flex-shrink:0;border:2px solid var(--line);overflow:hidden}
+.pro-avatar img{width:100%;height:100%;object-fit:cover}
+.pro-info{flex:1;min-width:0}
+.pro-name{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--navy);line-height:1.2;letter-spacing:-0.01em;margin-bottom:4px}
+.pro-trade{font-size:12px;font-weight:700;color:var(--gold-dk);letter-spacing:1px;text-transform:uppercase}
+.pro-badges{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pro-badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:2px;letter-spacing:0.5px;text-transform:uppercase}
+.pro-badge.vrf{background:rgba(26,122,74,0.1);color:var(--green);border:1px solid rgba(26,122,74,0.25)}
+.pro-badge.avail{background:rgba(26,122,74,0.92);color:#fff}
+.pro-badge.busy{background:#999;color:#fff}
+
+.pro-desc{font-size:13px;color:var(--ink-soft);line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pro-areas{display:flex;flex-wrap:wrap;gap:6px}
+.area-tag{font-size:11px;font-weight:600;padding:3px 8px;background:var(--cream-warm);color:var(--ink-soft);border-radius:2px}
+
+.pro-rating{display:flex;align-items:center;gap:6px;font-size:13px;color:var(--ink-mute);font-weight:600;padding-top:8px;border-top:1px solid var(--line-soft)}
+.pro-stars{color:var(--gold);font-size:14px}
+
+.pro-actions{display:flex;gap:8px;padding-top:12px;border-top:1px solid var(--line-soft);margin-top:auto}
+.pro-btn{flex:1;padding:11px;font-size:12px;font-weight:700;text-align:center;letter-spacing:0.5px;border-radius:2px;border:none;cursor:pointer;font-family:var(--sans)}
+.pro-btn-lead{background:var(--gold);color:var(--navy)}
+.pro-btn-lead:hover{background:var(--gold-dk);color:var(--paper)}
+.pro-btn-phone{background:var(--navy);color:var(--cream)}
+.pro-btn-wa{background:#25D366;color:#fff}
+
+.lead-success{background:rgba(26,122,74,0.07);border:1.5px solid rgba(26,122,74,0.25);color:var(--green);padding:14px 18px;font-size:14px;font-weight:600;margin-bottom:18px;display:none;border-radius:2px}
+.lead-success.show{display:block}
+
+@media(max-width:720px){.pro-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/">עסקים</a> · <span>בעלי מקצוע</span></div>
+    <h1>בעלי <em>מקצוע</em> באופקים</h1>
+    <p>שיפוצניקים, חשמלאים, אינסטלטורים, גננים, מורים פרטיים ועוד. כולל זמינות בזמן אמת והשארת פנייה ישירה.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="search-row">
+      <input type="text" id="search-q" placeholder="חפשו לפי שם, מקצוע או תחום...">
+      <button class="btn-filled" onclick="applyFilters()" style="padding:12px 28px">חפש</button>
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all">הכל</button>
+      <button class="cat-chip" data-cat="renovation">שיפוצים</button>
+      <button class="cat-chip" data-cat="electrician">חשמלאי</button>
+      <button class="cat-chip" data-cat="plumber">אינסטלטור</button>
+      <button class="cat-chip" data-cat="ac">מיזוג</button>
+      <button class="cat-chip" data-cat="cleaning">ניקיון</button>
+      <button class="cat-chip" data-cat="gardening">גינון</button>
+      <button class="cat-chip" data-cat="locksmith">מנעולן</button>
+      <button class="cat-chip" data-cat="tutor">מורה פרטי</button>
+      <button class="cat-chip" data-cat="tech">מחשבים</button>
+      <button class="cat-chip" data-cat="moving">הובלות</button>
+      <button class="cat-chip" data-cat="other">אחר</button>
+    </div>
+
+    <div class="pro-toolbar">
+      <div class="pro-count"><strong id="pro-count">—</strong> בעלי מקצוע</div>
+      <a href="/pro-signup" class="btn-gold">הצטרפו כבעל מקצוע</a>
+    </div>
+
+    <div id="pro-area" class="pro-grid"><div class="loader" style="grid-column:1/-1">טוען בעלי מקצוע...</div></div>
+  </div>
+</main>
+
+<!-- LEAD MODAL -->
+<div class="modal-overlay" id="lead-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>פנייה ל-<span id="lead-pro-name">—</span></h2>
+      <button class="modal-close" onclick="closeLead()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="lead-success" id="lead-success">תודה! הפנייה נשלחה. בעל המקצוע יחזור אליכם בקרוב.</div>
+      <div class="modal-err" id="ld-err"></div>
+
+      <div class="field-group">
+        <label>מה אתם צריכים?</label>
+        <textarea id="ld-msg" placeholder="פרטו על העבודה: מה לעשות, איפה, מתי..."></textarea>
+      </div>
+      <div class="field-group">
+        <label>שמכם</label>
+        <input type="text" id="ld-name">
+      </div>
+      <div class="field-group">
+        <label>טלפון</label>
+        <input type="tel" id="ld-phone" dir="ltr" placeholder="050-0000000">
+      </div>
+      <input type="hidden" id="ld-prof-id">
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeLead()">ביטול</button>
+        <button class="modal-submit" id="ld-submit" onclick="submitLead()">שלחו פנייה</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  const TRADE_LABELS = {
+    renovation:'שיפוצים', electrician:'חשמלאי', plumber:'אינסטלטור',
+    ac:'מיזוג אוויר', cleaning:'ניקיון', gardening:'גינון', locksmith:'מנעולן',
+    tutor:'מורה פרטי', tech:'טכנאי מחשבים', moving:'הובלות', other:'אחר'
+  };
+
+  let sb, allPros = [], currentCat = 'all';
+
+  function proCard(p) {
+    const phone = (p.phone || '').replace(/\D/g, '');
+    const wa = phone ? `https://wa.me/972${phone.replace(/^0/,'')}` : '';
+    const initial = (p.full_name || '?').charAt(0);
+    const isAvail = p.is_available === true;
+    const areas = (p.service_areas || []).slice(0, 3);
+
+    return `
+      <article class="pro-card ${isAvail ? 'available' : ''}">
+        ${mofHeartBtn('professional', p.id, {title: p.full_name || 'בעל מקצוע', description: TRADE_LABELS[p.trade] || p.trade || '', category: p.trade || ''})}
+        <div class="pro-head">
+          <div class="pro-avatar">
+            ${p.avatar_url ? `<img src="${esc(p.avatar_url)}" alt="${esc(p.full_name)}">` : esc(initial)}
+          </div>
+          <div class="pro-info">
+            <h3 class="pro-name">${esc(p.full_name || 'בעל מקצוע')}</h3>
+            <div class="pro-trade">${TRADE_LABELS[p.trade] || p.trade || ''}</div>
+            <div class="pro-badges">
+              ${p.is_verified ? '<span class="pro-badge vrf">מאומת</span>' : ''}
+              ${isAvail ? '<span class="pro-badge avail">פנוי עכשיו</span>' : '<span class="pro-badge busy">לא פנוי</span>'}
+            </div>
+          </div>
+        </div>
+        ${p.bio ? `<p class="pro-desc">${esc(p.bio)}</p>` : ''}
+        ${areas.length ? `<div class="pro-areas">${areas.map(a=>`<span class="area-tag">${esc(a)}</span>`).join('')}</div>` : ''}
+        ${p.rating_avg ? `<div class="pro-rating"><span class="pro-stars">${'★'.repeat(Math.floor(p.rating_avg))}${'☆'.repeat(5-Math.floor(p.rating_avg))}</span> <span>${p.rating_avg}/5${p.rating_count?` (${p.rating_count})`:''}</span></div>` : ''}
+        <div class="pro-actions">
+          <button class="pro-btn pro-btn-lead" onclick="openLead('${p.id}', '${esc(p.full_name||'')}')">השאירו פנייה</button>
+          ${phone ? `<a href="tel:${esc(phone)}" class="pro-btn pro-btn-phone">חיוג</a>` : ''}
+          ${wa ? `<a href="${wa}" target="_blank" rel="noopener" class="pro-btn pro-btn-wa">WA</a>` : ''}
+        </div>
+      </article>`;
+  }
+
+  function applyFilters() {
+    let items = allPros.slice();
+    if (currentCat !== 'all') items = items.filter(p => p.trade === currentCat);
+    const q = ($('search-q').value || '').trim().toLowerCase();
+    if (q) {
+      items = items.filter(p =>
+        (p.full_name||'').toLowerCase().includes(q) ||
+        (p.trade||'').toLowerCase().includes(q) ||
+        (p.bio||'').toLowerCase().includes(q)
+      );
+    }
+    // available first
+    items.sort((a, b) => (b.is_available ? 1 : 0) - (a.is_available ? 1 : 0));
+
+    $('pro-count').textContent = items.length;
+    const area = $('pro-area');
+    if (!items.length) {
+      area.innerHTML = '<div class="empty" style="grid-column:1/-1"><h3>אין בעלי מקצוע</h3><p>נסו לשנות חיפוש או קטגוריה.</p></div>';
+      return;
+    }
+    area.innerHTML = items.map(proCard).join('');
+  }
+
+  async function loadPros() {
+    try {
+      const { data, error } = await sb.from('professionals').select('*')
+        .in('status', ['active','approved'])
+        .order('is_available', { ascending: false, nullsFirst: false })
+        .order('rating_avg', { ascending: false, nullsFirst: false }).limit(300);
+      if (error) throw error;
+      allPros = data || [];
+      applyFilters();
+    } catch(e) {
+      $('pro-area').innerHTML = '<div class="empty" style="grid-column:1/-1"><h3>שגיאת טעינה</h3><p>'+esc(e.message)+'</p></div>';
+    }
+  }
+
+  function openLead(profId, name) {
+    $('ld-prof-id').value = profId;
+    $('lead-pro-name').textContent = name;
+    $('lead-success').classList.remove('show');
+    $('lead-modal').classList.add('active');
+  }
+  function closeLead() { $('lead-modal').classList.remove('active'); }
+
+  async function submitLead() {
+    const errEl = $('ld-err');
+    errEl.classList.remove('show');
+    const msg = $('ld-msg').value.trim();
+    const name = $('ld-name').value.trim();
+    const phone = $('ld-phone').value.trim();
+
+    function err(m) { errEl.textContent = m; errEl.classList.add('show'); return false; }
+    if (!msg) return err('נא לתאר מה אתם צריכים');
+    if (!name) return err('נא להזין שם');
+    if (!phone) return err('נא להזין טלפון');
+
+    const btn = $('ld-submit');
+    btn.disabled = true; btn.textContent = 'שולח...';
+    try {
+      const { error } = await sb.from('leads').insert({
+        professional_id: $('ld-prof-id').value,
+        client_name: name, client_phone: phone,
+        message: msg, status: 'new', source: 'website'
+      });
+      if (error) throw error;
+      $('lead-success').classList.add('show');
+      $('ld-msg').value = ''; $('ld-name').value = ''; $('ld-phone').value = '';
+      btn.disabled = false; btn.textContent = 'שלחו פנייה';
+      setTimeout(() => closeLead(), 2500);
+    } catch(e) {
+      errEl.textContent = 'שגיאה: ' + e.message;
+      errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'שלחו פנייה';
+    }
+  }
+
+  async function proInit() {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    const u = new URLSearchParams(window.location.search);
+    if (u.get('q')) $('search-q').value = u.get('q');
+    if (u.get('cat')) currentCat = u.get('cat');
+
+    document.querySelectorAll('.cat-chip').forEach(c => {
+      c.addEventListener('click', () => {
+        document.querySelectorAll('.cat-chip').forEach(x => x.classList.remove('active'));
+        c.classList.add('active');
+        currentCat = c.dataset.cat;
+        applyFilters();
+      });
+    });
+    $('search-q').addEventListener('keypress', e => { if (e.key === 'Enter') applyFilters(); });
+
+    loadPros();
+  }
+
+  window.applyFilters = applyFilters;
+  window.openLead = openLead;
+  window.closeLead = closeLead;
+  window.submitLead = submitLead;
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) proInit(); else window.addEventListener('load', proInit, {once:true}); });
+  else { if(window.supabase) proInit(); else window.addEventListener('load', proInit, {once:true}); }
+</script>
+</body>
+</html>

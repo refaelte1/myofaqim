@@ -1,0 +1,25 @@
+{
+  "name": "אופקים שלי — MyOfaqim",
+  "short_name": "אופקים שלי",
+  "description": "הפלטפורמה הקהילתית הדיגיטלית של עיר אופקים — חדשות, עסקים, נדל\"ן, קופונים ושירותים.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFAF7",
+  "theme_color": "#0D1B3E",
+  "lang": "he",
+  "dir": "rtl",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "אלפון עסקים", "url": "/businesses", "description": "מדריך העסקים המקומיים" },
+    { "name": "קופונים והטבות", "url": "/deals", "description": "מבצעים והנחות בעיר" },
+    { "name": "זמני תפילה", "url": "/zmanim", "description": "לוח הזמנים היומי" },
+    { "name": "פורום תושבים", "url": "/forum", "description": "דיונים ועזרה הדדית" }
+  ]
+}

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>נדל"ן באופקים | אופקים שלי</title>
+<meta name="description" content='לוח נדל"ן באופקים - דירות, בתים, השכרה ומכירה ישירות מהבעלים.'>
+<link rel="canonical" href="https://myofaqim.co.il/realestate">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="נדלן באופקים">
+<meta property="og:description" content="דירות ובתים בעיר">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<style>
+  .re-price {
+    font-size: 24px; font-weight: 900; color: var(--navy);
+    margin: 4px 0;
+  }
+  .re-features {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px;
+  }
+  .re-feature {
+    background: var(--cream-warm); color: var(--navy);
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 700;
+  }
+  .re-stats {
+    display: flex; gap: 14px; padding: 10px 0;
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .re-stat { flex: 1; text-align: center; }
+  .re-stat-val { font-size: 18px; font-weight: 800; color: var(--navy); }
+  .re-stat-lbl { font-size: 11px; color: var(--ink-mute); margin-top: 2px; }
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <span>נדל"ן</span></div>
+    <h1>נדל"ן <em>באופקים</em></h1>
+    <p>דירות ובתים למכירה ולהשכרה בעיר - ישירות מהבעלים או דרך מתווכים.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="re-search" class="search-input" placeholder="חפשו לפי שכונה או תיאור..." oninput="renderListings()">
+      <select id="re-deal" class="filter-select" onchange="renderListings()">
+        <option value="">כל סוגי העסקה</option>
+        <option value="sale">מכירה</option>
+        <option value="rent">השכרה</option>
+        <option value="sublet">סאבלט</option>
+      </select>
+      <select id="re-rooms" class="filter-select" onchange="renderListings()">
+        <option value="">כל החדרים</option>
+        <option value="1">1 חדרים</option>
+        <option value="2">2 חדרים</option>
+        <option value="3">3 חדרים</option>
+        <option value="4">4 חדרים</option>
+        <option value="5">5+ חדרים</option>
+      </select>
+    </div>
+
+    <div id="re-count" class="result-count"></div>
+
+    <div id="re-area" class="content-grid">
+      <div class="state-loading">טוען נכסים...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>רוצים לפרסם נכס למכירה או השכרה?</h3>
+      <p>פרסום ללא עלות - שלחו לנו את הפרטים ונפרסם בעיר.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+const DEAL_LABELS = { sale: 'למכירה', rent: 'להשכרה', sublet: 'סאבלט' };
+const TYPE_LABELS = {
+  apartment: 'דירה', house: 'בית פרטי', land: 'מגרש',
+  commercial: 'מסחרי', room: 'חדר'
+};
+
+let reSb, allListings = [];
+
+async function initRe() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initRe, 100); return; }
+  reSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadListings();
+}
+
+async function loadListings() {
+  try {
+    const { data, error } = await reSb.from('realestate_listings').select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    allListings = (data || []).filter(l =>
+      l.is_active !== false && (l.status === 'active' || l.status === 'approved' || !l.status)
+    );
+    renderListings();
+  } catch (e) {
+    console.error('[realestate] error:', e);
+    document.getElementById('re-area').innerHTML =
+      '<div class="state-empty"><h3>אין נכסים כרגע</h3><p>חזרו בקרוב או פרסמו נכס משלכם.</p></div>';
+  }
+}
+
+function fmtPrice(n) {
+  if (!n) return '—';
+  try { return Number(n).toLocaleString('he-IL') + ' ₪'; }
+  catch { return n + ' ₪'; }
+}
+
+function renderListings() {
+  const search = (document.getElementById('re-search').value || '').toLowerCase();
+  const deal = document.getElementById('re-deal').value;
+  const rooms = document.getElementById('re-rooms').value;
+
+  let items = allListings;
+  if (deal) items = items.filter(l => l.deal_type === deal);
+  if (rooms) {
+    if (rooms === '5') items = items.filter(l => l.rooms >= 5);
+    else items = items.filter(l => Math.floor(l.rooms || 0) == parseInt(rooms));
+  }
+
+  if (search) {
+    items = items.filter(l => {
+      const text = [l.title, l.description, l.neighborhood, l.contact_name].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  document.getElementById('re-count').innerHTML = `נמצאו <strong>${items.length}</strong> נכסים`;
+
+  const area = document.getElementById('re-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>אין נכסים בסינון זה</h3><p>נסו לשנות את הסינון או חיפוש אחר.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(l => {
+    const dealLabel = DEAL_LABELS[l.deal_type] || 'למכירה';
+    const typeLabel = TYPE_LABELS[l.property_type] || '';
+    const phone = l.contact_phone || '';
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const waPhone = cleanPhone.startsWith('0') ? '972' + cleanPhone.slice(1) : cleanPhone;
+
+    const features = [];
+    if (l.has_parking) features.push('חניה');
+    if (l.has_elevator) features.push('מעלית');
+    if (l.has_balcony) features.push('מרפסת');
+    if (l.has_storage) features.push('מחסן');
+    if (l.has_safe_room) features.push('ממ"ד');
+    if (l.is_renovated) features.push('משופצת');
+    if (l.is_furnished) features.push('מרוהטת');
+
+    return `
+      <div class="content-card ${l.is_urgent ? 'featured' : ''}">
+        <div class="content-card-header">
+          <span class="content-card-tag ${l.deal_type === 'rent' ? 'blue' : 'orange'}">${esc(dealLabel)}</span>
+          ${typeLabel ? `<span class="content-card-tag gray">${esc(typeLabel)}</span>` : ''}
+          ${l.is_urgent ? '<span class="content-card-tag" style="background:#FEE2E2;color:#991B1B">דחוף</span>' : ''}
+        </div>
+
+        <h3>${esc(l.title || 'ללא כותרת')}</h3>
+
+        ${l.price ? `<div class="re-price">${fmtPrice(l.price)}${l.deal_type === 'rent' ? ' / חודש' : ''}</div>` : ''}
+
+        ${(l.rooms || l.size_sqm || l.floor) ? `
+          <div class="re-stats">
+            ${l.rooms ? `<div class="re-stat"><div class="re-stat-val">${esc(l.rooms)}</div><div class="re-stat-lbl">חדרים</div></div>` : ''}
+            ${l.size_sqm ? `<div class="re-stat"><div class="re-stat-val">${esc(l.size_sqm)}</div><div class="re-stat-lbl">מ"ר</div></div>` : ''}
+            ${l.floor !== null && l.floor !== undefined ? `<div class="re-stat"><div class="re-stat-val">${esc(l.floor)}</div><div class="re-stat-lbl">קומה</div></div>` : ''}
+          </div>
+        ` : ''}
+
+        <div class="card-info">
+          ${l.neighborhood ? `<div class="card-info-row"><strong>שכונה:</strong> ${esc(l.neighborhood)}</div>` : ''}
+          ${l.agency_name ? `<div class="card-info-row"><strong>תיווך:</strong> ${esc(l.agency_name)}</div>` : ''}
+          ${l.contact_name && !l.agency_name ? `<div class="card-info-row"><strong>איש קשר:</strong> ${esc(l.contact_name)}</div>` : ''}
+        </div>
+
+        ${l.description ? `<p>${esc(l.description)}</p>` : ''}
+
+        ${features.length ? `
+          <div class="re-features">
+            ${features.map(f => `<span class="re-feature">${esc(f)}</span>`).join('')}
+          </div>
+        ` : ''}
+
+        ${phone ? `
+          <div class="card-actions">
+            <a href="tel:${esc(phone)}" class="card-btn primary">${esc(phone)}</a>
+            <a href="https://wa.me/${esc(waPhone)}" target="_blank" rel="noopener" class="card-btn whatsapp">WhatsApp</a>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initRe);
+} else {
+  initRe();
+}
+</script>
+</body>
+</html>

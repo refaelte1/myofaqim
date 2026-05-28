@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+<title>הצהרת נגישות | אופקים שלי</title>
+<meta name="description" content="הצהרת הנגישות של אופקים שלי - אנחנו פועלים להנגיש את האתר לכל אדם.">
+<meta name="robots" content="noindex,follow">
+
+<link rel="canonical" href="https://myofaqim.co.il/accessibility">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, var(--cream) 0%, #FFFFFF 100%); }
+
+  .legal-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff; padding: 48px 24px; text-align: center;
+  }
+  .legal-hero .eyebrow {
+    display: inline-block; background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2); padding: 6px 16px;
+    border-radius: 100px; font-size: 11px; font-weight: 800;
+    letter-spacing: 2px; color: var(--orange);
+    margin-bottom: 12px; text-transform: uppercase;
+  }
+  .legal-hero h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 900; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .legal-hero p { font-size: 14px; opacity: 0.85; margin: 0; }
+
+  .legal-body { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .legal-meta {
+    background: var(--cream); border-radius: 12px; padding: 14px 18px;
+    margin-bottom: 32px; font-size: 13px; color: var(--ink-soft);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+    border-right: 4px solid var(--green);
+  }
+  .legal-meta strong { color: var(--navy); }
+
+  .legal-toc { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px; margin-bottom: 32px; }
+  .legal-toc h2 { font-size: 13px; color: var(--ink-mute); margin: 0 0 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+  .legal-toc ol { margin: 0; padding-right: 20px; columns: 2; column-gap: 24px; }
+  @media (max-width: 640px) { .legal-toc ol { columns: 1; } }
+  .legal-toc li { padding: 4px 0; font-size: 13px; break-inside: avoid; }
+  .legal-toc a { color: var(--blue); text-decoration: none; font-weight: 600; }
+
+  .legal-section { margin-bottom: 36px; scroll-margin-top: 100px; }
+  .legal-section h2 {
+    font-size: 22px; font-weight: 900; color: var(--navy);
+    margin: 0 0 14px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .legal-section h2 .num {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--green) 0%, #4D7A0B 100%);
+    color: #fff; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900; flex-shrink: 0;
+  }
+  .legal-section h3 { font-size: 16px; font-weight: 800; color: var(--navy); margin: 20px 0 8px; }
+  .legal-section p { font-size: 15px; line-height: 1.8; color: var(--ink-soft); margin: 0 0 12px; }
+  .legal-section ul, .legal-section ol { padding-right: 24px; line-height: 1.8; color: var(--ink-soft); font-size: 15px; }
+  .legal-section li { margin-bottom: 6px; }
+  .legal-section strong { color: var(--navy); font-weight: 700; }
+
+  .legal-box {
+    background: var(--cream); border-right: 4px solid var(--blue);
+    padding: 14px 18px; border-radius: 8px; margin: 16px 0;
+    font-size: 14px; line-height: 1.7;
+  }
+  .legal-box.success { background: rgba(101, 163, 13, 0.06); border-right-color: var(--green); }
+
+  .features-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px; margin: 20px 0;
+  }
+  .feature-card {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px;
+  }
+  .feature-card .ico {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg, var(--green) 0%, #4D7A0B 100%);
+    color: #fff; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+  }
+  .feature-card h3 { font-size: 15px; font-weight: 900; color: var(--navy); margin: 0 0 6px; }
+  .feature-card p { font-size: 13px; line-height: 1.5; color: var(--ink-soft); margin: 0; }
+
+  .contact-footer { background: var(--cream); border-radius: 14px; padding: 24px; margin-top: 40px; text-align: center; }
+  .contact-footer h3 { font-size: 18px; color: var(--navy); margin: 0 0 8px; }
+  .contact-footer a { color: var(--blue); text-decoration: none; font-weight: 700; margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="legal-hero">
+    <div class="eyebrow">נגישות לכולם</div>
+    <h1>הצהרת נגישות</h1>
+    <p>אופקים שלי - אתר נגיש בהתאם לחוק שוויון זכויות</p>
+  </section>
+
+  <div class="legal-body">
+
+    <div class="legal-meta">
+      <span><strong>תאריך עדכון אחרון:</strong> 24 במאי 2026</span>
+      <span><strong>גרסה:</strong> 1.0</span>
+    </div>
+
+    <div class="legal-box success">
+      <strong>המחויבות שלנו:</strong> אנו רואים בנגישות זכות בסיסית. אנחנו פועלים בעקביות להפוך את האתר נגיש לכל אדם, ללא קשר ליכולות פיזיות, חושיות או קוגניטיביות.
+    </div>
+
+    <div class="legal-toc">
+      <h2>תוכן עניינים</h2>
+      <ol>
+        <li><a href="#sec-1">תקציר נגישות</a></li>
+        <li><a href="#sec-2">החוק הישראלי</a></li>
+        <li><a href="#sec-3">תכונות הנגישות באתר</a></li>
+        <li><a href="#sec-4">תאימות לתקנים בינלאומיים</a></li>
+        <li><a href="#sec-5">דפדפנים נתמכים</a></li>
+        <li><a href="#sec-6">מגבלות ידועות</a></li>
+        <li><a href="#sec-7">דיווח על תקלה</a></li>
+        <li><a href="#sec-8">רכז הנגישות</a></li>
+      </ol>
+    </div>
+
+    <!-- ─── סעיף 1 ─── -->
+    <section class="legal-section" id="sec-1">
+      <h2><span class="num">1</span> תקציר נגישות</h2>
+      <p>
+        אתר אופקים שלי (myofaqim.co.il) הונגש בהתאם לדרישות <strong>תקנות שוויון זכויות לאנשים עם מוגבלות (התאמות נגישות לשירות), התשע"ג-2013</strong>, ולתקן הישראלי <strong>ת"י 5568</strong>.
+      </p>
+      <p>
+        ההנגשה בוצעה ברמת WCAG 2.1 ברמה <strong>AA</strong> - הרמה הסטנדרטית המומלצת על ידי ארגון W3C ועל ידי החוק הישראלי.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 2 ─── -->
+    <section class="legal-section" id="sec-2">
+      <h2><span class="num">2</span> החוק הישראלי</h2>
+      <p>
+        חוק שוויון זכויות לאנשים עם מוגבלות, התשנ"ח-1998, וההתקנות שמכוחו, מחייבים אתרי אינטרנט מסחריים בישראל להיות נגישים לאנשים עם מוגבלות.
+      </p>
+      <p>אנו מחויבים לעקרונות הבאים:</p>
+      <ul>
+        <li><strong>שוויון:</strong> כל אדם זכאי לגשת לתוכן ולשירותים שלנו</li>
+        <li><strong>עצמאות:</strong> אדם עם מוגבלות יוכל להשתמש באתר ללא עזרה</li>
+        <li><strong>כבוד:</strong> חוויית השימוש שווה ומכבדת לכל המשתמשים</li>
+        <li><strong>נוחות:</strong> פונקציונליות גם עבור עוזרי קריאה ומכשירי גישה</li>
+      </ul>
+    </section>
+
+    <!-- ─── סעיף 3 ─── -->
+    <section class="legal-section" id="sec-3">
+      <h2><span class="num">3</span> תכונות הנגישות באתר</h2>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
+              <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            </svg>
+          </div>
+          <h3>מבנה סמנטי</h3>
+          <p>הקוד בנוי בהתאם לתקני HTML5 עם תוויות נכונות, כותרות מסודרות ולנדמרקים ARIA</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="9" y1="21" x2="9" y2="9"/>
+            </svg>
+          </div>
+          <h3>ניווט במקלדת</h3>
+          <p>ניתן לנווט בכל האתר באמצעות המקלדת בלבד (Tab, Enter, חיצים)</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+          </div>
+          <h3>ניגודיות צבעים</h3>
+          <p>יחס ניגודיות 4.5:1 לפחות בין טקסט לרקע, בהתאם לסטנדרט WCAG AA</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+              <polyline points="14 2 14 8 20 8"/>
+              <line x1="16" y1="13" x2="8" y2="13"/>
+              <line x1="16" y1="17" x2="8" y2="17"/>
+            </svg>
+          </div>
+          <h3>טקסט חלופי</h3>
+          <p>לכל תמונה משמעותית באתר יש תיאור טקסטואלי (alt) לקוראי מסך</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="4" y1="9" x2="20" y2="9"/>
+              <line x1="4" y1="15" x2="20" y2="15"/>
+              <line x1="10" y1="3" x2="8" y2="21"/>
+              <line x1="16" y1="3" x2="14" y2="21"/>
+            </svg>
+          </div>
+          <h3>גופנים ברורים</h3>
+          <p>גופן Heebo - מותאם לעברית, גודל מינימלי 14px ושימוש בעובי מתאים</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+              <line x1="8" y1="21" x2="16" y2="21"/>
+              <line x1="12" y1="17" x2="12" y2="21"/>
+            </svg>
+          </div>
+          <h3>תאימות מובייל</h3>
+          <p>עיצוב רספונסיבי שעובד בכל הגדלי מסך - נייד, טאבלט ומחשב</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11l18-5v12L3 14v-3z"/>
+              <path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>
+            </svg>
+          </div>
+          <h3>תמיכה בקוראי מסך</h3>
+          <p>תאימות לקוראי מסך כמו NVDA, JAWS, VoiceOver ו-TalkBack</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 11 12 14 22 4"/>
+              <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>
+            </svg>
+          </div>
+          <h3>טפסים נגישים</h3>
+          <p>כל שדות הטפסים מתויגים, עם הודעות שגיאה ברורות וקריאות</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─── סעיף 4 ─── -->
+    <section class="legal-section" id="sec-4">
+      <h2><span class="num">4</span> תאימות לתקנים בינלאומיים</h2>
+      <p>
+        האתר עומד בדרישות התקנים הבאים:
+      </p>
+      <ul>
+        <li><strong>WCAG 2.1 רמה AA</strong> - Web Content Accessibility Guidelines של W3C</li>
+        <li><strong>ת"י 5568</strong> - תקן ישראלי לנגישות אתרי אינטרנט</li>
+        <li><strong>Section 508</strong> - תקן אמריקאי לנגישות</li>
+        <li><strong>EN 301 549</strong> - תקן אירופאי לנגישות</li>
+      </ul>
+    </section>
+
+    <!-- ─── סעיף 5 ─── -->
+    <section class="legal-section" id="sec-5">
+      <h2><span class="num">5</span> דפדפנים נתמכים</h2>
+      <p>האתר נבדק ועובד באופן מיטבי בדפדפנים הבאים:</p>
+      <ul>
+        <li><strong>Google Chrome</strong> - גרסה 90 ומעלה</li>
+        <li><strong>Safari</strong> - גרסה 14 ומעלה (iOS / macOS)</li>
+        <li><strong>Firefox</strong> - גרסה 88 ומעלה</li>
+        <li><strong>Microsoft Edge</strong> - גרסה 90 ומעלה</li>
+        <li><strong>Samsung Internet</strong> - גרסה 14 ומעלה</li>
+      </ul>
+      <p>
+        אנו ממליצים להשתמש בגרסה העדכנית של הדפדפן לחוויה מיטבית.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 6 ─── -->
+    <section class="legal-section" id="sec-6">
+      <h2><span class="num">6</span> מגבלות ידועות</h2>
+      <p>
+        למרות מאמצינו, ישנן מגבלות ידועות שאנו עובדים על תיקונן:
+      </p>
+      <ul>
+        <li>חלק מהמפות (Google Maps) אינן נגישות במלואן - אנו עובדים על הוספת אלטרנטיבה טקסטואלית</li>
+        <li>תוכן שמועלה על ידי משתמשים (ביקורות, תמונות עסקים) עלול לא להיות נגיש - אנו פועלים מול בעלי העסקים</li>
+        <li>חלק מקבצי PDF עלולים לא להיות נגישים במלואם</li>
+      </ul>
+      <p>
+        אם נתקלת בבעיית נגישות שלא צוינה כאן, נשמח לדעת.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 7 ─── -->
+    <section class="legal-section" id="sec-7">
+      <h2><span class="num">7</span> דיווח על תקלה</h2>
+      <p>
+        אנו מתחייבים לטפל בכל פנייה הנוגעת לנגישות תוך <strong>30 ימי עסקים</strong>. אם נתקלת בבעיה כלשהי בנגישות האתר, נשמח לדעת.
+      </p>
+      <p>
+        כאשר מדווחים על תקלה, אנא כללו:
+      </p>
+      <ul>
+        <li>תיאור הבעיה</li>
+        <li>הדף או הפונקציה שבה התרחשה</li>
+        <li>הדפדפן והמכשיר שבהם נעשה השימוש</li>
+        <li>טכנולוגיית עזר (אם קיימת) - קורא מסך, הגדלה וכו'</li>
+      </ul>
+    </section>
+
+    <!-- ─── סעיף 8 ─── -->
+    <section class="legal-section" id="sec-8">
+      <h2><span class="num">8</span> רכז הנגישות</h2>
+      <p>
+        רכז הנגישות של אופקים שלי זמין לכל פנייה, שאלה או הצעה לשיפור:
+      </p>
+      <div class="contact-footer">
+        <h3>רכז הנגישות - רפאל</h3>
+        <p style="margin: 0;">
+          <a href="mailto:accessibility@myofaqim.co.il">accessibility@myofaqim.co.il</a> ·
+          <a href="https://wa.me/972542338233">WhatsApp: 054-233-8233</a>
+        </p>
+        <p style="margin: 12px 0 0; font-size: 13px; color: var(--ink-mute);">
+          זמן תגובה ממוצע: עד 7 ימי עסקים<br>
+          זמן טיפול בתקלה: עד 30 ימי עסקים
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+</body>
+</html>

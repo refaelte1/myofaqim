@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>מבצעי חנויות באופקים | אופקים שלי</title>
+<meta name="description" content="מבצעי חנויות בעיר אופקים - בגדים, חשמל, רהיטים, ועוד. עדכוני סוף עונה ומבצעי השקה.">
+<link rel="canonical" href="https://myofaqim.co.il/stores-deals">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="מבצעי חנויות באופקים">
+<meta property="og:description" content="הנחות מיוחדות בחנויות בעיר">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<style>
+  .store-card-image {
+    width: 100%;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
+    background: var(--cream-warm);
+    display: block;
+  }
+  .store-discount-banner {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+    color: var(--navy);
+    padding: 12px 16px;
+    border-radius: 10px;
+    text-align: center;
+    font-weight: 900;
+    font-size: 18px;
+    margin: 4px 0;
+  }
+  .store-biz-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .store-biz-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--cream-warm);
+    flex-shrink: 0;
+  }
+  .store-biz-info {
+    flex: 1;
+    min-width: 0;
+  }
+  .store-biz-name {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--navy);
+    margin: 0;
+  }
+  .store-biz-category {
+    font-size: 11px;
+    color: var(--ink-mute);
+    margin: 0;
+  }
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/deals">מבצעים</a> · <span>מבצעי חנויות</span></div>
+    <h1>מבצעי <em>חנויות</em> באופקים</h1>
+    <p>מבצעים והנחות בחנויות בעיר — אופנה, חשמל, רהיטים, צעצועים, ועוד. עדכון יומי.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="search" class="search-input" placeholder="חפשו חנות או מוצר..." oninput="renderDeals()">
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all" onclick="filterCat('all', this)">הכל</button>
+      <button class="cat-chip" data-cat="fashion" onclick="filterCat('fashion', this)">אופנה</button>
+      <button class="cat-chip" data-cat="electronics" onclick="filterCat('electronics', this)">חשמל</button>
+      <button class="cat-chip" data-cat="home" onclick="filterCat('home', this)">לבית</button>
+      <button class="cat-chip" data-cat="beauty" onclick="filterCat('beauty', this)">יופי וטיפוח</button>
+      <button class="cat-chip" data-cat="kids" onclick="filterCat('kids', this)">ילדים</button>
+      <button class="cat-chip" data-cat="sports" onclick="filterCat('sports', this)">ספורט</button>
+      <button class="cat-chip" data-cat="general" onclick="filterCat('general', this)">כללי</button>
+    </div>
+
+    <div id="result-count" class="result-count"></div>
+
+    <div id="deals-area" class="content-grid">
+      <div class="state-loading">טוען מבצעים...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>יש לכם חנות בעיר עם מבצע?</h3>
+      <p>פרסום מבצע באתר חושף אותכם לאלפי תושבים. צרו קשר ונפרסם.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+let sdSb, allDeals = [], currentCat = 'all';
+
+const CAT_LABELS = {
+  fashion: 'אופנה', electronics: 'חשמל', home: 'לבית',
+  beauty: 'יופי', kids: 'ילדים', sports: 'ספורט', general: 'כללי'
+};
+
+async function initSd() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initSd, 100); return; }
+  sdSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadDeals();
+}
+
+async function loadDeals() {
+  try {
+    const now = new Date().toISOString();
+    const { data, error } = await sdSb.from('deals').select(`
+      *,
+      businesses (id, business_name, name, logo_url, category)
+    `)
+      .eq('type', 'store')
+      .eq('is_active', true)
+      .or(`expires_at.is.null,expires_at.gte.${now}`)
+      .order('is_featured', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    allDeals = data || [];
+    renderDeals();
+  } catch (e) {
+    console.error('[stores-deals] error:', e);
+    document.getElementById('deals-area').innerHTML =
+      '<div class="state-empty"><h3>אין מבצעים פעילים כרגע</h3><p>בקרוב יתווספו עוד. חזרו לבדוק!</p></div>';
+  }
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderDeals();
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }); }
+  catch { return ''; }
+}
+
+function renderDeals() {
+  const search = (document.getElementById('search').value || '').toLowerCase();
+  let items = allDeals;
+
+  if (currentCat !== 'all') items = items.filter(d => d.category === currentCat);
+
+  if (search) {
+    items = items.filter(d => {
+      const biz = d.businesses?.business_name || d.businesses?.name || '';
+      const text = [d.title, d.description, d.discount_text, biz].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  document.getElementById('result-count').innerHTML = `נמצאו <strong>${items.length}</strong> מבצעי חנויות`;
+
+  const area = document.getElementById('deals-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>אין מבצעים בקטגוריה זו</h3><p>נסו קטגוריה אחרת.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(d => {
+    const biz = d.businesses || {};
+    const bizName = biz.business_name || biz.name || '';
+    const catLabel = CAT_LABELS[d.category] || 'כללי';
+    const expires = d.expires_at ? `בתוקף עד ${fmtDate(d.expires_at)}` : '';
+    const phone = biz.phone || '';
+
+    return `
+      <div class="content-card ${d.is_featured ? 'featured' : ''}">
+        <div class="content-card-header">
+          <span class="content-card-tag">${esc(catLabel)}</span>
+          ${d.is_featured ? '<span class="content-card-tag" style="background:#FEE2E2;color:#991B1B">חם</span>' : ''}
+        </div>
+
+        ${d.image_url ? `<img src="${esc(d.image_url)}" alt="${esc(d.title)}" class="store-card-image" loading="lazy">` : ''}
+
+        <h3>${esc(d.title || 'מבצע')}</h3>
+        ${d.description ? `<p>${esc(d.description)}</p>` : ''}
+
+        ${d.discount_text || d.discount_percent ? `
+          <div class="store-discount-banner">
+            ${esc(d.discount_text || (d.discount_percent ? d.discount_percent + '% הנחה' : ''))}
+          </div>
+        ` : ''}
+
+        ${expires ? `<div style="font-size:12px;color:var(--ink-mute);text-align:center;font-weight:700">⏱ ${esc(expires)}</div>` : ''}
+
+        ${bizName ? `
+          <div class="store-biz-row">
+            ${biz.logo_url ? `<img src="${esc(biz.logo_url)}" alt="" class="store-biz-logo">` : '<div class="store-biz-logo"></div>'}
+            <div class="store-biz-info">
+              <div class="store-biz-name">${esc(bizName)}</div>
+              ${biz.category ? `<div class="store-biz-category">${esc(biz.category)}</div>` : ''}
+            </div>
+          </div>
+        ` : ''}
+
+        <div class="card-actions">
+          ${biz.id ? `<a href="/business/${esc(biz.id)}" class="card-btn primary">לעמוד העסק</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.filterCat = filterCat;
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSd);
+} else {
+  initSd();
+}
+</script>
+</body>
+</html>

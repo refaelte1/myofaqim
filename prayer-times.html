@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGZ7EHLP4',{anonymize_ip:true});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>זמני תפילה ושיעורי תורה | אופקים שלי</title>
+<meta name="description" content="כל בתי הכנסת באופקים, זמני התפילות, ושיעורי התורה בקרבת מקום - עם מיקום אוטומטי וסינון חכם.">
+<meta property="og:title" content="זמני תפילה - אופקים שלי">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+<link rel="canonical" href="https://myofaqim.co.il/prayer-times">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: #F0F2F5; }
+
+  /* ── HERO ── */
+  .pt-hero {
+    background: linear-gradient(135deg, #1A2E5C 0%, #243B6E 50%, #2563EB 100%);
+    color: #fff; padding: 24px 20px 80px;
+    position: relative; overflow: hidden;
+  }
+  .pt-hero::before {
+    content: ''; position: absolute; top: -120px; left: 50%;
+    transform: translateX(-50%); width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+  }
+  .pt-hero-inner { max-width: 720px; margin: 0 auto; position: relative; z-index: 1; text-align: center; }
+  .pt-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    color: #F59E0B; margin-bottom: 10px; text-transform: uppercase;
+  }
+  .pt-hero h1 {
+    font-size: clamp(24px, 4vw, 32px); font-weight: 900;
+    margin: 0 0 6px; letter-spacing: -0.02em;
+  }
+  .pt-hero p { opacity: 0.85; font-size: 14px; margin: 0; }
+
+  /* ── TOP TABS ── */
+  .top-tabs {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 100px; padding: 4px;
+    display: inline-flex; margin-top: 16px;
+    backdrop-filter: blur(10px);
+  }
+  .top-tab {
+    background: transparent; border: none; cursor: pointer;
+    color: rgba(255,255,255,0.7);
+    padding: 8px 18px; border-radius: 100px;
+    font-family: inherit; font-weight: 800; font-size: 13px;
+    transition: all 0.2s;
+  }
+  .top-tab.active { background: #F59E0B; color: #1A2E5C; box-shadow: 0 4px 12px rgba(245,158,11,0.3); }
+
+  /* ── CONTAINER ── */
+  .pt-container { max-width: 720px; margin: -56px auto 100px; padding: 0 12px; position: relative; z-index: 2; }
+
+  /* ── LOCATION CARD ── */
+  .loc-card {
+    background: #fff; border-radius: 16px; padding: 14px 16px;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 4px 16px rgba(26,46,92,0.08);
+    border: 1px solid #E5E7EB;
+  }
+  .loc-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .loc-content { flex: 1; min-width: 0; }
+  .loc-title { font-size: 14px; font-weight: 900; color: #1A2E5C; }
+  .loc-desc { font-size: 12px; color: #6B7280; margin-top: 2px; }
+  .loc-btn {
+    background: #2563EB; color: #fff; border: none;
+    padding: 8px 14px; border-radius: 10px;
+    font-family: inherit; font-weight: 800; font-size: 12px;
+    cursor: pointer; flex-shrink: 0;
+  }
+  .loc-card.ready .loc-icon { background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%); }
+
+  /* ── SEARCH ── */
+  .search-row {
+    background: #fff; border-radius: 14px;
+    padding: 10px 14px; margin-bottom: 12px;
+    display: flex; align-items: center; gap: 10px;
+    box-shadow: 0 2px 8px rgba(26,46,92,0.06);
+    border: 1px solid #E5E7EB;
+  }
+  .search-row input {
+    flex: 1; border: none; outline: none;
+    font-family: inherit; font-size: 14px;
+    color: #1A2E5C; background: transparent;
+    padding: 6px 0;
+  }
+  .search-row svg { color: #94A3B8; flex-shrink: 0; }
+
+  /* ── FILTER PILLS ── */
+  .filter-row {
+    display: flex; gap: 6px; overflow-x: auto;
+    padding: 8px 0; margin-bottom: 12px;
+  }
+  .filter-row::-webkit-scrollbar { display: none; }
+  .filter-pill {
+    flex-shrink: 0; padding: 7px 14px; border-radius: 100px;
+    background: #fff; color: #1A2E5C;
+    border: 1.5px solid transparent; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 800;
+    transition: all 0.15s; white-space: nowrap;
+    display: flex; align-items: center; gap: 5px;
+    box-shadow: 0 1px 4px rgba(26,46,92,0.05);
+  }
+  .filter-pill:hover { border-color: #2563EB; }
+  .filter-pill.active { background: #1A2E5C; color: #fff; border-color: #1A2E5C; }
+  .filter-pill .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+  .filter-pill .count {
+    background: rgba(245,158,11,0.2); color: #D97706;
+    padding: 1px 6px; border-radius: 6px; font-size: 11px;
+  }
+  .filter-pill.active .count { background: rgba(245,158,11,0.3); color: #F59E0B; }
+
+  .dot-sefard { background: #2563EB; }
+  .dot-ashkenaz { background: #7C3AED; }
+  .dot-edot { background: #DC2626; }
+  .dot-teiman { background: #65A30D; }
+  .dot-achid { background: #F59E0B; }
+
+  /* ── SORT BAR ── */
+  .sort-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 8px; margin-bottom: 12px;
+    font-size: 12px; color: #6B7280;
+  }
+  .sort-row .count { font-weight: 800; color: #1A2E5C; }
+  .sort-row select {
+    background: transparent; border: none;
+    font-family: inherit; font-weight: 700;
+    color: #2563EB; font-size: 12px; cursor: pointer;
+  }
+
+  /* ── SHUL CARD ── */
+  .shul-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .shul-card {
+    background: #fff; border-radius: 18px;
+    padding: 16px 18px; cursor: pointer;
+    box-shadow: 0 2px 10px rgba(26,46,92,0.06);
+    border: 1px solid #E5E7EB;
+    transition: all 0.15s; position: relative;
+  }
+  .shul-card:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(26,46,92,0.1);
+    border-color: #2563EB;
+  }
+
+  .shul-fav {
+    position: absolute; top: 14px; left: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(245,158,11,0.08);
+    border: 1.5px solid transparent;
+    color: #94A3B8; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .shul-fav:hover { background: rgba(245,158,11,0.15); color: #F59E0B; }
+  .shul-fav.saved { background: rgba(245,158,11,0.15); color: #F59E0B; border-color: #F59E0B; }
+  .shul-fav.saved svg { fill: #F59E0B; }
+
+  .shul-head { display: flex; gap: 12px; align-items: center; margin-bottom: 10px; padding-left: 36px; }
+  .shul-avatar {
+    width: 44px; height: 44px; border-radius: 14px;
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    color: #F59E0B;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 900;
+    flex-shrink: 0;
+  }
+  .shul-info { flex: 1; min-width: 0; }
+  .shul-name {
+    font-size: 15px; font-weight: 900; color: #1A2E5C;
+    line-height: 1.3; margin-bottom: 3px;
+    overflow: hidden; text-overflow: ellipsis;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+  }
+  .shul-meta-line {
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    font-size: 11px; color: #6B7280; font-weight: 600;
+  }
+  .nusach-tag {
+    background: #F0F2F5; color: #1A2E5C;
+    padding: 2px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 800;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .nusach-tag .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .distance-tag {
+    display: inline-flex; align-items: center; gap: 3px;
+    color: #2563EB; font-weight: 800;
+  }
+  .distance-tag.close { color: #16A34A; }
+
+  .shul-times {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 8px; padding-top: 10px;
+    border-top: 1px solid #F0F2F5;
+  }
+  .time-box {
+    background: #F8FAFC; border-radius: 10px;
+    padding: 8px 6px; text-align: center;
+  }
+  .time-label {
+    font-size: 10px; color: #6B7280; font-weight: 800;
+    letter-spacing: 0.5px; text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+  .time-value {
+    font-size: 12px; color: #1A2E5C; font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── DETAIL MODAL ── */
+  .modal-overlay {
+    position: fixed; inset: 0;
+    background: rgba(15,30,61,0.6);
+    backdrop-filter: blur(6px);
+    z-index: 999; display: none;
+    align-items: flex-end; justify-content: center;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-sheet {
+    background: #fff; width: 100%; max-width: 540px;
+    border-radius: 24px 24px 0 0;
+    max-height: 90vh; overflow-y: auto;
+    padding-bottom: 20px;
+    animation: slideUp 0.3s ease-out;
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+
+  .modal-handle {
+    width: 40px; height: 4px;
+    background: #E5E7EB; border-radius: 2px;
+    margin: 12px auto 8px;
+  }
+  .modal-head {
+    padding: 14px 20px 18px;
+    border-bottom: 1px solid #F0F2F5;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .modal-avatar {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    color: #F59E0B; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900;
+  }
+  .modal-head h2 {
+    font-size: 18px; font-weight: 900; color: #1A2E5C;
+    margin: 0 0 4px; line-height: 1.3;
+  }
+  .modal-head .meta { font-size: 12px; color: #6B7280; }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px;
+    width: 32px; height: 32px; border-radius: 50%;
+    background: #F5F5F0; border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    color: #1A2E5C;
+  }
+
+  .modal-body { padding: 16px 20px; }
+  .modal-section { margin-bottom: 20px; }
+  .modal-section h3 {
+    font-size: 12px; font-weight: 800; color: #6B7280;
+    letter-spacing: 1.5px; text-transform: uppercase;
+    margin: 0 0 10px;
+  }
+  .info-row {
+    display: flex; gap: 10px; padding: 10px 12px;
+    background: #F8FAFC; border-radius: 10px; margin-bottom: 6px;
+    align-items: center;
+  }
+  .info-row .icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: #2563EB; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .info-row .text { flex: 1; min-width: 0; }
+  .info-row .text .lbl { font-size: 11px; color: #6B7280; font-weight: 700; }
+  .info-row .text .val { font-size: 14px; color: #1A2E5C; font-weight: 700; }
+
+  .schedule-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; margin-top: 8px;
+  }
+  .sched-box {
+    background: #F8FAFC; border-radius: 10px; padding: 10px;
+  }
+  .sched-day {
+    font-size: 11px; color: #6B7280; font-weight: 800;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+  .sched-times {
+    display: flex; flex-direction: column; gap: 3px;
+    font-size: 12px; color: #1A2E5C; font-weight: 700;
+  }
+  .sched-times .row { display: flex; justify-content: space-between; }
+  .sched-times .row .pray { color: #6B7280; }
+
+  .action-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 8px; padding: 16px 20px;
+    border-top: 1px solid #F0F2F5;
+  }
+  .action-btn {
+    background: #F8FAFC; border: 1.5px solid #E5E7EB;
+    padding: 12px; border-radius: 12px;
+    font-family: inherit; font-weight: 800; font-size: 13px;
+    color: #1A2E5C; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    text-decoration: none;
+  }
+  .action-btn:hover { border-color: #2563EB; color: #2563EB; }
+  .action-btn.primary {
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    color: #fff; border-color: transparent;
+  }
+
+  /* ── LESSON CARDS ── */
+  .lesson-card {
+    background: #fff; border-radius: 18px;
+    padding: 14px 16px; cursor: pointer;
+    box-shadow: 0 2px 10px rgba(26,46,92,0.06);
+    border: 1px solid #E5E7EB;
+    transition: all 0.15s; position: relative;
+  }
+  .lesson-card:hover { transform: translateY(-1px); border-color: #F59E0B; }
+
+  .lesson-header { display: flex; gap: 12px; align-items: center; margin-bottom: 8px; }
+  .lesson-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lesson-info { flex: 1; min-width: 0; }
+  .lesson-title { font-size: 14px; font-weight: 900; color: #1A2E5C; line-height: 1.3; }
+  .lesson-rabbi { font-size: 12px; color: #6B7280; margin-top: 1px; }
+  .lesson-time-badge {
+    background: rgba(245,158,11,0.1); color: #D97706;
+    padding: 4px 10px; border-radius: 8px;
+    font-size: 13px; font-weight: 900;
+    font-variant-numeric: tabular-nums;
+  }
+  .lesson-footer {
+    display: flex; align-items: center; gap: 10px;
+    padding-top: 8px; border-top: 1px solid #F0F2F5;
+    font-size: 11px; color: #6B7280; font-weight: 700;
+  }
+  .lesson-footer .badge {
+    background: #F0F2F5; padding: 2px 8px; border-radius: 6px;
+    font-weight: 800;
+  }
+
+  /* ── STATES ── */
+  .empty-state, .loader-state {
+    background: #fff; border-radius: 18px;
+    padding: 50px 20px; text-align: center; color: #6B7280;
+  }
+  .empty-icon {
+    width: 64px; height: 64px; margin: 0 auto 14px;
+    background: #F5F5F0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #94A3B8;
+  }
+  .empty-state h3 { font-size: 18px; font-weight: 900; color: #1A2E5C; margin: 0 0 6px; }
+
+  /* ── DAY SELECTOR (for lessons) ── */
+  .day-selector {
+    background: #fff; border-radius: 12px;
+    padding: 6px; display: flex; gap: 4px;
+    margin-bottom: 12px; overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(26,46,92,0.06);
+  }
+  .day-selector::-webkit-scrollbar { display: none; }
+  .day-btn {
+    flex: 1; min-width: 44px;
+    background: transparent; border: none;
+    padding: 8px 4px; border-radius: 8px;
+    font-family: inherit; font-weight: 800; font-size: 12px;
+    color: #6B7280; cursor: pointer; transition: all 0.15s;
+    text-align: center;
+  }
+  .day-btn.active { background: #2563EB; color: #fff; }
+  .day-btn .small { font-size: 9px; opacity: 0.8; }
+
+  @media (max-width: 480px) {
+    .pt-container { padding: 0 8px; }
+    .shul-times { grid-template-columns: repeat(3, 1fr); gap: 6px; }
+    .time-value { font-size: 11px; }
+    .schedule-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="pt-hero">
+    <div class="pt-hero-inner">
+      <div class="pt-eyebrow">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        בתי כנסת ושיעורים
+      </div>
+      <h1>זמני תפילה ושיעורים</h1>
+      <p>בתי כנסת באופקים, זמני התפילה ושיעורי תורה לפי קרבה אליך</p>
+      <div class="top-tabs">
+        <button class="top-tab active" data-view="shuls" onclick="switchView('shuls')">בתי כנסת</button>
+        <button class="top-tab" data-view="lessons" onclick="switchView('lessons')">שיעורי תורה</button>
+        <button class="top-tab" data-view="favorites" onclick="switchView('favorites')">המועדפים שלי</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="pt-container">
+
+    <!-- Location Card -->
+    <div class="loc-card" id="loc-card">
+      <div class="loc-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      </div>
+      <div class="loc-content">
+        <div class="loc-title" id="loc-title">הפעל מיקום למיון לפי קרבה</div>
+        <div class="loc-desc" id="loc-desc">נוכל להראות לך את בתי הכנסת הקרובים ביותר</div>
+      </div>
+      <button class="loc-btn" id="loc-btn" onclick="requestLocation()">הפעל</button>
+    </div>
+
+    <!-- Search -->
+    <div class="search-row" id="search-row">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" id="search-input" placeholder="חיפוש בית כנסת, רב, רחוב..." oninput="applyFilters()">
+    </div>
+
+    <!-- Filters: SHULS -->
+    <div id="shuls-filters">
+      <div class="filter-row">
+        <button class="filter-pill active" data-nusach="all">הכל <span class="count" id="cnt-all">0</span></button>
+        <button class="filter-pill" data-nusach="sefard"><span class="dot dot-sefard"></span>ספרד <span class="count" id="cnt-sefard">0</span></button>
+        <button class="filter-pill" data-nusach="ashkenaz"><span class="dot dot-ashkenaz"></span>אשכנז <span class="count" id="cnt-ashkenaz">0</span></button>
+        <button class="filter-pill" data-nusach="edot-hamizrach"><span class="dot dot-edot"></span>עדות המזרח <span class="count" id="cnt-edot-hamizrach">0</span></button>
+        <button class="filter-pill" data-nusach="teiman"><span class="dot dot-teiman"></span>תימן <span class="count" id="cnt-teiman">0</span></button>
+        <button class="filter-pill" data-nusach="achid"><span class="dot dot-achid"></span>אחיד <span class="count" id="cnt-achid">0</span></button>
+      </div>
+    </div>
+
+    <!-- Day selector: LESSONS -->
+    <div id="lessons-filters" style="display:none">
+      <div class="day-selector" id="day-selector"></div>
+      <div class="filter-row">
+        <button class="filter-pill active" data-type="all">הכל <span class="count" id="lcnt-all">0</span></button>
+        <button class="filter-pill" data-type="daf-yomi">דף יומי <span class="count" id="lcnt-daf-yomi">0</span></button>
+        <button class="filter-pill" data-type="gemara">גמרא <span class="count" id="lcnt-gemara">0</span></button>
+        <button class="filter-pill" data-type="halacha">הלכה <span class="count" id="lcnt-halacha">0</span></button>
+        <button class="filter-pill" data-type="mussar">מוסר <span class="count" id="lcnt-mussar">0</span></button>
+        <button class="filter-pill" data-type="parsha">פרשת השבוע <span class="count" id="lcnt-parsha">0</span></button>
+        <button class="filter-pill" data-type="chassidut">חסידות <span class="count" id="lcnt-chassidut">0</span></button>
+      </div>
+    </div>
+
+    <!-- Sort -->
+    <div class="sort-row" id="sort-row">
+      <div><span class="count" id="results-count">0</span> תוצאות</div>
+      <select id="sort-select" onchange="applyFilters()">
+        <option value="distance">לפי מרחק</option>
+        <option value="name">לפי שם א-ב</option>
+      </select>
+    </div>
+
+    <!-- Results -->
+    <div id="results-area">
+      <div class="loader-state">טוען...</div>
+    </div>
+
+  </div>
+
+  <!-- Detail Modal (Shul) -->
+  <div class="modal-overlay" id="shul-modal" onclick="if(event.target.id==='shul-modal')closeModal()">
+    <div class="modal-sheet" style="position:relative">
+      <div class="modal-handle"></div>
+      <button class="modal-close" onclick="closeModal()" aria-label="סגור">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div id="modal-content"></div>
+    </div>
+  </div>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+// ─── נתוני בתי כנסת ───
+const SHULS = [
+  { id: 1, name: 'בית הכנסת המרכזי - בית יוסף', initials: 'בי', nusach: 'sefard', nusachLabel: 'ספרד', address: 'רחוב הרצל 12, אופקים', lat: 31.3115, lng: 34.6220, rabbi: 'הרב שמואל כהן', phone: '054-1234567', description: 'בית הכנסת המרכזי של אופקים, פועל מעל 40 שנה.', schedule: { shacharit: { weekday: '06:00, 07:30', friday: '06:30, 07:30', shabbat: '08:00' }, mincha: { weekday: '13:30, 18:45', friday: '18:30', shabbat: '17:30' }, arvit: { weekday: '19:30, 21:00', friday: '20:00', shabbat: '20:00' } } },
+  { id: 2, name: 'בית הכנסת אור החיים', initials: 'אח', nusach: 'edot-hamizrach', nusachLabel: 'עדות המזרח', address: 'רחוב ביאליק 8, אופקים', lat: 31.3120, lng: 34.6230, rabbi: 'הרב יצחק בן דוד', phone: '054-2345678', description: 'בית כנסת קהילתי בנוסח עדות המזרח.', schedule: { shacharit: { weekday: '06:30, 07:45', friday: '06:30', shabbat: '08:30' }, mincha: { weekday: '13:30, 18:30', friday: '18:00', shabbat: '17:00' }, arvit: { weekday: '19:30', friday: '20:00', shabbat: '20:15' } } },
+  { id: 3, name: 'בית הכנסת אחדות ישראל', initials: 'אי', nusach: 'ashkenaz', nusachLabel: 'אשכנז', address: 'רחוב הרצוג 25, אופקים', lat: 31.3105, lng: 34.6210, rabbi: 'הרב משה לוי', phone: '054-3456789', description: 'בית כנסת בנוסח אשכנז מקורי.', schedule: { shacharit: { weekday: '06:00, 07:00', friday: '06:30', shabbat: '08:30' }, mincha: { weekday: '13:45, 18:45', friday: '18:30', shabbat: '17:15' }, arvit: { weekday: '20:00', friday: '20:15', shabbat: '20:30' } } },
+  { id: 4, name: 'בית הכנסת תפארת ישראל', initials: 'תי', nusach: 'sefard', nusachLabel: 'ספרד', address: 'רחוב ויצמן 7, אופקים', lat: 31.3130, lng: 34.6240, rabbi: 'הרב דוד כהן', phone: '054-4567890', description: 'בית כנסת קהילתי.', schedule: { shacharit: { weekday: '06:30, 08:00', friday: '07:00', shabbat: '08:30' }, mincha: { weekday: '13:30, 19:00', friday: '18:30', shabbat: '17:30' }, arvit: { weekday: '20:00', friday: '20:00', shabbat: '20:15' } } },
+  { id: 5, name: 'בית הכנסת אהל יצחק - תימן', initials: 'אי', nusach: 'teiman', nusachLabel: 'תימן', address: 'רחוב הריף 14, אופקים', lat: 31.3100, lng: 34.6225, rabbi: 'הרב יוסף שרעבי', phone: '054-5678901', description: 'בית כנסת בנוסח תימן (בלאדי).', schedule: { shacharit: { weekday: '06:15, 07:30', friday: '06:30', shabbat: '08:00' }, mincha: { weekday: '13:30, 19:00', friday: '18:15', shabbat: '17:00' }, arvit: { weekday: '19:45', friday: '20:00', shabbat: '20:00' } } },
+  { id: 6, name: 'בית הכנסת חב"ד', initials: 'חד', nusach: 'sefard', nusachLabel: 'חסידי', address: 'רחוב הנשיא 30, אופקים', lat: 31.3140, lng: 34.6250, rabbi: 'הרב מנחם שמואלוב', phone: '054-6789012', description: 'בית כנסת חב"ד באופקים.', schedule: { shacharit: { weekday: '07:00, 08:00', friday: '07:30', shabbat: '09:00' }, mincha: { weekday: '13:30, 19:00', friday: '19:00', shabbat: '17:30' }, arvit: { weekday: '20:30', friday: '20:30', shabbat: '20:45' } } },
+  { id: 7, name: 'בית הכנסת ישועת ישראל', initials: 'יי', nusach: 'edot-hamizrach', nusachLabel: 'עדות המזרח', address: 'רחוב בורוכוב 5, אופקים', lat: 31.3095, lng: 34.6215, rabbi: 'הרב יוסף לוי', phone: '054-7890123', description: 'בית כנסת קהילתי.', schedule: { shacharit: { weekday: '06:30, 07:30', friday: '07:00', shabbat: '08:30' }, mincha: { weekday: '13:30, 18:30', friday: '18:30', shabbat: '17:00' }, arvit: { weekday: '19:30', friday: '20:00', shabbat: '20:15' } } },
+  { id: 8, name: 'בית הכנסת בני התורה', initials: 'בת', nusach: 'ashkenaz', nusachLabel: 'אשכנז ליטאי', address: 'רחוב ירושלים 18, אופקים', lat: 31.3125, lng: 34.6235, rabbi: 'הרב אברהם רוזנברג', phone: '054-8901234', description: 'בית כנסת ליטאי.', schedule: { shacharit: { weekday: '06:00, 08:00', friday: '06:30', shabbat: '08:00' }, mincha: { weekday: '13:30, 18:45', friday: '18:30', shabbat: '17:30' }, arvit: { weekday: '20:00', friday: '20:15', shabbat: '20:30' } } },
+  { id: 9, name: 'בית הכנסת רחמים ואור', initials: 'רא', nusach: 'achid', nusachLabel: 'אחיד', address: 'רחוב חבד 9, אופקים', lat: 31.3108, lng: 34.6212, rabbi: 'הרב יעקב כהן', phone: '054-9012345', description: 'בית כנסת קהילתי, נוסח אחיד.', schedule: { shacharit: { weekday: '07:00, 08:00', friday: '07:00', shabbat: '08:30' }, mincha: { weekday: '13:30, 18:30', friday: '18:30', shabbat: '17:00' }, arvit: { weekday: '19:30', friday: '20:00', shabbat: '20:00' } } },
+  { id: 10, name: 'בית הכנסת קהילת יעקב', initials: 'קי', nusach: 'edot-hamizrach', nusachLabel: 'מרוקאי', address: 'רחוב הרצל 45, אופקים', lat: 31.3118, lng: 34.6228, rabbi: 'הרב יעקב אבוחצירא', phone: '054-0123456', description: 'בית כנסת בנוסח מרוקאי.', schedule: { shacharit: { weekday: '06:30, 07:45', friday: '07:00', shabbat: '08:30' }, mincha: { weekday: '13:30, 18:45', friday: '18:30', shabbat: '17:15' }, arvit: { weekday: '20:00', friday: '20:00', shabbat: '20:15' } } },
+];
+
+// ─── שיעורי תורה ───
+const LESSONS = [
+  { id: 1, title: 'דף יומי - מסכת בבא קמא', type: 'daf-yomi', typeLabel: 'דף יומי', rabbi: 'הרב שמואל כהן', duration: 60, dayIndex: 0, dayLabel: 'ראשון', time: '05:30', shulId: 1 },
+  { id: 2, title: 'דף יומי בעיון', type: 'daf-yomi', typeLabel: 'דף יומי', rabbi: 'הרב מנחם שמואלוב', duration: 45, dayIndex: 0, dayLabel: 'ראשון', time: '06:30', shulId: 6 },
+  { id: 3, title: 'שיעור תניא יומי', type: 'chassidut', typeLabel: 'חסידות', rabbi: 'הרב מנחם שמואלוב', duration: 30, dayIndex: 0, dayLabel: 'ראשון', time: '20:00', shulId: 6 },
+  { id: 4, title: 'הלכה יומית', type: 'halacha', typeLabel: 'הלכה', rabbi: 'הרב יצחק בן דוד', duration: 30, dayIndex: 1, dayLabel: 'שני', time: '20:30', shulId: 2 },
+  { id: 5, title: 'מסילת ישרים', type: 'mussar', typeLabel: 'מוסר', rabbi: 'הרב אברהם רוזנברג', duration: 45, dayIndex: 1, dayLabel: 'שני', time: '19:00', shulId: 8 },
+  { id: 6, title: 'גמרא ברכות', type: 'gemara', typeLabel: 'גמרא', rabbi: 'הרב משה לוי', duration: 60, dayIndex: 2, dayLabel: 'שלישי', time: '20:00', shulId: 3 },
+  { id: 7, title: 'פרשת השבוע - לעמקי הפסוק', type: 'parsha', typeLabel: 'פרשת השבוע', rabbi: 'הרב יוסף שרעבי', duration: 45, dayIndex: 3, dayLabel: 'רביעי', time: '20:30', shulId: 5 },
+  { id: 8, title: 'הלכות שבת', type: 'halacha', typeLabel: 'הלכה', rabbi: 'הרב יעקב אבוחצירא', duration: 45, dayIndex: 3, dayLabel: 'רביעי', time: '21:00', shulId: 10 },
+  { id: 9, title: 'דף יומי - מסכת בבא קמא', type: 'daf-yomi', typeLabel: 'דף יומי', rabbi: 'הרב דוד כהן', duration: 60, dayIndex: 4, dayLabel: 'חמישי', time: '05:30', shulId: 4 },
+  { id: 10, title: 'פרשת השבוע', type: 'parsha', typeLabel: 'פרשת השבוע', rabbi: 'הרב יעקב כהן', duration: 60, dayIndex: 4, dayLabel: 'חמישי', time: '20:00', shulId: 9 },
+  { id: 11, title: 'אורות הקודש', type: 'chassidut', typeLabel: 'חסידות', rabbi: 'הרב יוסף לוי', duration: 45, dayIndex: 5, dayLabel: 'שישי', time: '14:30', shulId: 7 },
+  { id: 12, title: 'דף יומי בליל שבת', type: 'daf-yomi', typeLabel: 'דף יומי', rabbi: 'הרב שמואל כהן', duration: 60, dayIndex: 6, dayLabel: 'שבת', time: '15:30', shulId: 1 },
+];
+
+const DAYS_HE = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+const DAYS_SHORT = ['א','ב','ג','ד','ה','ו','ש'];
+
+let sb = null;
+let currentUser = null;
+let userFavs = new Set(); // ids of saved shuls/lessons
+let userLat = null, userLng = null;
+let currentView = 'shuls';
+let currentNusach = 'all';
+let currentLessonType = 'all';
+let currentLessonDay = new Date().getDay();
+let searchQuery = '';
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+// ─── Distance Calculator (Haversine) ───
+function distance(lat1, lng1, lat2, lng2) {
+  const R = 6371; // km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180) * Math.cos(lat2*Math.PI/180) * Math.sin(dLng/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+}
+function distLabel(km) {
+  if (km < 0.1) return 'במקום';
+  if (km < 1) return `${Math.round(km*1000)} מ׳`;
+  return `${km.toFixed(1)} ק"מ`;
+}
+
+// ─── Location ───
+function requestLocation() {
+  if (!navigator.geolocation) { alert('דפדפן לא תומך במיקום'); return; }
+  $('loc-btn').textContent = 'מאתר...';
+  $('loc-btn').disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    (pos) => {
+      userLat = pos.coords.latitude;
+      userLng = pos.coords.longitude;
+      try { localStorage.setItem('mof_user_loc', JSON.stringify({lat:userLat,lng:userLng})); } catch {}
+      updateLocCard();
+      applyFilters();
+    },
+    (err) => {
+      $('loc-btn').textContent = 'הפעל';
+      $('loc-btn').disabled = false;
+      alert('לא ניתן לקבל מיקום. בדוק הרשאות בדפדפן.');
+    },
+    { timeout: 8000, maximumAge: 600000 }
+  );
+}
+
+function updateLocCard() {
+  const card = $('loc-card');
+  if (userLat && userLng) {
+    card.classList.add('ready');
+    $('loc-title').textContent = 'מיקום פעיל';
+    $('loc-desc').textContent = 'בתי הכנסת ממוינים לפי קרבה אליך';
+    $('loc-btn').textContent = 'שנה';
+    $('loc-btn').disabled = false;
+  } else {
+    card.classList.remove('ready');
+    $('loc-title').textContent = 'הפעל מיקום למיון לפי קרבה';
+    $('loc-desc').textContent = 'נציג את בתי הכנסת הקרובים ביותר אליך';
+    $('loc-btn').textContent = 'הפעל';
+    $('loc-btn').disabled = false;
+  }
+}
+
+// ─── Favorites ───
+async function loadFavorites() {
+  if (!currentUser || !sb) return;
+  try {
+    const { data } = await sb.from('user_favorites').select('item_id,item_type')
+      .in('item_type', ['synagogue','torah_lesson']);
+    userFavs = new Set((data || []).map(f => `${f.item_type}:${f.item_id}`));
+  } catch {}
+}
+
+async function toggleFav(type, id, btn) {
+  if (!currentUser) { if (typeof mofOpenAuth === 'function') mofOpenAuth(); return; }
+  const key = `${type}:${id}`;
+  try {
+    if (userFavs.has(key)) {
+      await sb.from('user_favorites').delete()
+        .eq('user_id', currentUser.id).eq('item_type', type).eq('item_id', String(id));
+      userFavs.delete(key);
+      if (btn) btn.classList.remove('saved');
+    } else {
+      const item = type === 'synagogue' ? SHULS.find(s => s.id === id) : LESSONS.find(l => l.id === id);
+      await sb.from('user_favorites').insert({
+        user_id: currentUser.id, item_type: type, item_id: String(id),
+        item_data: { title: item.name || item.title, description: item.address || item.rabbi || '' }
+      });
+      userFavs.add(key);
+      if (btn) btn.classList.add('saved');
+    }
+    if (currentView === 'favorites') applyFilters();
+  } catch(e) {
+    alert('שגיאה: ' + e.message);
+  }
+}
+
+// ─── View Switching ───
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.top-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  $('shuls-filters').style.display = view === 'shuls' ? '' : 'none';
+  $('lessons-filters').style.display = view === 'lessons' ? '' : 'none';
+  $('search-row').style.display = view === 'favorites' ? 'none' : '';
+  applyFilters();
+}
+
+// ─── Filtering & Rendering ───
+function applyFilters() {
+  searchQuery = $('search-input')?.value?.trim().toLowerCase() || '';
+
+  if (currentView === 'shuls') renderShuls();
+  else if (currentView === 'lessons') renderLessons();
+  else renderFavorites();
+
+  updateCounts();
+}
+
+function updateCounts() {
+  // shuls counts
+  $('cnt-all').textContent = SHULS.length;
+  ['sefard','ashkenaz','edot-hamizrach','teiman','achid'].forEach(n => {
+    const el = $(`cnt-${n}`);
+    if (el) el.textContent = SHULS.filter(s => s.nusach === n).length;
+  });
+  // lessons counts (by current day)
+  const todays = LESSONS.filter(l => l.dayIndex === currentLessonDay);
+  $('lcnt-all').textContent = todays.length;
+  ['daf-yomi','gemara','halacha','mussar','parsha','chassidut'].forEach(t => {
+    const el = $(`lcnt-${t}`);
+    if (el) el.textContent = todays.filter(l => l.type === t).length;
+  });
+}
+
+function renderShuls() {
+  let items = SHULS.slice();
+
+  // Add distance
+  if (userLat && userLng) {
+    items.forEach(s => s._dist = distance(userLat, userLng, s.lat, s.lng));
+  }
+
+  // Filter nusach
+  if (currentNusach !== 'all') items = items.filter(s => s.nusach === currentNusach);
+
+  // Search
+  if (searchQuery) {
+    items = items.filter(s =>
+      s.name.toLowerCase().includes(searchQuery) ||
+      s.rabbi.toLowerCase().includes(searchQuery) ||
+      s.address.toLowerCase().includes(searchQuery)
+    );
+  }
+
+  // Sort
+  const sortBy = $('sort-select').value;
+  if (sortBy === 'distance' && userLat) {
+    items.sort((a, b) => (a._dist || 999) - (b._dist || 999));
+  } else {
+    items.sort((a, b) => a.name.localeCompare(b.name, 'he'));
+  }
+
+  $('results-count').textContent = items.length;
+
+  if (items.length === 0) {
+    $('results-area').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>לא נמצאו תוצאות</h3>
+        <p>נסה לשנות את הסינון</p>
+      </div>`;
+    return;
+  }
+
+  $('results-area').innerHTML = `<div class="shul-list">${items.map(renderShulCard).join('')}</div>`;
+}
+
+function renderShulCard(s) {
+  const isFav = userFavs.has(`synagogue:${s.id}`);
+  const dotClass = s.nusach === 'edot-hamizrach' ? 'dot-edot' : `dot-${s.nusach}`;
+  const distHtml = s._dist != null
+    ? `<span class="distance-tag ${s._dist < 0.3 ? 'close' : ''}">
+        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ${distLabel(s._dist)}
+      </span>` : '';
+
+  return `
+    <article class="shul-card" onclick="openShulModal(${s.id})">
+      <button class="shul-fav ${isFav ? 'saved' : ''}" onclick="event.stopPropagation();toggleFav('synagogue',${s.id},this)" aria-label="הוסף למועדפים">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <div class="shul-head">
+        <div class="shul-avatar">${esc(s.initials)}</div>
+        <div class="shul-info">
+          <div class="shul-name">${esc(s.name)}</div>
+          <div class="shul-meta-line">
+            <span class="nusach-tag"><span class="dot ${dotClass}"></span>${esc(s.nusachLabel)}</span>
+            ${distHtml}
+          </div>
+        </div>
+      </div>
+      <div class="shul-times">
+        <div class="time-box">
+          <div class="time-label">שחרית</div>
+          <div class="time-value">${esc(s.schedule.shacharit.weekday)}</div>
+        </div>
+        <div class="time-box">
+          <div class="time-label">מנחה</div>
+          <div class="time-value">${esc(s.schedule.mincha.weekday)}</div>
+        </div>
+        <div class="time-box">
+          <div class="time-label">ערבית</div>
+          <div class="time-value">${esc(s.schedule.arvit.weekday)}</div>
+        </div>
+      </div>
+    </article>`;
+}
+
+function renderLessons() {
+  // Build day selector
+  const today = new Date().getDay();
+  $('day-selector').innerHTML = DAYS_HE.map((d, i) => {
+    const isToday = i === today;
+    const lessonsCount = LESSONS.filter(l => l.dayIndex === i).length;
+    return `<button class="day-btn ${i === currentLessonDay ? 'active' : ''}" onclick="selectLessonDay(${i})">${esc(DAYS_SHORT[i])}${isToday ? '<div class="small">היום</div>' : `<div class="small">${lessonsCount}</div>`}</button>`;
+  }).join('');
+
+  let items = LESSONS.filter(l => l.dayIndex === currentLessonDay);
+  if (currentLessonType !== 'all') items = items.filter(l => l.type === currentLessonType);
+  if (searchQuery) items = items.filter(l =>
+    l.title.toLowerCase().includes(searchQuery) ||
+    l.rabbi.toLowerCase().includes(searchQuery)
+  );
+
+  // Sort by time
+  items.sort((a,b) => a.time.localeCompare(b.time));
+
+  $('results-count').textContent = items.length;
+
+  if (items.length === 0) {
+    $('results-area').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg>
+        </div>
+        <h3>אין שיעורים ביום זה</h3>
+        <p>בחר יום אחר או סוג שיעור</p>
+      </div>`;
+    return;
+  }
+
+  $('results-area').innerHTML = `<div class="shul-list">${items.map(renderLessonCard).join('')}</div>`;
+}
+
+function renderLessonCard(l) {
+  const isFav = userFavs.has(`torah_lesson:${l.id}`);
+  const shul = SHULS.find(s => s.id === l.shulId);
+
+  return `
+    <article class="lesson-card" onclick="openLessonModal(${l.id})">
+      <button class="shul-fav ${isFav ? 'saved' : ''}" onclick="event.stopPropagation();toggleFav('torah_lesson',${l.id},this)" aria-label="הוסף למועדפים">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+      </button>
+      <div class="lesson-header" style="padding-left:36px">
+        <div class="lesson-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+        </div>
+        <div class="lesson-info">
+          <div class="lesson-title">${esc(l.title)}</div>
+          <div class="lesson-rabbi">${esc(l.rabbi)}</div>
+        </div>
+        <div class="lesson-time-badge">${esc(l.time)}</div>
+      </div>
+      <div class="lesson-footer">
+        <span class="badge">${esc(l.typeLabel)}</span>
+        <span>${l.duration} דק׳</span>
+        <span>·</span>
+        <span>${esc(shul?.name || '')}</span>
+      </div>
+    </article>`;
+}
+
+function renderFavorites() {
+  if (!currentUser) {
+    $('results-area').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        </div>
+        <h3>נדרשת התחברות</h3>
+        <p>התחבר כדי לראות את המועדפים שלך</p>
+        <button class="loc-btn" style="margin-top:14px" onclick="if(typeof mofOpenAuth==='function')mofOpenAuth()">התחברות</button>
+      </div>`;
+    return;
+  }
+
+  const favShuls = SHULS.filter(s => userFavs.has(`synagogue:${s.id}`));
+  const favLessons = LESSONS.filter(l => userFavs.has(`torah_lesson:${l.id}`));
+
+  if (favShuls.length === 0 && favLessons.length === 0) {
+    $('results-area').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <h3>אין לך עדיין מועדפים</h3>
+        <p>לחץ על סמל הסימנייה כדי להוסיף בתי כנסת או שיעורים</p>
+      </div>`;
+    return;
+  }
+
+  let html = '<div class="shul-list">';
+  if (favShuls.length > 0) {
+    if (userLat && userLng) favShuls.forEach(s => s._dist = distance(userLat, userLng, s.lat, s.lng));
+    html += `<h3 style="font-size:13px;font-weight:800;color:#6B7280;margin:8px 4px 4px;letter-spacing:1.5px;text-transform:uppercase">בתי כנסת</h3>`;
+    html += favShuls.map(renderShulCard).join('');
+  }
+  if (favLessons.length > 0) {
+    html += `<h3 style="font-size:13px;font-weight:800;color:#6B7280;margin:16px 4px 4px;letter-spacing:1.5px;text-transform:uppercase">שיעורי תורה</h3>`;
+    html += favLessons.map(renderLessonCard).join('');
+  }
+  html += '</div>';
+  $('results-area').innerHTML = html;
+  $('results-count').textContent = favShuls.length + favLessons.length;
+}
+
+function selectLessonDay(day) {
+  currentLessonDay = day;
+  applyFilters();
+}
+
+// ─── Filter Pills ───
+document.querySelectorAll('#shuls-filters .filter-pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#shuls-filters .filter-pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+    currentNusach = p.dataset.nusach;
+    applyFilters();
+  });
+});
+document.addEventListener('click', e => {
+  const pill = e.target.closest('#lessons-filters .filter-pill');
+  if (!pill) return;
+  document.querySelectorAll('#lessons-filters .filter-pill').forEach(x => x.classList.remove('active'));
+  pill.classList.add('active');
+  currentLessonType = pill.dataset.type;
+  applyFilters();
+});
+
+// ─── Modals ───
+function openShulModal(id) {
+  const s = SHULS.find(x => x.id === id);
+  if (!s) return;
+  const isFav = userFavs.has(`synagogue:${s.id}`);
+  const dotClass = s.nusach === 'edot-hamizrach' ? 'dot-edot' : `dot-${s.nusach}`;
+
+  $('modal-content').innerHTML = `
+    <div class="modal-head">
+      <div class="modal-avatar">${esc(s.initials)}</div>
+      <div style="flex:1;min-width:0">
+        <h2>${esc(s.name)}</h2>
+        <div class="meta">
+          <span class="nusach-tag"><span class="dot ${dotClass}"></span>${esc(s.nusachLabel)}</span>
+          ${s._dist != null ? ` · ${distLabel(s._dist)}` : ''}
+        </div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>פרטים</h3>
+        <div class="info-row">
+          <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <div class="text"><div class="lbl">כתובת</div><div class="val">${esc(s.address)}</div></div>
+        </div>
+        <div class="info-row">
+          <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="text"><div class="lbl">רב הקהילה</div><div class="val">${esc(s.rabbi)}</div></div>
+        </div>
+        ${s.phone ? `<div class="info-row">
+          <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.7 19.79 19.79 0 0 1 1.62 4.13 2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+          <div class="text"><div class="lbl">טלפון</div><div class="val" dir="ltr">${esc(s.phone)}</div></div>
+        </div>` : ''}
+      </div>
+      <div class="modal-section">
+        <h3>זמני תפילות</h3>
+        <div class="schedule-grid">
+          <div class="sched-box">
+            <div class="sched-day">ימי חול</div>
+            <div class="sched-times">
+              <div class="row"><span class="pray">שחרית</span><span>${esc(s.schedule.shacharit.weekday)}</span></div>
+              <div class="row"><span class="pray">מנחה</span><span>${esc(s.schedule.mincha.weekday)}</span></div>
+              <div class="row"><span class="pray">ערבית</span><span>${esc(s.schedule.arvit.weekday)}</span></div>
+            </div>
+          </div>
+          <div class="sched-box">
+            <div class="sched-day">שישי</div>
+            <div class="sched-times">
+              <div class="row"><span class="pray">שחרית</span><span>${esc(s.schedule.shacharit.friday)}</span></div>
+              <div class="row"><span class="pray">מנחה</span><span>${esc(s.schedule.mincha.friday)}</span></div>
+              <div class="row"><span class="pray">ערבית</span><span>${esc(s.schedule.arvit.friday)}</span></div>
+            </div>
+          </div>
+          <div class="sched-box" style="grid-column:span 2">
+            <div class="sched-day">שבת</div>
+            <div class="sched-times">
+              <div class="row"><span class="pray">שחרית</span><span>${esc(s.schedule.shacharit.shabbat)}</span></div>
+              <div class="row"><span class="pray">מנחה</span><span>${esc(s.schedule.mincha.shabbat)}</span></div>
+              <div class="row"><span class="pray">ערבית</span><span>${esc(s.schedule.arvit.shabbat)}</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      ${s.description ? `<div class="modal-section">
+        <h3>אודות</h3>
+        <p style="font-size:13px;color:#4B5563;line-height:1.7;margin:0">${esc(s.description)}</p>
+      </div>` : ''}
+    </div>
+    <div class="action-grid">
+      ${s.phone ? `<a href="tel:${esc(s.phone.replace(/\\D/g,''))}" class="action-btn primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.7 19.79 19.79 0 0 1 1.62 4.13 2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        חיוג
+      </a>` : ''}
+      <a href="https://maps.google.com/?q=${encodeURIComponent(s.address + ' אופקים')}" target="_blank" rel="noopener" class="action-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ניווט
+      </a>
+    </div>`;
+  $('shul-modal').classList.add('active');
+}
+
+function openLessonModal(id) {
+  const l = LESSONS.find(x => x.id === id);
+  if (!l) return;
+  const shul = SHULS.find(s => s.id === l.shulId);
+
+  $('modal-content').innerHTML = `
+    <div class="modal-head">
+      <div class="modal-avatar" style="background:linear-gradient(135deg, #F59E0B 0%, #D97706 100%);color:#1A2E5C">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/></svg>
+      </div>
+      <div style="flex:1;min-width:0">
+        <h2>${esc(l.title)}</h2>
+        <div class="meta">${esc(l.typeLabel)} · ${l.duration} דקות · יום ${esc(l.dayLabel)} בשעה ${esc(l.time)}</div>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <h3>פרטים</h3>
+        <div class="info-row">
+          <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <div class="text"><div class="lbl">המעביר</div><div class="val">${esc(l.rabbi)}</div></div>
+        </div>
+        ${shul ? `<div class="info-row">
+          <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg></div>
+          <div class="text"><div class="lbl">מיקום</div><div class="val">${esc(shul.name)}<br><span style="font-size:12px;color:#6B7280">${esc(shul.address)}</span></div></div>
+        </div>` : ''}
+        <div class="info-row">
+          <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+          <div class="text"><div class="lbl">יום ושעה</div><div class="val">יום ${esc(l.dayLabel)}, ${esc(l.time)} · ${l.duration} דקות</div></div>
+        </div>
+      </div>
+    </div>
+    ${shul ? `<div class="action-grid">
+      <button class="action-btn primary" onclick="closeModal();openShulModal(${shul.id})">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        בית הכנסת
+      </button>
+      <a href="https://maps.google.com/?q=${encodeURIComponent(shul.address + ' אופקים')}" target="_blank" rel="noopener" class="action-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        ניווט
+      </a>
+    </div>` : ''}`;
+  $('shul-modal').classList.add('active');
+}
+
+function closeModal() {
+  $('shul-modal').classList.remove('active');
+}
+
+// ─── Init ───
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await loadFavorites();
+  }
+  sb.auth.onAuthStateChange(async (event, session) => {
+    currentUser = session?.user || null;
+    if (currentUser) await loadFavorites();
+    else userFavs = new Set();
+    applyFilters();
+  });
+
+  // טען מיקום שמור
+  try {
+    const saved = localStorage.getItem('mof_user_loc');
+    if (saved) {
+      const { lat, lng } = JSON.parse(saved);
+      userLat = lat; userLng = lng;
+      updateLocCard();
+    }
+  } catch {}
+
+  // אם יש #lessons - הצג שיעורים
+  if (window.location.hash === '#lessons') {
+    switchView('lessons');
+  } else {
+    applyFilters();
+  }
+}
+
+window.requestLocation = requestLocation;
+window.switchView = switchView;
+window.toggleFav = toggleFav;
+window.selectLessonDay = selectLessonDay;
+window.openShulModal = openShulModal;
+window.openLessonModal = openLessonModal;
+window.closeModal = closeModal;
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>

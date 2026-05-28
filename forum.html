@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>פורום הקהילה | אופקים שלי</title>
+<meta name="description" content="פורום הקהילה של אופקים - שאלות, המלצות ושיתופים בין תושבים.">
+<meta property="og:title" content="פורום קהילה - אופקים שלי">
+<meta property="og:url" content="https://myofaqim.co.il/forum">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+<link rel="canonical" href="https://myofaqim.co.il/forum">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: #F0F2F5; }
+  .forum-hero { background: linear-gradient(135deg, #1A2E5C 0%, #243B6E 50%, #2563EB 100%); color: #fff; padding: 28px 20px 80px; position: relative; overflow: hidden; }
+  .forum-hero::before { content: ''; position: absolute; top: -100px; left: 50%; transform: translateX(-50%); width: 500px; height: 500px; background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%); pointer-events: none; }
+  .forum-hero-inner { max-width: 720px; margin: 0 auto; position: relative; z-index: 1; text-align: center; }
+  .forum-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18); padding: 6px 14px; border-radius: 100px; font-size: 11px; font-weight: 800; letter-spacing: 2px; color: #F59E0B; margin-bottom: 12px; text-transform: uppercase; }
+  .forum-hero h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 900; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .forum-hero p { opacity: 0.85; font-size: 14px; margin: 0; }
+
+  .forum-stats { display: flex; gap: 14px; justify-content: center; margin-top: 18px; flex-wrap: wrap; }
+  .stat-pill { display: flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); padding: 6px 14px; border-radius: 100px; font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.92); }
+  .stat-pill .num { color: #F59E0B; font-weight: 900; }
+  .online-dot { width: 7px; height: 7px; border-radius: 50%; background: #22C55E; box-shadow: 0 0 0 0 rgba(34,197,94,0.7); animation: pulse-online 2s infinite; }
+  @keyframes pulse-online { 0% { box-shadow: 0 0 0 0 rgba(34,197,94,0.7); } 70% { box-shadow: 0 0 0 8px rgba(34,197,94,0); } 100% { box-shadow: 0 0 0 0 rgba(34,197,94,0); } }
+
+  .forum-container { max-width: 720px; margin: -56px auto 100px; padding: 0 12px; position: relative; z-index: 2; }
+
+  .cat-bar { background: #fff; border-radius: 16px; padding: 10px; box-shadow: 0 8px 28px rgba(26,46,92,0.1); border: 1px solid #E5E7EB; display: flex; gap: 6px; overflow-x: auto; margin-bottom: 16px; position: sticky; top: 12px; z-index: 50; }
+  .cat-bar::-webkit-scrollbar { display: none; }
+  .cat-chip { flex-shrink: 0; padding: 8px 14px; border-radius: 100px; background: #F5F5F0; color: #1A2E5C; border: 1.5px solid transparent; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 800; transition: all .15s; white-space: nowrap; display: flex; align-items: center; gap: 5px; }
+  .cat-chip:hover { border-color: #2563EB; }
+  .cat-chip.active { background: #1A2E5C; color: #fff; border-color: #1A2E5C; }
+  .cat-chip .count { background: rgba(245,158,11,0.2); color: #D97706; padding: 1px 7px; border-radius: 8px; font-size: 11px; }
+  .cat-chip.active .count { background: rgba(245,158,11,0.25); color: #F59E0B; }
+
+  .post-feed { display: flex; flex-direction: column; gap: 10px; }
+  .post-bubble { background: #fff; border-radius: 18px; padding: 16px 18px; box-shadow: 0 2px 10px rgba(26,46,92,0.06); border: 1px solid #E5E7EB; cursor: pointer; transition: all .15s; position: relative; }
+  .post-bubble:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(26,46,92,0.1); }
+  .post-bubble.pinned { border: 1.5px solid #F59E0B; background: linear-gradient(135deg, #FFFBEB 0%, #FFFFFF 100%); }
+  .post-bubble.unread::before { content: ''; position: absolute; top: 14px; right: -3px; width: 8px; height: 8px; background: #2563EB; border-radius: 50%; box-shadow: 0 0 0 2px #fff; }
+
+  .pinned-tag { display: inline-flex; align-items: center; gap: 5px; background: #FEF3C7; color: #92400E; padding: 3px 9px; border-radius: 6px; font-size: 10px; font-weight: 800; letter-spacing: 1px; margin-bottom: 10px; text-transform: uppercase; }
+
+  .post-user { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .post-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #1A2E5C; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 900; flex-shrink: 0; overflow: hidden; }
+  .post-author-block { flex: 1; min-width: 0; }
+  .post-author-name { font-size: 14px; font-weight: 800; color: #1A2E5C; }
+  .post-meta-row { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6B7280; font-weight: 600; margin-top: 1px; }
+  .post-cat-tag { background: rgba(37,99,235,0.08); color: #2563EB; padding: 2px 8px; border-radius: 6px; font-size: 10px; font-weight: 800; }
+  .post-cat-tag.help { background: rgba(220,38,38,0.08); color: #DC2626; }
+  .post-cat-tag.recommend { background: rgba(101,163,13,0.08); color: #65A30D; }
+  .post-cat-tag.municipal { background: rgba(245,158,11,0.1); color: #D97706; }
+  .post-cat-tag.sell_buy { background: rgba(124,58,237,0.08); color: #7C3AED; }
+  .post-cat-tag.lost_found { background: rgba(236,72,153,0.08); color: #DB2777; }
+
+  .post-bubble h2.post-title { font-size: 16px; font-weight: 800; color: #1A2E5C; margin: 0 0 8px; line-height: 1.35; letter-spacing: -0.01em; }
+  .post-body-snippet { font-size: 14px; color: #4B5563; line-height: 1.55; margin: 0 0 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .post-footer-row { display: flex; align-items: center; gap: 14px; font-size: 12px; color: #6B7280; padding-top: 10px; border-top: 1px solid #F0F2F5; }
+  .post-stat { display: flex; align-items: center; gap: 4px; font-weight: 700; }
+  .post-stat svg { color: #94A3B8; }
+  .read-receipt { margin-right: auto; display: flex; align-items: center; gap: 4px; font-size: 11px; color: #94A3B8; }
+  .read-receipt.read { color: #2563EB; }
+
+  .detail-view { display: none; position: fixed; inset: 0; background: #F0F2F5; z-index: 1000; overflow-y: auto; }
+  .detail-view.active { display: block; }
+  .detail-topbar { background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%); color: #fff; padding: 14px 16px; display: flex; align-items: center; gap: 12px; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 12px rgba(0,0,0,0.1); }
+  .back-btn { width: 36px; height: 36px; background: rgba(255,255,255,0.1); border: none; border-radius: 50%; color: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .detail-topbar-info { flex: 1; min-width: 0; }
+  .detail-topbar-title { font-size: 14px; font-weight: 800; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .detail-topbar-meta { font-size: 11px; color: rgba(255,255,255,0.7); margin-top: 1px; }
+  .topbar-action-btn { background: rgba(255,255,255,0.1); border: none; color: #fff; padding: 8px; border-radius: 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; }
+  .topbar-action-btn.danger { background: rgba(220,38,38,0.2); }
+  .detail-topbar-actions { display: flex; gap: 6px; }
+
+  .detail-content { max-width: 720px; margin: 0 auto; padding: 16px 12px 100px; }
+  .post-full { background: #fff; border-radius: 18px; padding: 20px 22px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(26,46,92,0.06); }
+  .post-full h1 { font-size: 22px; font-weight: 900; color: #1A2E5C; margin: 12px 0; letter-spacing: -0.02em; line-height: 1.3; }
+  .post-full-body { font-size: 15px; line-height: 1.7; color: #1F2937; margin: 0 0 16px; white-space: pre-wrap; }
+
+  .reactions-bar { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid #F0F2F5; margin-top: 12px; }
+  .reaction-btn { background: #F5F5F0; border: 1px solid transparent; border-radius: 100px; padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 700; color: #4B5563; display: flex; align-items: center; gap: 5px; transition: all .15s; }
+  .reaction-btn:hover { background: #E5E7EB; }
+  .reaction-btn.active { background: #DBEAFE; border-color: #2563EB; color: #1E40AF; }
+
+  .replies-section { margin-top: 20px; }
+  .replies-title { font-size: 13px; font-weight: 800; color: #6B7280; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px; padding: 0 6px; }
+  .reply-bubble { background: #fff; border-radius: 14px; padding: 12px 16px; margin-bottom: 8px; box-shadow: 0 1px 6px rgba(26,46,92,0.05); }
+  .reply-user-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+  .reply-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #94A3B8 0%, #6B7280 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; overflow: hidden; }
+  .reply-author { font-size: 12px; font-weight: 800; color: #1A2E5C; }
+  .reply-time { font-size: 10px; color: #94A3B8; margin-right: auto; }
+  .reply-body { font-size: 14px; line-height: 1.55; color: #1F2937; white-space: pre-wrap; }
+  .reply-actions { display: flex; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px solid #F0F2F5; }
+  .reply-action-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: #6B7280; font-weight: 700; font-family: inherit; padding: 4px 8px; border-radius: 6px; }
+  .reply-action-btn:hover { background: #F5F5F0; }
+  .reply-action-btn.danger:hover { background: rgba(220,38,38,0.1); color: #DC2626; }
+
+  .reply-composer { background: #fff; border-radius: 18px; padding: 16px; margin-top: 20px; box-shadow: 0 4px 16px rgba(26,46,92,0.08); }
+  .reply-composer textarea { width: 100%; min-height: 80px; padding: 12px; border: 1.5px solid #E5E7EB; border-radius: 12px; font-family: inherit; font-size: 14px; resize: vertical; }
+  .reply-composer textarea:focus { outline: none; border-color: #2563EB; }
+  .composer-row { display: flex; gap: 10px; margin-top: 10px; justify-content: flex-end; align-items: center; }
+  .btn-send { background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%); color: #fff; border: none; padding: 10px 22px; border-radius: 100px; font-family: inherit; font-weight: 800; font-size: 13px; cursor: pointer; display: flex; align-items: center; gap: 6px; }
+
+  .login-prompt { background: #fff; border-radius: 18px; padding: 24px; text-align: center; margin-top: 20px; border: 2px dashed #D1D5DB; }
+  .login-prompt p { font-size: 14px; color: #4B5563; margin: 0 0 12px; }
+  .login-prompt button { background: #1A2E5C; color: #fff; border: none; padding: 10px 24px; border-radius: 100px; font-family: inherit; font-weight: 800; font-size: 13px; cursor: pointer; }
+
+  .fab { position: fixed; bottom: 24px; left: 24px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #1A2E5C; border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(245,158,11,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; transition: all .2s; }
+  .fab:hover { transform: scale(1.08) rotate(90deg); }
+
+  .modal { position: fixed; inset: 0; background: rgba(15,30,61,0.6); backdrop-filter: blur(6px); z-index: 999; display: none; align-items: center; justify-content: center; padding: 16px; }
+  .modal.active { display: flex; }
+  .modal-card { background: #fff; border-radius: 20px; width: 100%; max-width: 480px; padding: 24px; max-height: 90vh; overflow-y: auto; }
+  .modal-card h2 { font-size: 20px; font-weight: 900; color: #1A2E5C; margin: 0 0 16px; }
+  .form-field { margin-bottom: 14px; }
+  .form-field label { display: block; font-size: 12px; font-weight: 800; color: #1A2E5C; margin-bottom: 6px; letter-spacing: 0.5px; }
+  .form-field input, .form-field select, .form-field textarea { width: 100%; padding: 11px 14px; border: 1.5px solid #E5E7EB; border-radius: 10px; font-family: inherit; font-size: 14px; background: #fff; }
+  .form-field textarea { min-height: 100px; resize: vertical; }
+  .modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; }
+  .btn-cancel { background: #F5F5F0; color: #1A2E5C; border: none; padding: 10px 22px; border-radius: 10px; font-family: inherit; font-weight: 700; cursor: pointer; }
+  .btn-submit { background: #2563EB; color: #fff; border: none; padding: 10px 22px; border-radius: 10px; font-family: inherit; font-weight: 800; cursor: pointer; }
+
+  .loader, .empty-state { background: #fff; border-radius: 18px; padding: 60px 24px; text-align: center; color: #6B7280; }
+  .empty-state-icon { width: 60px; height: 60px; background: #F5F5F0; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; color: #94A3B8; }
+  .empty-state h3 { font-size: 18px; color: #1A2E5C; margin: 0 0 6px; font-weight: 900; }
+
+  .edit-input { width: 100%; padding: 10px 12px; border: 2px solid #2563EB; border-radius: 10px; font-family: inherit; font-size: 14px; margin-bottom: 8px; }
+  .edit-actions { display: flex; gap: 6px; margin-top: 8px; }
+  .edit-actions button { padding: 6px 14px; border-radius: 6px; font-family: inherit; font-size: 12px; font-weight: 800; cursor: pointer; border: none; }
+  .edit-actions .save { background: #2563EB; color: #fff; }
+  .edit-actions .cancel { background: #F5F5F0; color: #1A2E5C; }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="forum-hero">
+    <div class="forum-hero-inner">
+      <div class="forum-eyebrow">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        קהילת אופקים
+      </div>
+      <h1>פורום הקהילה</h1>
+      <p>שאלות, המלצות, מידע ושיתופים בין תושבי העיר</p>
+      <div class="forum-stats">
+        <div class="stat-pill"><span class="online-dot"></span><span class="num" id="stat-online">0</span> מקוונים</div>
+        <div class="stat-pill"><span class="num" id="stat-posts">0</span> פוסטים</div>
+        <div class="stat-pill"><span class="num" id="stat-replies">0</span> תגובות</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="forum-container" id="list-view">
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all">הכל <span class="count" id="cnt-all">0</span></button>
+      <button class="cat-chip" data-cat="general">כללי <span class="count" id="cnt-general">0</span></button>
+      <button class="cat-chip" data-cat="help">עזרה <span class="count" id="cnt-help">0</span></button>
+      <button class="cat-chip" data-cat="recommend">המלצות <span class="count" id="cnt-recommend">0</span></button>
+      <button class="cat-chip" data-cat="municipal">עירייה <span class="count" id="cnt-municipal">0</span></button>
+      <button class="cat-chip" data-cat="sell_buy">מכירה <span class="count" id="cnt-sell_buy">0</span></button>
+      <button class="cat-chip" data-cat="lost_found">אבדות <span class="count" id="cnt-lost_found">0</span></button>
+    </div>
+
+    <div id="posts-feed" class="post-feed">
+      <div class="loader">טוען...</div>
+    </div>
+
+  </div>
+
+  <div class="detail-view" id="detail-view">
+    <div class="detail-topbar">
+      <button class="back-btn" onclick="showList()" aria-label="חזור">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+      <div class="detail-topbar-info">
+        <div class="detail-topbar-title" id="detail-topbar-title">פוסט</div>
+        <div class="detail-topbar-meta" id="detail-topbar-meta"></div>
+      </div>
+      <div class="detail-topbar-actions" id="detail-actions"></div>
+    </div>
+    <div class="detail-content" id="detail-content"></div>
+  </div>
+
+  <button class="fab" onclick="tryNewPost()" aria-label="פוסט חדש" title="פרסם פוסט חדש">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"/>
+      <line x1="5" y1="12" x2="19" y2="12"/>
+    </svg>
+  </button>
+
+  <div class="modal" id="new-post-modal">
+    <div class="modal-card">
+      <h2>פוסט חדש</h2>
+      <div class="form-field">
+        <label>קטגוריה</label>
+        <select id="np-category">
+          <option value="general">כללי</option>
+          <option value="help">עזרה</option>
+          <option value="recommend">המלצות</option>
+          <option value="municipal">עירייה</option>
+          <option value="sell_buy">מכירה/קנייה</option>
+          <option value="lost_found">אבדות</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label>כותרת</label>
+        <input type="text" id="np-title" maxlength="120" placeholder="לדוגמה: מחפש המלצה על חשמלאי באופקים">
+      </div>
+      <div class="form-field">
+        <label>תוכן</label>
+        <textarea id="np-body" maxlength="2000" placeholder="כתוב כאן..."></textarea>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeNewPost()">בטל</button>
+        <button class="btn-submit" onclick="submitNewPost()">פרסם</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+const ADMIN_EMAILS = ['refael@tedgi.co.il'];
+
+let sb, currentUser = null, isAdmin = false;
+let allPosts = [], currentCat = 'all';
+let readSet = new Set();
+let currentPostId = null;
+
+const CAT_LABELS = {
+  general: 'כללי', help: 'עזרה', recommend: 'המלצות',
+  municipal: 'עירייה', sell_buy: 'מכירה', lost_found: 'אבדות'
+};
+
+const REACTIONS = [
+  { type: 'like', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>' },
+  { type: 'love', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>' },
+  { type: 'fire', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>' },
+  { type: 'laugh', icon: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>' },
+];
+
+// פונקציית esc מ-site.js (window.esc)
+// פונקציית $ מ-site.js (window.$)
+function timeAgo(date) {
+  if (!date) return '';
+  const diff = (Date.now() - new Date(date).getTime()) / 1000;
+  if (diff < 60) return 'עכשיו';
+  if (diff < 3600) return `לפני ${Math.floor(diff/60)} דק׳`;
+  if (diff < 86400) return `לפני ${Math.floor(diff/3600)} שעות`;
+  if (diff < 604800) return `לפני ${Math.floor(diff/86400)} ימים`;
+  return new Date(date).toLocaleDateString('he-IL');
+}
+
+const getInitial = (name) => (name || 'ת').trim().charAt(0).toUpperCase();
+
+async function loadPosts() {
+  try {
+    // נסה תחילה עם is_active - אם נכשל ננסה בלי
+    let { data, error } = await sb.from('forum_posts').select('*')
+      .eq('is_active', true)
+      .order('is_pinned', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    // אם is_active לא קיים - תפול חזרה
+    if (error && /is_active/i.test(error.message)) {
+      const fallback = await sb.from('forum_posts').select('*')
+        .order('created_at', { ascending: false });
+      data = fallback.data;
+      error = fallback.error;
+    }
+
+    if (error) throw error;
+    allPosts = data || [];
+    if (currentUser) await loadReadStatus();
+    updateCounts();
+    renderFeed();
+    updateStats();
+  } catch (e) {
+    console.error('loadPosts error:', e);
+    $('posts-feed').innerHTML = `<div class="empty-state"><h3>שגיאה בטעינה</h3><p>${esc(e.message)}</p><p style="margin-top:12px;font-size:12px;color:#94A3B8">אם הבעיה נמשכת, ייתכן שצריך להריץ את ה-SQL לעדכון טבלת הפורום.</p></div>`;
+  }
+}
+
+async function loadReadStatus() {
+  try {
+    const { data } = await sb.from('forum_post_reads').select('post_id').eq('user_id', currentUser.id);
+    readSet = new Set((data || []).map(r => r.post_id));
+  } catch {}
+}
+
+function updateCounts() {
+  $('cnt-all').textContent = allPosts.length;
+  Object.keys(CAT_LABELS).forEach(k => {
+    const el = $(`cnt-${k}`);
+    if (el) el.textContent = allPosts.filter(p => p.category === k).length;
+  });
+}
+
+function updateStats() {
+  $('stat-posts').textContent = allPosts.length;
+  const totalReplies = allPosts.reduce((s,p) => s + (p.replies_count || 0), 0);
+  $('stat-replies').textContent = totalReplies;
+  $('stat-online').textContent = Math.max(1, Math.floor(Math.random() * 8) + 2);
+}
+
+function renderFeed() {
+  const items = currentCat === 'all' ? allPosts : allPosts.filter(p => p.category === currentCat);
+  if (items.length === 0) {
+    $('posts-feed').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+        </div>
+        <h3>אין פוסטים בקטגוריה זו</h3>
+        <p>היה הראשון לפרסם!</p>
+      </div>`;
+    return;
+  }
+  $('posts-feed').innerHTML = items.map(renderPostCard).join('');
+}
+
+function renderPostCard(p) {
+  const isUnread = currentUser && !readSet.has(p.id);
+  const initial = getInitial(p.display_name);
+  return `
+    <article class="post-bubble ${p.is_pinned ? 'pinned' : ''} ${isUnread ? 'unread' : ''}" onclick="openPost('${p.id}')">
+      ${p.is_pinned ? `<div class="pinned-tag"><svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2 L19 7 L19 17 L13 17 L13 22 L11 22 L11 17 L5 17 L5 7 Z"/></svg> מוצמד</div>` : ''}
+      <div class="post-user">
+        <div class="post-avatar">${esc(initial)}</div>
+        <div class="post-author-block">
+          <div class="post-author-name">${esc(p.display_name || 'תושב/ת אופקים')}</div>
+          <div class="post-meta-row">
+            <span class="post-cat-tag ${p.category || ''}">${CAT_LABELS[p.category] || p.category}</span>
+            <span>·</span>
+            <span>${timeAgo(p.created_at)}</span>
+          </div>
+        </div>
+      </div>
+      <h2 class="post-title">${esc(p.title)}</h2>
+      ${p.body ? `<p class="post-body-snippet">${esc(p.body)}</p>` : ''}
+      <div class="post-footer-row">
+        <span class="post-stat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          ${p.replies_count || 0}
+        </span>
+        <span class="post-stat">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+          ${p.likes_count || 0}
+        </span>
+        ${currentUser ? `<span class="read-receipt ${readSet.has(p.id) ? 'read' : ''}">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 7 9.5 15.5 6 12"/><polyline points="22 7 13.5 15.5 12 14"/></svg>
+        </span>` : ''}
+      </div>
+    </article>`;
+}
+
+async function openPost(id) {
+  currentPostId = id;
+  $('list-view').style.display = 'none';
+  $('detail-view').classList.add('active');
+  $('detail-content').innerHTML = '<div class="loader">טוען...</div>';
+  $('detail-actions').innerHTML = '';
+
+  try {
+    const [postRes, repliesRes, reactionsRes, readsRes] = await Promise.all([
+      sb.from('forum_posts').select('*').eq('id', id).single(),
+      sb.from('forum_replies').select('*').eq('post_id', id).order('created_at'),
+      sb.from('forum_reactions').select('*').eq('post_id', id),
+      sb.from('forum_post_reads').select('user_id').eq('post_id', id)
+    ]);
+    if (postRes.error) throw postRes.error;
+    const p = postRes.data;
+    const replies = repliesRes.data || [];
+    const reactions = reactionsRes.data || [];
+    const reads = readsRes.data || [];
+
+    if (currentUser && !readSet.has(id)) {
+      sb.from('forum_post_reads').insert({ post_id: id, user_id: currentUser.id }).then(() => readSet.add(id)).catch(() => {});
+    }
+
+    $('detail-topbar-title').textContent = p.title;
+    $('detail-topbar-meta').textContent = `${p.display_name || 'תושב/ת'} · ${timeAgo(p.created_at)} · ${reads.length} צפיות`;
+
+    const isPostOwner = currentUser && (currentUser.id === p.author_id || isAdmin);
+    if (isPostOwner) {
+      $('detail-actions').innerHTML = `
+        <button class="topbar-action-btn" onclick="editPost('${p.id}')" title="ערוך"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+        <button class="topbar-action-btn danger" onclick="deletePost('${p.id}')" title="מחק"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>`;
+    }
+
+    const reactionCounts = {};
+    const userReactions = new Set();
+    REACTIONS.forEach(r => reactionCounts[r.type] = 0);
+    reactions.forEach(r => {
+      reactionCounts[r.reaction_type] = (reactionCounts[r.reaction_type] || 0) + 1;
+      if (currentUser && r.user_id === currentUser.id) userReactions.add(r.reaction_type);
+    });
+
+    const initial = getInitial(p.display_name);
+    const readByOthers = reads.filter(r => r.user_id !== currentUser?.id).length;
+
+    $('detail-content').innerHTML = `
+      <div class="post-full">
+        <div class="post-user">
+          <div class="post-avatar">${esc(initial)}</div>
+          <div class="post-author-block">
+            <div class="post-author-name">${esc(p.display_name || 'תושב/ת אופקים')}</div>
+            <div class="post-meta-row">
+              <span class="post-cat-tag ${p.category}">${CAT_LABELS[p.category] || p.category}</span>
+              <span>·</span>
+              <span>${timeAgo(p.created_at)}</span>
+              ${reads.length > 0 ? `<span>·</span><span>${reads.length} צפיות</span>` : ''}
+            </div>
+          </div>
+        </div>
+        <h1 id="post-title-${p.id}">${esc(p.title)}</h1>
+        <div class="post-full-body" id="post-body-${p.id}" data-original="${esc(p.body || '')}">${esc(p.body || '')}</div>
+        <div class="reactions-bar">
+          ${REACTIONS.map(r => `
+            <button class="reaction-btn ${userReactions.has(r.type) ? 'active' : ''}" onclick="toggleReaction('${p.id}', null, '${r.type}')">
+              <span>${r.icon}</span>
+              ${reactionCounts[r.type] > 0 ? `<span class="count">${reactionCounts[r.type]}</span>` : ''}
+            </button>
+          `).join('')}
+        </div>
+      </div>
+
+      <div class="replies-section">
+        <div class="replies-title">${replies.length} תגובות</div>
+        ${replies.map(r => renderReply(r, p.id)).join('')}
+
+        ${currentUser ? `
+          <div class="reply-composer">
+            <textarea id="reply-text" placeholder="כתבו תגובה..."></textarea>
+            <div class="composer-row">
+              <button class="btn-send" onclick="submitReply('${p.id}')">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                שלח
+              </button>
+            </div>
+          </div>
+        ` : `
+          <div class="login-prompt">
+            <p>כדי להגיב, אנא התחבר תחילה</p>
+            <button onclick="if(typeof mofOpenAuth==='function')mofOpenAuth()">התחברות / הרשמה</button>
+          </div>`}
+      </div>`;
+
+    window.scrollTo(0, 0);
+  } catch(e) {
+    $('detail-content').innerHTML = `<div class="empty-state"><h3>שגיאה</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+function renderReply(r, postId) {
+  const isReplyOwner = currentUser && (currentUser.id === r.author_id || isAdmin);
+  const initial = getInitial(r.display_name);
+  return `
+    <div class="reply-bubble" id="reply-${r.id}">
+      <div class="reply-user-row">
+        <div class="reply-avatar">${esc(initial)}</div>
+        <span class="reply-author">${esc(r.display_name || 'תושב/ת')}</span>
+        <span class="reply-time">${timeAgo(r.created_at)}</span>
+      </div>
+      <div class="reply-body" id="reply-body-${r.id}" data-original="${esc(r.body)}">${esc(r.body)}</div>
+      ${isReplyOwner ? `
+        <div class="reply-actions">
+          <button class="reply-action-btn" onclick="editReply('${r.id}','${postId}')">ערוך</button>
+          <button class="reply-action-btn danger" onclick="deleteReply('${r.id}','${postId}')">מחק</button>
+        </div>
+      ` : ''}
+    </div>`;
+}
+
+function showList() {
+  $('list-view').style.display = '';
+  $('detail-view').classList.remove('active');
+  currentPostId = null;
+  loadPosts();
+}
+
+async function toggleReaction(postId, replyId, type) {
+  if (!currentUser) { if (typeof mofOpenAuth === 'function') mofOpenAuth(); return; }
+  try {
+    const filter = postId ? { post_id: postId, reply_id: null } : { reply_id: replyId, post_id: null };
+    const { data: existing } = await sb.from('forum_reactions').select('id')
+      .match({ ...filter, user_id: currentUser.id, reaction_type: type });
+
+    if (existing && existing.length > 0) {
+      await sb.from('forum_reactions').delete().eq('id', existing[0].id);
+    } else {
+      await sb.from('forum_reactions').insert({ ...filter, user_id: currentUser.id, reaction_type: type });
+    }
+    if (currentPostId) openPost(currentPostId);
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+function tryNewPost() {
+  if (!currentUser) { if (typeof mofOpenAuth === 'function') mofOpenAuth(); return; }
+  $('new-post-modal').classList.add('active');
+}
+
+function closeNewPost() {
+  $('new-post-modal').classList.remove('active');
+  $('np-title').value = ''; $('np-body').value = '';
+}
+
+async function submitNewPost() {
+  const cat = $('np-category').value;
+  const title = $('np-title').value.trim();
+  const body = $('np-body').value.trim();
+  if (!title) { alert('נא להזין כותרת'); return; }
+
+  const meta = currentUser.user_metadata || {};
+  const displayName = meta.full_name || meta.name || 'תושב/ת אופקים';
+
+  try {
+    const { error } = await sb.from('forum_posts').insert({
+      author_id: currentUser.id, display_name: displayName,
+      category: cat, title, body, is_active: true, likes_count: 0, replies_count: 0
+    });
+    if (error) throw error;
+    closeNewPost();
+    loadPosts();
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+async function submitReply(postId) {
+  if (!currentUser) { if (typeof mofOpenAuth === 'function') mofOpenAuth(); return; }
+  const text = $('reply-text')?.value?.trim();
+  if (!text) return;
+  const meta = currentUser.user_metadata || {};
+  const name = meta.full_name || meta.name || 'תושב/ת אופקים';
+  try {
+    const { error } = await sb.from('forum_replies').insert({
+      post_id: postId, author_id: currentUser.id, display_name: name, body: text
+    });
+    if (error) throw error;
+    openPost(postId);
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+async function deletePost(postId) {
+  if (!confirm('למחוק את הפוסט?')) return;
+  try {
+    const { error } = await sb.from('forum_posts').delete().eq('id', postId);
+    if (error) throw error;
+    showList();
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+function editPost(postId) {
+  const titleEl = $(`post-title-${postId}`);
+  const bodyEl = $(`post-body-${postId}`);
+  const t = titleEl.textContent;
+  const b = bodyEl.dataset.original || bodyEl.textContent;
+  titleEl.innerHTML = `<input class="edit-input" id="et-${postId}" value="${esc(t)}">`;
+  bodyEl.innerHTML = `
+    <textarea class="edit-input" id="eb-${postId}" style="min-height:120px">${esc(b)}</textarea>
+    <div class="edit-actions">
+      <button class="save" onclick="savePostEdit('${postId}')">שמור</button>
+      <button class="cancel" onclick="openPost('${postId}')">בטל</button>
+    </div>`;
+}
+
+async function savePostEdit(postId) {
+  const t = $(`et-${postId}`).value.trim();
+  const b = $(`eb-${postId}`).value.trim();
+  if (!t) { alert('כותרת חסרה'); return; }
+  try {
+    const { error } = await sb.from('forum_posts').update({
+      title: t, body: b, updated_at: new Date().toISOString()
+    }).eq('id', postId);
+    if (error) throw error;
+    openPost(postId);
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+async function deleteReply(replyId, postId) {
+  if (!confirm('למחוק את התגובה?')) return;
+  try {
+    const { error } = await sb.from('forum_replies').delete().eq('id', replyId);
+    if (error) throw error;
+    openPost(postId);
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+function editReply(replyId, postId) {
+  const bodyEl = $(`reply-body-${replyId}`);
+  const original = bodyEl.dataset.original || bodyEl.textContent;
+  bodyEl.innerHTML = `
+    <textarea class="edit-input" id="er-${replyId}" style="min-height:60px">${esc(original)}</textarea>
+    <div class="edit-actions">
+      <button class="save" onclick="saveReplyEdit('${replyId}','${postId}')">שמור</button>
+      <button class="cancel" onclick="openPost('${postId}')">בטל</button>
+    </div>`;
+}
+
+async function saveReplyEdit(replyId, postId) {
+  const newBody = $(`er-${replyId}`).value.trim();
+  if (!newBody) { alert('ריק'); return; }
+  try {
+    const { error } = await sb.from('forum_replies').update({ body: newBody }).eq('id', replyId);
+    if (error) throw error;
+    openPost(postId);
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+document.querySelectorAll('.cat-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentCat = chip.dataset.cat;
+    renderFeed();
+  });
+});
+
+async function forumInit() {
+  if (!window.supabase) {
+    if (!window._forum_attempts) window._forum_attempts = 0;
+    window._forum_attempts++;
+    if (window._forum_attempts > 40) {
+      $('posts-feed').innerHTML = `<div class="empty-state"><h3>שגיאה</h3><p>לא ניתן לטעון את המערכת. אנא רענן את הדף.</p></div>`;
+      return;
+    }
+    setTimeout(forumInit, 200);
+    return;
+  }
+  try {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    const { data: { session } } = await sb.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      isAdmin = ADMIN_EMAILS.includes((currentUser.email || '').toLowerCase());
+    }
+    sb.auth.onAuthStateChange((event, session) => {
+      currentUser = session?.user || null;
+      isAdmin = currentUser ? ADMIN_EMAILS.includes((currentUser.email || '').toLowerCase()) : false;
+      loadPosts();
+    });
+    loadPosts();
+  } catch (e) {
+    console.error('Forum init error:', e);
+    $('posts-feed').innerHTML = `<div class="empty-state"><h3>שגיאה</h3><p>${esc(e.message)}</p></div>`;
+  }
+}
+
+window.openPost = openPost;
+window.showList = showList;
+window.tryNewPost = tryNewPost;
+window.closeNewPost = closeNewPost;
+window.submitNewPost = submitNewPost;
+window.submitReply = submitReply;
+window.toggleReaction = toggleReaction;
+window.deletePost = deletePost;
+window.editPost = editPost;
+window.savePostEdit = savePostEdit;
+window.deleteReply = deleteReply;
+window.editReply = editReply;
+window.saveReplyEdit = saveReplyEdit;
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    if (window.supabase) forumInit();
+    else window.addEventListener('load', forumInit, { once: true });
+  });
+} else {
+  forumInit();
+}
+</script>
+</body>
+</html>

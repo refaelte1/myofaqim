@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>אופקים שלי — עולה לאוויר בקרוב | MyOfaqim.co.il</title>
+<meta name="description" content="אופקים נוסדה ב-1955. אופקים שלי נוסדה ב-2026. 70 שנה שחיכינו לכיכר העיר הדיגיטלית שלנו. הקהילה הדיגיטלית של העיר אופקים — עולה לאוויר בקרוב.">
+<meta name="keywords" content="אופקים, MyOfaqim, עסקים אופקים, קופונים אופקים, נדלן אופקים, חדשות אופקים, זמני תפילה אופקים">
+<link rel="canonical" href="https://myofaqim.co.il/">
+<meta name="robots" content="index, follow">
+
+<meta property="og:title" content="אופקים שלי — עולה לאוויר בקרוב">
+<meta property="og:description" content="70 שנה שחיכינו לכיכר העיר הדיגיטלית שלנו. הקהילה הדיגיטלית של העיר אופקים — עולה לאוויר בקרוב.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://myofaqim.co.il/">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+  /* ── Page background ── */
+  body {
+    background: linear-gradient(180deg, #FFFFFF 0%, #FEFAF3 50%, #EBF2FE 100%);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Decorative sun glow top-right */
+  body::before {
+    content: '';
+    position: fixed;
+    top: -200px;
+    right: -100px;
+    width: 500px;
+    height: 500px;
+    background: radial-gradient(circle, rgba(245, 158, 11, 0.18) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  body::after {
+    content: '';
+    position: fixed;
+    bottom: -300px;
+    left: -200px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(37, 99, 235, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page {
+    position: relative;
+    z-index: 1;
+    padding: 40px 20px 60px;
+  }
+
+  /* ── Top bar (logo only, minimal) ── */
+  .top-bar {
+    max-width: 1200px;
+    margin: 0 auto 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo-block {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-img {
+    height: 56px;
+    width: auto;
+  }
+
+  .logo-text .name {
+    font-family: var(--brand);
+    font-weight: 900;
+    font-size: 28px;
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-text .name .blue { color: var(--blue); }
+
+  .logo-text .sub {
+    font-size: 11px;
+    color: var(--blue);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: 4px;
+    direction: ltr;
+  }
+
+  .top-contact {
+    display: flex;
+    gap: 14px;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .top-contact a {
+    color: var(--navy);
+    transition: color .15s;
+    border-bottom: 1px solid transparent;
+  }
+  .top-contact a:hover { color: var(--blue); border-bottom-color: var(--blue); }
+
+  @media (max-width: 560px) {
+    .top-contact { display: none; }
+  }
+
+  /* ── Hero ── */
+  .hero {
+    max-width: 920px;
+    margin: 0 auto 60px;
+    text-align: center;
+    position: relative;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--orange-soft);
+    color: var(--orange-dk);
+    padding: 8px 18px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    border: 1px solid rgba(245, 158, 11, 0.25);
+  }
+
+  .hero-eyebrow .dot {
+    width: 8px;
+    height: 8px;
+    background: var(--orange);
+    border-radius: 50%;
+    animation: pulse 2s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.3); }
+  }
+
+  .hero h1 {
+    font-family: var(--brand);
+    font-size: clamp(40px, 7vw, 78px);
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 .blue { color: var(--blue); }
+  .hero h1 .orange { color: var(--orange-dk); }
+
+  .hero-tagline {
+    font-size: clamp(16px, 2.5vw, 22px);
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 0 auto 36px;
+    font-weight: 400;
+  }
+
+  .hero h1 .years-num {
+    color: var(--orange-dk);
+    font-size: 1.2em;
+    font-weight: 900;
+    text-shadow: 0 4px 24px rgba(245, 158, 11, 0.2);
+  }
+
+  /* ── Founding line (1955 → 2026) ── */
+  .founding-line {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 32px;
+    margin: 28px 0 36px;
+    flex-wrap: wrap;
+  }
+  .founding-item {
+    text-align: center;
+    padding: 16px 24px;
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    min-width: 160px;
+    box-shadow: 0 4px 16px rgba(26, 46, 92, 0.04);
+  }
+  .founding-year {
+    font-family: var(--brand);
+    font-size: clamp(36px, 5vw, 48px);
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .founding-year-blue { color: var(--blue); }
+  .founding-lbl {
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 700;
+  }
+  .founding-sep {
+    font-size: 24px;
+    color: var(--orange);
+    font-weight: 900;
+  }
+  @media (max-width: 560px) {
+    .founding-line { gap: 16px; }
+    .founding-item { min-width: 130px; padding: 12px 16px; }
+    .founding-sep { transform: rotate(90deg); }
+  }
+
+  /* ── Countdown Timer ── */
+  .countdown {
+    margin: 36px 0 8px;
+  }
+
+  .countdown-eyebrow {
+    display: block;
+    text-align: center;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--orange-dk);
+    margin-bottom: 18px;
+  }
+
+  .countdown-grid {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    gap: 10px;
+    flex-wrap: nowrap;
+    max-width: 540px;
+    margin: 0 auto;
+  }
+
+  .cd-unit {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-700) 100%);
+    border-radius: 14px;
+    padding: 20px 12px 16px;
+    min-width: 92px;
+    flex: 1;
+    text-align: center;
+    box-shadow: 0 8px 24px rgba(26, 46, 92, 0.18);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cd-unit::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--orange) 0%, var(--orange-light) 100%);
+  }
+
+  .cd-num {
+    font-family: var(--brand);
+    font-size: clamp(36px, 7vw, 54px);
+    font-weight: 900;
+    color: var(--orange);
+    line-height: 1;
+    letter-spacing: -0.03em;
+    direction: ltr;
+    font-variant-numeric: tabular-nums;
+    text-shadow: 0 2px 12px rgba(245, 158, 11, 0.3);
+  }
+
+  .cd-lbl {
+    font-size: 10px;
+    font-weight: 800;
+    color: rgba(255, 255, 255, 0.7);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 8px;
+  }
+
+  .cd-sep {
+    font-family: var(--brand);
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 900;
+    color: var(--orange);
+    padding-top: 14px;
+    animation: cd-blink 1s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes cd-blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.25; }
+  }
+
+  @media (max-width: 560px) {
+    .countdown-grid { gap: 4px; }
+    .cd-unit { min-width: 0; padding: 14px 6px 12px; border-radius: 10px; }
+    .cd-num { font-size: 32px; }
+    .cd-lbl { font-size: 9px; letter-spacing: 1px; margin-top: 4px; }
+    .cd-sep { font-size: 22px; padding-top: 10px; }
+  }
+
+  /* ── Section header ── */
+  .section-head-cs {
+    text-align: center;
+    margin: 80px 0 36px;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .section-head-cs .lbl {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--blue);
+    margin-bottom: 12px;
+    padding: 0 16px;
+    position: relative;
+  }
+  .section-head-cs .lbl::before,
+  .section-head-cs .lbl::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40px;
+    height: 1px;
+    background: var(--blue);
+  }
+  .section-head-cs .lbl::before { right: -50px; }
+  .section-head-cs .lbl::after { left: -50px; }
+
+  .section-head-cs h2 {
+    font-family: var(--brand);
+    font-size: clamp(28px, 4vw, 38px);
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .section-head-cs h2 .blue { color: var(--blue); }
+  .section-head-cs h2 .orange { color: var(--orange-dk); }
+
+  .section-head-cs p {
+    font-size: 15px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* ─────────────────────────────────
+     RESIDENTS SECTION
+     ───────────────────────────────── */
+  .residents-section {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .resident-card {
+    background: var(--paper);
+    border: 1.5px solid var(--blue-soft);
+    border-radius: 12px;
+    padding: 36px 32px;
+    box-shadow: 0 8px 32px rgba(37, 99, 235, 0.08);
+    position: relative;
+    overflow: hidden;
+  }
+  .resident-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--blue) 0%, var(--orange) 100%);
+  }
+
+  .resident-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+  @media (max-width: 560px) {
+    .resident-form-grid { grid-template-columns: 1fr; }
+  }
+
+  .resident-card label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--navy);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .resident-card input {
+    width: 100%;
+    padding: 13px 16px;
+    border: 1.5px solid var(--line);
+    font-size: 15px;
+    font-family: var(--sans);
+    background: var(--paper);
+    outline: none;
+    border-radius: 8px;
+    transition: border-color .15s;
+  }
+  .resident-card input:focus { border-color: var(--blue); }
+
+  .resident-submit {
+    width: 100%;
+    padding: 15px;
+    background: var(--blue);
+    color: #fff;
+    font-weight: 800;
+    font-size: 15px;
+    letter-spacing: 0.5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: var(--sans);
+    margin-top: 8px;
+    transition: background .2s;
+  }
+  .resident-submit:hover { background: var(--navy); }
+  .resident-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .resident-benefits {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: center;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-soft);
+    font-weight: 600;
+  }
+  .resident-benefits span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .resident-benefits span::before {
+    content: '✓';
+    color: var(--green);
+    font-weight: 900;
+    font-size: 14px;
+  }
+
+  /* Success/Error */
+  .form-success {
+    background: rgba(101, 163, 13, 0.08);
+    border: 1.5px solid rgba(101, 163, 13, 0.3);
+    color: var(--green);
+    padding: 13px 16px;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: none;
+    border-radius: 8px;
+    text-align: center;
+  }
+  .form-success.show { display: block; }
+
+  .form-error {
+    background: rgba(220, 38, 38, 0.06);
+    border: 1.5px solid rgba(220, 38, 38, 0.2);
+    color: var(--red);
+    padding: 13px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    display: none;
+    border-radius: 8px;
+  }
+  .form-error.show { display: block; }
+
+  /* ─────────────────────────────────
+     BUSINESSES — PLAN CARDS
+     ───────────────────────────────── */
+  .businesses-section {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .plans-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 980px) { .plans-row { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 480px) { .plans-row { grid-template-columns: 1fr; } }
+
+  .plan-cs {
+    background: var(--paper);
+    border: 2px solid var(--line);
+    border-radius: 12px;
+    padding: 28px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: all .25s;
+    position: relative;
+    overflow: hidden;
+  }
+  .plan-cs:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(26, 46, 92, 0.12);
+    border-color: var(--blue);
+  }
+
+  .plan-cs.featured {
+    border-color: var(--blue);
+    background: linear-gradient(180deg, #FFFFFF 0%, var(--blue-soft) 100%);
+  }
+  .plan-cs.featured::after {
+    content: 'מומלץ';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--blue);
+    color: #fff;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    padding: 5px 14px;
+    text-transform: uppercase;
+    border-radius: 0 0 8px 0;
+  }
+
+  .plan-cs.vip {
+    border-color: var(--orange);
+    background: linear-gradient(180deg, #FFFFFF 0%, var(--orange-soft) 100%);
+  }
+  .plan-cs.vip::after {
+    content: 'VIP';
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: var(--orange);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    padding: 5px 14px;
+    border-radius: 0 0 8px 0;
+  }
+
+  .plan-cs .tag {
+    font-size: 11px;
+    color: var(--ink-mute);
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .plan-cs .name {
+    font-family: var(--brand);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+    line-height: 1;
+  }
+  .plan-cs.vip .name { color: var(--orange-dk); }
+
+  .plan-cs .price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 8px 0;
+    border-top: 1px solid var(--line);
+    margin-top: 4px;
+  }
+
+  .plan-cs .price {
+    font-family: var(--brand);
+    font-size: 32px;
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .plan-cs .price small {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-mute);
+  }
+
+  .plan-cs .price-meta {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: wrap;
+    font-size: 11px;
+  }
+  .plan-cs .launch-tag {
+    background: var(--orange);
+    color: #fff;
+    font-weight: 800;
+    padding: 2px 8px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    border-radius: 100px;
+  }
+  .plan-cs .old-price {
+    color: var(--ink-mute);
+    text-decoration: line-through;
+    font-weight: 500;
+  }
+  .plan-cs .free-note {
+    color: var(--green);
+    font-weight: 700;
+    font-size: 12px;
+  }
+
+  .plan-cs .features {
+    list-style: none;
+    margin: 0;
+    padding: 8px 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex: 1;
+    border-top: 1px solid var(--line);
+  }
+  .plan-cs .features li {
+    padding-right: 18px;
+    position: relative;
+    font-size: 12px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .plan-cs .features li::before {
+    content: '✓';
+    position: absolute;
+    right: 0;
+    color: var(--green);
+    font-weight: 800;
+  }
+
+  .plan-cs .select-btn {
+    display: block;
+    width: 100%;
+    padding: 11px;
+    border: 1.5px solid var(--navy);
+    color: var(--navy);
+    background: transparent;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    text-align: center;
+    margin-top: 4px;
+    transition: all .2s;
+  }
+  .plan-cs:hover .select-btn { background: var(--navy); color: var(--paper); }
+  .plan-cs.featured .select-btn { background: var(--blue); color: #fff; border-color: var(--blue); }
+  .plan-cs.featured:hover .select-btn { background: var(--navy); border-color: var(--navy); }
+  .plan-cs.vip .select-btn { background: var(--orange); color: var(--navy); border-color: var(--orange); }
+  .plan-cs.vip:hover .select-btn { background: var(--orange-dk); color: #fff; border-color: var(--orange-dk); }
+
+  /* ── Professional CTA ── */
+  .pro-cta {
+    margin-top: 32px;
+    background: linear-gradient(135deg, var(--blue-soft) 0%, #FFFFFF 100%);
+    border: 1.5px dashed var(--blue);
+    border-radius: 12px;
+    padding: 24px 28px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .pro-cta-text {
+    flex: 1;
+    min-width: 240px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .pro-cta-text strong {
+    font-family: var(--brand);
+    font-size: 18px;
+    font-weight: 900;
+    color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  .pro-cta-text span {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+  .pro-cta-btn {
+    padding: 13px 24px;
+    background: var(--blue);
+    color: #fff;
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border-radius: 8px;
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background .2s;
+  }
+  .pro-cta-btn:hover { background: var(--navy); }
+  @media (max-width: 560px) {
+    .pro-cta { padding: 20px; }
+    .pro-cta-btn { width: 100%; text-align: center; }
+  }
+
+  /* ─────────────────────────────────
+     QUICK LINKS
+     ───────────────────────────────── */
+  .quick-section {
+    max-width: 900px;
+    margin: 80px auto 40px;
+    text-align: center;
+    padding-top: 40px;
+    border-top: 1px solid var(--line);
+  }
+
+  .quick-section h3 {
+    font-family: var(--brand);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .quick-section p {
+    font-size: 13px;
+    color: var(--ink-mute);
+    margin-bottom: 24px;
+  }
+
+  .quick-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 720px) { .quick-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 480px) { .quick-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  .quick-link {
+    padding: 14px 8px;
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--navy);
+    font-size: 13px;
+    font-weight: 700;
+    text-align: center;
+    border-radius: 8px;
+    transition: all .2s;
+    text-decoration: none;
+  }
+  .quick-link:hover {
+    border-color: var(--blue);
+    background: var(--blue-soft);
+    color: var(--blue);
+    transform: translateY(-2px);
+  }
+
+  /* ── Footer ── */
+  .cs-footer {
+    text-align: center;
+    margin-top: 60px;
+    padding-top: 30px;
+    border-top: 1px solid var(--line);
+    font-size: 12px;
+    color: var(--ink-mute);
+    line-height: 1.8;
+  }
+  .cs-footer .links {
+    display: flex;
+    justify-content: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+  .cs-footer .links a {
+    color: var(--blue);
+    font-weight: 600;
+    transition: color .15s;
+  }
+  .cs-footer .links a:hover { color: var(--navy); }
+
+  @media (max-width: 560px) {
+    .page { padding: 24px 16px 40px; }
+    .top-bar { margin-bottom: 32px; }
+    .logo-img { height: 44px; }
+    .logo-text .name { font-size: 22px; }
+    .hero { margin-bottom: 40px; }
+    .resident-card { padding: 28px 22px; }
+    .section-head-cs { margin: 56px 0 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- ─── TOP BAR ─── -->
+  <header class="top-bar">
+    <div class="logo-block">
+      <img src="/logo.png" alt="אופקים שלי" class="logo-img" onerror="this.style.display='none'">
+      <div class="logo-text">
+        <div class="name">אופקים <span class="blue">שלי</span></div>
+        <div class="sub">MyOfaqim.co.il</div>
+      </div>
+    </div>
+    <div class="top-contact">
+      <a href="tel:0542338233" dir="ltr">054-233-8233</a>
+      <a href="https://wa.me/972542338233" target="_blank" rel="noopener">WhatsApp</a>
+    </div>
+  </header>
+
+  <!-- ─── HERO ─── -->
+  <section class="hero">
+    <div class="hero-eyebrow">
+      <span class="dot"></span>
+      עולה לאוויר בקרוב
+    </div>
+
+    <h1>
+      <span class="years-num">70</span> שנה<br>
+      שחיכינו ל<span class="blue">כיכר העיר</span><br>
+      הדיגיטלית שלנו
+    </h1>
+
+    <div class="founding-line">
+      <div class="founding-item">
+        <div class="founding-year">1955</div>
+        <div class="founding-lbl">אופקים נוסדה</div>
+      </div>
+      <div class="founding-sep">←</div>
+      <div class="founding-item">
+        <div class="founding-year founding-year-blue">2026</div>
+        <div class="founding-lbl">אופקים שלי נוסדה</div>
+      </div>
+    </div>
+
+    <p class="hero-tagline">
+      הקהילה הדיגיטלית של העיר אופקים.<br>
+      עסקים, בעלי מקצוע, תושבים — כולם במקום אחד.
+    </p>
+
+    <!-- ─── COUNTDOWN ─── -->
+    <div class="countdown">
+      <div class="countdown-eyebrow">עולים לאוויר בעוד</div>
+      <div class="countdown-grid" dir="ltr">
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-days">14</div>
+          <div class="cd-lbl">ימים</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-hours">00</div>
+          <div class="cd-lbl">שעות</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-mins">00</div>
+          <div class="cd-lbl">דקות</div>
+        </div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit">
+          <div class="cd-num" id="cd-secs">00</div>
+          <div class="cd-lbl">שניות</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── RESIDENTS ─── -->
+  <section class="residents-section">
+    <div class="section-head-cs">
+      <div class="lbl">לתושבי העיר</div>
+      <h2>הצטרפו ל<span class="blue">קהילה</span></h2>
+      <p>קבלו עדכונים שבועיים: חדשות מהעיר, אירועים, קופונים בלעדיים והטבות חמות — ישירות לאימייל ולוואטסאפ.</p>
+    </div>
+
+    <div class="resident-card">
+      <div class="form-success" id="r-success">תודה! נרשמתם בהצלחה. נשלח אליכם אימייל אישור.</div>
+      <div class="form-error" id="r-error"></div>
+
+      <div class="resident-form-grid">
+        <div>
+          <label>שם פרטי</label>
+          <input type="text" id="r-name" placeholder="איך נקרא לכם">
+        </div>
+        <div>
+          <label>טלפון (אופציונלי)</label>
+          <input type="tel" id="r-phone" dir="ltr" placeholder="050-0000000">
+        </div>
+      </div>
+
+      <div>
+        <label>כתובת אימייל</label>
+        <input type="email" id="r-email" dir="ltr" placeholder="name@example.com">
+      </div>
+
+      <button class="resident-submit" id="r-submit" onclick="submitResident()">הצטרפו לקהילה — חינם</button>
+
+      <div class="resident-benefits">
+        <span>עדכונים שבועיים</span>
+        <span>קופונים בלעדיים</span>
+        <span>ללא ספאם</span>
+        <span>ביטול בלחיצה</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── BUSINESSES ─── -->
+  <section class="businesses-section">
+    <div class="section-head-cs">
+      <div class="lbl">לעסקים</div>
+      <h2>הצטרפו <span class="orange">כעסק</span></h2>
+      <p>בחרו מסלול וקבלו חשיפה לאלפי תושבי העיר. <strong style="color:var(--orange-dk)">מחירי השקה</strong> תקפים לחודשי הפעילות הראשונים.</p>
+    </div>
+
+    <div class="plans-row">
+
+      <a href="/biz-signup?plan=free" class="plan-cs">
+        <div>
+          <div class="tag">בסיסי</div>
+          <div class="name">FREE</div>
+        </div>
+        <div class="price-block">
+          <div class="price">0 <small>₪</small></div>
+          <div class="price-meta">
+            <span class="free-note">לתמיד · ללא תשלום</span>
+          </div>
+        </div>
+        <ul class="features">
+          <li>הופעה באלפון עסקים</li>
+          <li>שם, טלפון וכתובת</li>
+          <li>קטגוריה ותיאור קצר</li>
+          <li>כפתור WhatsApp ישיר</li>
+          <li>חיוג בלחיצה אחת</li>
+          <li>הצגה במפת העיר</li>
+        </ul>
+        <div class="select-btn">להצטרפות חינם</div>
+      </a>
+
+      <a href="/biz-signup?plan=basic" class="plan-cs">
+        <div>
+          <div class="tag">בסיס+</div>
+          <div class="name">BASIC</div>
+        </div>
+        <div class="price-block">
+          <div class="price">99 <small>₪/חודש</small></div>
+          <div class="price-meta">
+            <span class="launch-tag">השקה</span>
+            <span class="old-price">149 ₪</span>
+          </div>
+        </div>
+        <ul class="features">
+          <li>כל מה ש-FREE כולל</li>
+          <li>תמונת קאבר מעוצבת</li>
+          <li>3 קופונים פעילים בחודש</li>
+          <li>שעות פעילות מעודכנות</li>
+          <li>קישור לאתר/Facebook/אינסטה</li>
+          <li>דף עסק מלא עם גלריה</li>
+          <li>SEO מותאם לגוגל</li>
+          <li>סימן ✓ עסק מאומת</li>
+        </ul>
+        <div class="select-btn">לפרטים והרשמה</div>
+      </a>
+
+      <a href="/biz-signup?plan=pro" class="plan-cs featured">
+        <div>
+          <div class="tag">מקצועי</div>
+          <div class="name">PRO</div>
+        </div>
+        <div class="price-block">
+          <div class="price">149 <small>₪/חודש</small></div>
+          <div class="price-meta">
+            <span class="launch-tag">השקה</span>
+            <span class="old-price">249 ₪</span>
+          </div>
+        </div>
+        <ul class="features">
+          <li>כל מה ש-BASIC כולל</li>
+          <li>קופונים ללא הגבלה</li>
+          <li>פרסום משרות (עד 3 בחודש)</li>
+          <li>גלריית תמונות מלאה</li>
+          <li>סטטיסטיקות מפורטות</li>
+          <li>דירוג גבוה באלפון</li>
+          <li>מענה ללידים בזמן אמת</li>
+          <li>QR code לפדיון קופונים</li>
+          <li>התראות WhatsApp ללידים</li>
+          <li>תמיכה טכנית מועדפת</li>
+        </ul>
+        <div class="select-btn">לפרטים והרשמה</div>
+      </a>
+
+      <a href="/biz-signup?plan=enterprise" class="plan-cs vip">
+        <div>
+          <div class="tag">בכיר</div>
+          <div class="name">ENTERPRISE</div>
+        </div>
+        <div class="price-block">
+          <div class="price">449 <small>₪/חודש</small></div>
+          <div class="price-meta">
+            <span class="launch-tag">השקה</span>
+            <span class="old-price">649 ₪</span>
+          </div>
+        </div>
+        <ul class="features">
+          <li>כל מה ש-PRO כולל</li>
+          <li>באנר בדף הבית</li>
+          <li>משרות ללא הגבלה</li>
+          <li>4 פוסטים מקודמים בחודש</li>
+          <li>עד 5 סניפים</li>
+          <li>נציג אישי 24/6</li>
+          <li>דוחות מותאמים אישית</li>
+          <li>כתבת תדמית בחדשות</li>
+          <li>הופעה ראשונה באלפון</li>
+          <li>קמפיין השקה מיוחד</li>
+          <li>חיבור CRM (אם יש)</li>
+          <li>עיצוב גרפי בהתאמה</li>
+        </ul>
+        <div class="select-btn">לפרטים והרשמה</div>
+      </a>
+
+    </div>
+
+    <div style="text-align:center;margin-top:24px;font-size:13px;color:var(--ink-mute)">
+      ביטול בכל עת · ללא התחייבות · נציג חוזר תוך 24 שעות מההרשמה
+    </div>
+
+    <div class="pro-cta">
+      <div class="pro-cta-text">
+        <strong>אתם בעלי מקצוע?</strong>
+        <span>חשמלאי, אינסטלטור, מתכנת, סופר, גנן או כל מקצוע אחר — יש לכם דף הרשמה נפרד עם אותם 4 מסלולים והגדרות מותאמות.</span>
+      </div>
+      <a href="/pro-signup" class="pro-cta-btn">להרשמת בעל מקצוע ←</a>
+    </div>
+  </section>
+
+  <!-- ─── FOOTER ─── -->
+  <footer class="cs-footer">
+    © 2026 MyOfaqim.co.il · כל הזכויות שמורות<br>
+    טלפון <a href="tel:0542338233" dir="ltr" style="color:var(--blue);font-weight:700">054-233-8233</a> · WhatsApp <a href="https://wa.me/972542338233" target="_blank" rel="noopener" style="color:var(--blue);font-weight:700">לחיצה לפתיחה</a>
+  </footer>
+
+</div>
+
+<script>
+  // window.SB_URL מ-site.js (window.SB_URL)
+  // window.SB_KEY מ-site.js (window.SB_KEY)
+  let sb;
+
+  // ── פונקציה מקומית $ למקרה ש-site.js עוד לא נטען ──
+  const $ = (id) => document.getElementById(id);
+
+  // ─── Countdown Timer ───
+  // יעד עליה לאוויר: 4 ביוני 2026 בשעה 20:00 (שעון ישראל)
+  const LAUNCH_DATE = new Date('2026-06-04T20:00:00+03:00').getTime();
+
+  function updateCountdown() {
+    try {
+      const now = Date.now();
+      const diff = LAUNCH_DATE - now;
+
+      const elDays = document.getElementById('cd-days');
+      const elHours = document.getElementById('cd-hours');
+      const elMins = document.getElementById('cd-mins');
+      const elSecs = document.getElementById('cd-secs');
+
+      if (!elDays || !elHours || !elMins || !elSecs) return;
+
+      if (diff <= 0) {
+        elDays.textContent = '00';
+        elHours.textContent = '00';
+        elMins.textContent = '00';
+        elSecs.textContent = '00';
+        const eyebrow = document.querySelector('.countdown-eyebrow');
+        if (eyebrow) eyebrow.textContent = 'האתר עלה לאוויר!';
+        return;
+      }
+
+      const days  = Math.floor(diff / 86400000);
+      const hours = Math.floor((diff % 86400000) / 3600000);
+      const mins  = Math.floor((diff % 3600000) / 60000);
+      const secs  = Math.floor((diff % 60000) / 1000);
+
+      elDays.textContent  = days.toString().padStart(2, '0');
+      elHours.textContent = hours.toString().padStart(2, '0');
+      elMins.textContent  = mins.toString().padStart(2, '0');
+      elSecs.textContent  = secs.toString().padStart(2, '0');
+    } catch (e) {
+      console.warn('[countdown] error:', e);
+    }
+  }
+
+  // הפעלה מיד וגם כל שנייה
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // הפעלה נוספת אחרי DOMContentLoaded (למקרה שהtemplate עוד לא נטען)
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateCountdown);
+  }
+
+  async function submitResident() {
+    const errEl = $('r-error'), succEl = $('r-success');
+    errEl.classList.remove('show');
+    succEl.classList.remove('show');
+
+    const name = $('r-name').value.trim();
+    const email = $('r-email').value.trim();
+    const phone = $('r-phone').value.trim();
+
+    function err(m) { errEl.textContent = m; errEl.classList.add('show'); return false; }
+    if (!email) return err('נא להזין כתובת אימייל');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('כתובת אימייל לא תקינה');
+
+    const btn = $('r-submit');
+    btn.disabled = true; btn.textContent = 'נרשם...';
+
+    try {
+      // Try Netlify function first (sends confirmation email)
+      const funcRes = await fetch('/.netlify/functions/newsletter-subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          first_name: name || null,
+          email,
+          phone: phone || null,
+          wants_email: true,
+          wants_sms: !!phone,
+          subscriber_type: 'resident',
+          source: 'coming-soon-home'
+        })
+      });
+
+      if (funcRes.ok) {
+        succEl.classList.add('show');
+        $('r-name').value = ''; $('r-email').value = ''; $('r-phone').value = '';
+        btn.disabled = false; btn.textContent = 'הצטרפו לקהילה — חינם';
+        succEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // Fallback: direct Supabase
+      const { error } = await sb.from('newsletter_subscribers').insert({
+        name: name || null,
+        email,
+        phone: phone || null,
+        topics: ['news','deals','events'],
+        source: 'coming-soon-home',
+        is_active: true
+      });
+      if (error) {
+        if (error.code === '23505' || (error.message || '').includes('duplicate')) {
+          succEl.textContent = 'אתם כבר רשומים. תודה!';
+          succEl.classList.add('show');
+        } else throw error;
+      } else {
+        succEl.classList.add('show');
+      }
+      $('r-name').value = ''; $('r-email').value = ''; $('r-phone').value = '';
+      btn.disabled = false; btn.textContent = 'הצטרפו לקהילה — חינם';
+    } catch (e) {
+      errEl.textContent = 'שגיאה: ' + e.message + '. ניתן לפנות ב-WhatsApp';
+      errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'הצטרפו לקהילה — חינם';
+    }
+  }
+
+  function init() {
+    if (window.supabase) sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  }
+
+  window.submitResident = submitResident;
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { setTimeout(init, 100); });
+  else setTimeout(init, 100);
+</script>
+
+</body>
+</html>

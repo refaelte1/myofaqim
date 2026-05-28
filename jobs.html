@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>דרושים באופקים | אופקים שלי</title>
+<meta name="description" content="לוח דרושים בעיר אופקים - משרות, עבודות מזדמנות, בייביסיטר ועוד.">
+<link rel="canonical" href="https://myofaqim.co.il/jobs">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="דרושים באופקים">
+<meta property="og:description" content="משרות בעיר">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <span>דרושים</span></div>
+    <h1>לוח <em>דרושים</em> באופקים</h1>
+    <p>משרות, עבודות מזדמנות, ובקשות עבודה בעיר. מצאו או פרסמו בקלות.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="jobs-search" class="search-input" placeholder="חפשו משרה..." oninput="renderJobs()">
+      <select id="jobs-scope" class="filter-select" onchange="renderJobs()">
+        <option value="">כל ההיקפים</option>
+        <option value="full_time">משרה מלאה</option>
+        <option value="part_time">משרה חלקית</option>
+        <option value="contract">קבלן/פרילנס</option>
+        <option value="one_time">חד-פעמי</option>
+      </select>
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all" onclick="filterCat('all', this)">הכל</button>
+      <button class="cat-chip" data-cat="job" onclick="filterCat('job', this)">דרושים</button>
+      <button class="cat-chip" data-cat="wanted" onclick="filterCat('wanted', this)">מחפשי עבודה</button>
+    </div>
+
+    <div id="jobs-count" class="result-count"></div>
+
+    <div id="jobs-area" class="content-grid">
+      <div class="state-loading">טוען משרות...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>רוצים לפרסם משרה?</h3>
+      <p>פרסום משרה בעיר ללא עלות - שתפו אותנו בפרטים ונפרסם.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+const KIND_LABELS = { job: 'דרוש', wanted: 'מחפש עבודה' };
+const SCOPE_LABELS = {
+  full_time: 'משרה מלאה', part_time: 'משרה חלקית',
+  contract: 'קבלן', one_time: 'חד-פעמי'
+};
+
+let jobsSb, allJobs = [], currentCat = 'all';
+
+async function initJobs() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initJobs, 100); return; }
+  jobsSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadJobs();
+}
+
+async function loadJobs() {
+  try {
+    const { data, error } = await jobsSb.from('jobs').select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    allJobs = (data || []).filter(j =>
+      j.is_active !== false && (j.status === 'active' || j.status === 'approved' || !j.status)
+    );
+    renderJobs();
+  } catch (e) {
+    console.error('[jobs] error:', e);
+    document.getElementById('jobs-area').innerHTML =
+      '<div class="state-empty"><h3>אין משרות כרגע</h3><p>חזרו בקרוב או פרסמו משרה משלכם.</p></div>';
+  }
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderJobs();
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('he-IL');
+  } catch { return ''; }
+}
+
+function renderJobs() {
+  const search = (document.getElementById('jobs-search').value || '').toLowerCase();
+  const scope = document.getElementById('jobs-scope').value;
+
+  let items = allJobs;
+  if (currentCat !== 'all') items = items.filter(j => (j.kind || 'job') === currentCat);
+  if (scope) items = items.filter(j => j.scope === scope);
+
+  if (search) {
+    items = items.filter(j => {
+      const text = [j.title, j.description, j.category, j.contact_name].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  document.getElementById('jobs-count').innerHTML = `נמצאו <strong>${items.length}</strong> משרות`;
+
+  const area = document.getElementById('jobs-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>אין משרות בקטגוריה זו</h3><p>נסו לשנות סינון או פרסמו משרה חדשה.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(j => {
+    const kindLabel = KIND_LABELS[j.kind || 'job'] || 'דרוש';
+    const scopeLabel = SCOPE_LABELS[j.scope] || j.scope || '';
+    const phone = j.contact_phone || '';
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const waPhone = cleanPhone.startsWith('0') ? '972' + cleanPhone.slice(1) : cleanPhone;
+    const isWanted = j.kind === 'wanted';
+
+    return `
+      <div class="content-card">
+        <div class="content-card-header">
+          <span class="content-card-tag ${isWanted ? 'blue' : 'orange'}">${esc(kindLabel)}</span>
+          ${scopeLabel ? `<span class="content-card-tag gray">${esc(scopeLabel)}</span>` : ''}
+        </div>
+        <h3>${esc(j.title || 'ללא כותרת')}</h3>
+
+        <div class="card-info">
+          ${j.category ? `<div class="card-info-row"><strong>תחום:</strong> ${esc(j.category)}</div>` : ''}
+          ${j.contact_name ? `<div class="card-info-row"><strong>איש קשר:</strong> ${esc(j.contact_name)}</div>` : ''}
+        </div>
+
+        ${j.description ? `<p>${esc(j.description)}</p>` : ''}
+
+        ${j.created_at ? `<div class="card-meta"><span>${fmtDate(j.created_at)}</span></div>` : ''}
+
+        <div class="card-actions">
+          ${phone ? `<a href="tel:${esc(phone)}" class="card-btn primary">${esc(phone)}</a>` : ''}
+          ${phone ? `<a href="https://wa.me/${esc(waPhone)}" target="_blank" rel="noopener" class="card-btn whatsapp">WhatsApp</a>` : ''}
+          ${j.contact_email ? `<a href="mailto:${esc(j.contact_email)}" class="card-btn">אימייל</a>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initJobs);
+} else {
+  initJobs();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>מבצעי סופרמרקטים באופקים | אופקים שלי</title>
+<meta name="description" content="מבצעי השבוע בסופרמרקטים באופקים. עלוני מבצעים, מחירים זולים והנחות.">
+<link rel="canonical" href="https://myofaqim.co.il/supermarkets">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="מבצעי סופרמרקטים באופקים">
+<meta property="og:description" content="עלוני מבצעים והנחות שבועיות">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<style>
+  .super-card { padding: 0; overflow: hidden; }
+  .super-card-image {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    background: var(--cream-warm);
+    display: block;
+    cursor: zoom-in;
+  }
+  .super-card-image-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, var(--cream-warm) 0%, var(--cream) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink-mute);
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .super-card-body {
+    padding: 18px 22px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .super-name {
+    font-family: var(--sans);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--navy);
+    margin: 0;
+  }
+  .super-title {
+    font-size: 15px;
+    color: var(--ink-soft);
+    font-weight: 600;
+    margin: 0;
+    line-height: 1.45;
+  }
+  .super-expires {
+    background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+    color: #92400E;
+    padding: 8px 14px;
+    border-radius: 100px;
+    font-size: 13px;
+    font-weight: 800;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    align-self: flex-start;
+    margin-top: 4px;
+  }
+
+  /* Image fullscreen modal */
+  .img-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.95);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 20px;
+    cursor: zoom-out;
+  }
+  .img-modal.show { display: flex; }
+  .img-modal img {
+    max-width: 100%;
+    max-height: 95vh;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+  .img-modal-close {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: rgba(255,255,255,0.15);
+    border: 2px solid #fff;
+    color: #fff;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    line-height: 1;
+  }
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/deals">מבצעים</a> · <span>סופרמרקטים</span></div>
+    <h1>מבצעי <em>סופרמרקטים</em> באופקים</h1>
+    <p>כל עלוני המבצעים השבועיים של הסופרמרקטים בעיר. השוו, חסכו וקנו חכם.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="search" class="search-input" placeholder="חפשו סופרמרקט..." oninput="renderSupers()">
+    </div>
+
+    <div id="result-count" class="result-count"></div>
+
+    <div id="supers-area" class="content-grid">
+      <div class="state-loading">טוען מבצעים...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>אתם סופרמרקט בעיר?</h3>
+      <p>פרסום עלון המבצעים השבועי שלכם באתר חשוף לאלפי תושבים. צרו קשר ונוסיף.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Fullscreen image modal -->
+<div class="img-modal" id="img-modal" onclick="closeImg()">
+  <button class="img-modal-close">&times;</button>
+  <img id="img-modal-img" src="" alt="">
+</div>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+let spSb, allSupers = [];
+
+async function initSp() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initSp, 100); return; }
+  spSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadSupers();
+}
+
+async function loadSupers() {
+  try {
+    const now = new Date().toISOString();
+    const { data, error } = await spSb.from('deals').select(`
+      *,
+      businesses (id, business_name, name, logo_url)
+    `)
+      .eq('type', 'supermarket')
+      .eq('is_active', true)
+      .or(`expires_at.is.null,expires_at.gte.${now}`)
+      .order('is_featured', { ascending: false })
+      .order('created_at', { ascending: false });
+
+    if (error) throw error;
+    allSupers = data || [];
+    renderSupers();
+  } catch (e) {
+    console.error('[supermarkets] error:', e);
+    document.getElementById('supers-area').innerHTML =
+      '<div class="state-empty"><h3>אין מבצעים פעילים כרגע</h3><p>בקרוב יתעדכנו עלוני המבצעים. חזרו לבדוק!</p></div>';
+  }
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try { return new Date(iso).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' }); }
+  catch { return ''; }
+}
+
+function renderSupers() {
+  const search = (document.getElementById('search').value || '').toLowerCase();
+  let items = allSupers;
+
+  if (search) {
+    items = items.filter(s => {
+      const biz = s.businesses?.business_name || s.businesses?.name || '';
+      const text = [s.title, s.description, biz].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  document.getElementById('result-count').innerHTML = `נמצאו <strong>${items.length}</strong> מבצעי סופרמרקטים`;
+
+  const area = document.getElementById('supers-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>לא נמצאו מבצעים</h3><p>נסו לחפש בצורה אחרת.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(s => {
+    const biz = s.businesses || {};
+    const bizName = biz.business_name || biz.name || 'סופרמרקט';
+    const image = s.cover_image_url || s.image_url || biz.logo_url;
+    const expires = s.expires_at ? `מסתיים ב-${fmtDate(s.expires_at)}` : '';
+
+    return `
+      <div class="content-card super-card ${s.is_featured ? 'featured' : ''}">
+        ${image
+          ? `<img class="super-card-image" src="${esc(image)}" alt="${esc(s.title)}" loading="lazy" onclick="openImg('${esc(image)}')">`
+          : `<div class="super-card-image-placeholder">אין תמונת עלון</div>`}
+
+        <div class="super-card-body">
+          <h3 class="super-name">${esc(bizName)}</h3>
+          <p class="super-title">${esc(s.title || 'מבצעי השבוע')}</p>
+          ${s.description ? `<p style="font-size:13px;color:var(--ink-mute);margin:0;line-height:1.5">${esc(s.description)}</p>` : ''}
+
+          ${expires ? `<span class="super-expires">⏰ ${esc(expires)}</span>` : ''}
+
+          ${image ? `<button class="card-btn primary" onclick="openImg('${esc(image)}')" style="margin-top:6px">צפו בעלון המלא</button>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openImg(url) {
+  document.getElementById('img-modal-img').src = url;
+  document.getElementById('img-modal').classList.add('show');
+}
+
+function closeImg() {
+  document.getElementById('img-modal').classList.remove('show');
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeImg();
+});
+
+window.openImg = openImg;
+window.closeImg = closeImg;
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSp);
+} else {
+  initSp();
+}
+</script>
+</body>
+</html>

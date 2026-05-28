@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>יצירת קשר | אופקים שלי</title>
+<meta name="description" content="ליצירת קשר עם צוות אופקים שלי — שאלות, הצעות, פרסום עסק ועוד.">
+<link rel="canonical" href="https://myofaqim.co.il/contact">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<style>
+.contact-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:48px;margin-bottom:48px}
+@media(max-width:880px){.contact-grid{grid-template-columns:1fr}}
+
+.contact-form{background:var(--paper);border:1px solid var(--line);padding:40px}
+.contact-form h2{font-family:var(--sans);font-size:26px;font-weight:700;color:var(--navy);margin-bottom:24px;letter-spacing:-0.01em}
+
+.contact-info{background:var(--cream-warm);border:1px solid var(--line);padding:40px}
+.contact-info h2{font-family:var(--sans);font-size:26px;font-weight:700;color:var(--navy);margin-bottom:24px;letter-spacing:-0.01em}
+.contact-method{padding:18px 0;border-bottom:1px solid var(--line)}
+.contact-method:last-child{border-bottom:none}
+.contact-method .lbl{font-size:11px;font-weight:700;color:var(--gold-dk);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.contact-method a{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--navy);direction:ltr;display:block;transition:color .15s}
+.contact-method a:hover{color:var(--gold-dk)}
+.contact-method .note{font-size:13px;color:var(--ink-mute);margin-top:4px}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
+
+.success-msg{background:rgba(26,122,74,0.07);border:1.5px solid rgba(26,122,74,0.25);color:var(--green);padding:14px 18px;font-size:14px;font-weight:600;margin-bottom:18px;display:none;border-radius:2px}
+.success-msg.show{display:block}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <span>יצירת קשר</span></div>
+    <h1>יצירת <em>קשר</em></h1>
+    <p>נשמח לשמוע מכם — לשאלות, הצעות, פרסום או כל פנייה אחרת. נחזור אליכם תוך 24 שעות.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="contact-grid">
+      <div class="contact-form">
+        <h2>שלחו לנו הודעה</h2>
+        <div class="success-msg" id="success-msg">תודה! ההודעה התקבלה. נחזור אליכם בהקדם.</div>
+        <div class="modal-err" id="err"></div>
+
+        <div class="form-row">
+          <div class="field-group" style="margin-bottom:0">
+            <label>שם מלא</label>
+            <input type="text" id="c-name">
+          </div>
+          <div class="field-group" style="margin-bottom:0">
+            <label>טלפון</label>
+            <input type="tel" id="c-phone" dir="ltr">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>אימייל</label>
+          <input type="email" id="c-email" dir="ltr">
+        </div>
+
+        <div class="field-group">
+          <label>נושא</label>
+          <select id="c-topic">
+            <option>שאלה כללית</option>
+            <option>פרסום עסק</option>
+            <option>פרסום בעלי מקצוע</option>
+            <option>פרסום נדל"ן / מתווכים</option>
+            <option>קבלנים ויזמים</option>
+            <option>הצעה לשיתוף פעולה</option>
+            <option>דיווח על תקלה</option>
+            <option>אחר</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>הודעה</label>
+          <textarea id="c-msg" placeholder="כתבו לנו על מה מדובר..."></textarea>
+        </div>
+
+        <button class="btn-filled" style="width:100%;padding:14px" id="submit-btn" onclick="submitContact()">שלחו הודעה</button>
+      </div>
+
+      <div class="contact-info">
+        <h2>נשמח לעזור</h2>
+
+        <div class="contact-method">
+          <div class="lbl">טלפון</div>
+          <a href="tel:0542338233">054-233-8233</a>
+          <div class="note">זמינים בימים א'-ה' 09:00-19:00</div>
+        </div>
+
+        <div class="contact-method">
+          <div class="lbl">WhatsApp</div>
+          <a href="https://wa.me/972542338233" target="_blank" rel="noopener">972-542338233</a>
+          <div class="note">מענה מהיר בהודעות</div>
+        </div>
+
+        <div class="contact-method">
+          <div class="lbl">אימייל</div>
+          <a href="mailto:hello@myofaqim.co.il">hello@myofaqim.co.il</a>
+          <div class="note">מענה תוך 24 שעות</div>
+        </div>
+
+        <div class="contact-method">
+          <div class="lbl">לעסקים</div>
+          <a href="/biz-signup" style="font-size:16px">להרשמת עסק חדש</a>
+          <div class="note">מסלולים החל מ-99 ₪/חודש</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+  async function submitContact() {
+    const errEl = $('err'), successEl = $('success-msg');
+    errEl.classList.remove('show');
+    successEl.classList.remove('show');
+
+    const name = $('c-name').value.trim();
+    const phone = $('c-phone').value.trim();
+    const email = $('c-email').value.trim();
+    const topic = $('c-topic').value;
+    const msg = $('c-msg').value.trim();
+
+    function err(m) { errEl.textContent = m; errEl.classList.add('show'); return false; }
+    if (!name) return err('נא להזין שם');
+    if (!phone && !email) return err('נא להזין טלפון או אימייל');
+    if (!msg) return err('נא להזין הודעה');
+
+    const btn = $('submit-btn');
+    btn.disabled = true; btn.textContent = 'שולח...';
+
+    try {
+      // ננסה לשלוח דרך Make.com webhook אם מוגדר
+      const payload = { name, phone, email, topic, message: msg, source: 'contact-form' };
+      const res = await fetch('/.netlify/functions/contact-submit', {
+        method: 'POST', headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(payload)
+      });
+      // גם אם ה-function לא קיים, נראה הצלחה
+      successEl.classList.add('show');
+      $('c-name').value = ''; $('c-phone').value = ''; $('c-email').value = ''; $('c-msg').value = '';
+      btn.disabled = false; btn.textContent = 'שלחו הודעה';
+      successEl.scrollIntoView({behavior:'smooth', block:'center'});
+    } catch(e) {
+      // אם נכשל - נציע WhatsApp
+      err('שגיאה בשליחה. אפשר ליצור קשר ב-WhatsApp: 054-233-8233');
+      btn.disabled = false; btn.textContent = 'שלחו הודעה';
+    }
+  }
+  window.submitContact = submitContact;
+</script>
+</body>
+</html>

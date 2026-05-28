@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>שירותים ציבוריים באופקים | אופקים שלי</title>
+<meta name="description" content="כל השירותים הציבוריים בעיר אופקים - עירייה, חירום, בריאות, חינוך, ועוד.">
+<link rel="canonical" href="https://myofaqim.co.il/public-services">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="שירותים ציבוריים באופקים">
+<meta property="og:description" content="עירייה, חירום, בריאות ועוד">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <span>שירותים ציבוריים</span></div>
+    <h1>שירותים <em>ציבוריים</em> באופקים</h1>
+    <p>טלפונים וכתובות של כל המשרדים הציבוריים בעיר — עירייה, חירום, בריאות, חינוך ועוד.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="ps-search" class="search-input" placeholder="חפשו שירות..." oninput="renderServices()">
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all" onclick="filterCat('all', this)">הכל</button>
+      <button class="cat-chip" data-cat="emergency" onclick="filterCat('emergency', this)">חירום</button>
+      <button class="cat-chip" data-cat="municipality" onclick="filterCat('municipality', this)">עירייה</button>
+      <button class="cat-chip" data-cat="health" onclick="filterCat('health', this)">בריאות</button>
+      <button class="cat-chip" data-cat="education" onclick="filterCat('education', this)">חינוך</button>
+      <button class="cat-chip" data-cat="welfare" onclick="filterCat('welfare', this)">רווחה</button>
+      <button class="cat-chip" data-cat="transport" onclick="filterCat('transport', this)">תחבורה</button>
+      <button class="cat-chip" data-cat="culture" onclick="filterCat('culture', this)">תרבות</button>
+      <button class="cat-chip" data-cat="other" onclick="filterCat('other', this)">אחר</button>
+    </div>
+
+    <div id="ps-count" class="result-count"></div>
+
+    <div id="ps-area" class="content-grid">
+      <div class="state-loading">טוען שירותים...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>חסר שירות ציבורי באינדקס?</h3>
+      <p>עדכנו אותנו ונוסיף אותו במהירות.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+const CAT_LABELS = {
+  emergency: 'חירום', municipality: 'עירייה', health: 'בריאות',
+  education: 'חינוך', welfare: 'רווחה', transport: 'תחבורה',
+  culture: 'תרבות', other: 'אחר'
+};
+
+const CAT_COLORS = {
+  emergency: 'orange',
+  municipality: 'blue',
+  health: 'green',
+  education: 'blue',
+  welfare: 'blue',
+  transport: 'gray',
+  culture: 'orange',
+  other: 'gray'
+};
+
+let psSb, allServices = [], currentCat = 'all';
+
+async function initPs() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initPs, 100); return; }
+  psSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadServices();
+}
+
+async function loadServices() {
+  try {
+    const { data, error } = await psSb.from('public_services').select('*')
+      .order('name', { ascending: true });
+    if (error) throw error;
+    allServices = (data || []).filter(s => s.is_active !== false);
+    renderServices();
+  } catch (e) {
+    console.error('[public-services] error:', e);
+    document.getElementById('ps-area').innerHTML =
+      '<div class="state-empty"><h3>בעיה זמנית</h3><p>לא הצלחנו לטעון. נסו לרענן.</p></div>';
+  }
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderServices();
+}
+
+function renderServices() {
+  const search = (document.getElementById('ps-search').value || '').toLowerCase();
+  let items = allServices;
+
+  if (currentCat !== 'all') items = items.filter(s => s.category === currentCat);
+
+  if (search) {
+    items = items.filter(s => {
+      const text = [s.name, s.description, s.address, s.phone].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  document.getElementById('ps-count').innerHTML = `נמצאו <strong>${items.length}</strong> שירותים`;
+
+  const area = document.getElementById('ps-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>אין שירותים בקטגוריה זו</h3><p>נסו קטגוריה אחרת.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(s => {
+    const catLabel = CAT_LABELS[s.category] || s.category || 'אחר';
+    const catColor = CAT_COLORS[s.category] || 'gray';
+    const phone = s.phone || '';
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+
+    return `
+      <div class="content-card ${s.category === 'emergency' ? 'featured' : ''}">
+        <div class="content-card-header">
+          <span class="content-card-tag ${catColor}">${esc(catLabel)}</span>
+        </div>
+        <h3>${esc(s.name || 'ללא שם')}</h3>
+
+        <div class="card-info">
+          ${s.address ? `<div class="card-info-row"><strong>כתובת:</strong> ${esc(s.address)}</div>` : ''}
+          ${s.hours ? `<div class="card-info-row"><strong>שעות:</strong> ${esc(s.hours)}</div>` : ''}
+        </div>
+
+        ${s.description ? `<p>${esc(s.description)}</p>` : ''}
+
+        ${phone ? `
+          <div class="card-actions">
+            <a href="tel:${esc(phone)}" class="card-btn primary">${esc(phone)}</a>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPs);
+} else {
+  initPs();
+}
+</script>
+</body>
+</html>

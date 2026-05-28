@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>הצטרפות לניוזלטר | אופקים שלי</title>
+<meta name="description" content="הירשמו לניוזלטר השבועי של אופקים שלי וקבלו את כל החדשות, המבצעים והעדכונים מהעיר ישירות לאימייל.">
+<link rel="canonical" href="https://myofaqim.co.il/subscribe">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+.subscribe-grid{display:grid;grid-template-columns:1.3fr 1fr;gap:48px;max-width:1000px;margin:0 auto}
+@media(max-width:880px){.subscribe-grid{grid-template-columns:1fr}}
+
+.subscribe-form{background:var(--paper);border:1px solid var(--line);padding:40px}
+.subscribe-form h2{font-family:var(--sans);font-size:26px;font-weight:700;color:var(--navy);margin-bottom:8px;letter-spacing:-0.01em}
+.subscribe-form .sub{color:var(--ink-soft);margin-bottom:24px;font-size:14px}
+
+.benefits{background:var(--cream-warm);border:1px solid var(--line);padding:40px}
+.benefits h3{font-family:var(--sans);font-size:22px;font-weight:700;color:var(--navy);margin-bottom:20px;letter-spacing:-0.01em}
+.benefit-item{padding:14px 0;border-bottom:1px solid var(--line-soft);font-size:14px;color:var(--ink);line-height:1.7;padding-right:24px;position:relative}
+.benefit-item:last-child{border-bottom:none}
+.benefit-item::before{content:'✓';position:absolute;right:0;color:var(--green);font-weight:800;font-size:16px}
+
+.success-msg{background:rgba(26,122,74,0.07);border:1.5px solid rgba(26,122,74,0.25);color:var(--green);padding:14px 18px;font-size:14px;font-weight:600;margin-bottom:18px;display:none;border-radius:2px}
+.success-msg.show{display:block}
+
+.check-group{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.check-row{display:flex;align-items:center;gap:10px;padding:11px 14px;background:var(--cream-warm);border:1px solid var(--line);cursor:pointer;font-size:14px;border-radius:2px}
+.check-row input{accent-color:var(--navy);width:18px;height:18px}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/">קהילה</a> · <span>ניוזלטר</span></div>
+    <h1>הצטרפו <em>לניוזלטר</em></h1>
+    <p>קבלו פעם בשבוע את כל מה שקורה בעיר אופקים — חדשות, אירועים, מבצעים והטבות חמות, ישירות לאימייל.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+    <div class="subscribe-grid">
+
+      <div class="subscribe-form">
+        <h2>הרשמה <em style="color:var(--gold-dk)">מהירה</em></h2>
+        <p class="sub">המייל שלכם נשאר אצלנו בלבד. ניתן להסיר את עצמכם בכל עת.</p>
+
+        <div class="success-msg" id="success">תודה! נרשמתם בהצלחה לניוזלטר.</div>
+        <div class="modal-err" id="err"></div>
+
+        <div class="field-group">
+          <label>שם פרטי</label>
+          <input type="text" id="sub-name" placeholder="איך נקרא לכם">
+        </div>
+
+        <div class="field-group">
+          <label>כתובת אימייל</label>
+          <input type="email" id="sub-email" dir="ltr" placeholder="name@example.com">
+        </div>
+
+        <div class="field-group">
+          <label>שכונה (אופציונלי)</label>
+          <select id="sub-area">
+            <option value="">בחרו...</option>
+            <option value="אפיקי נחל">אפיקי נחל</option>
+            <option value="רמות א">רמות א'</option>
+            <option value="רמות ב">רמות ב'</option>
+            <option value="נופים">נופים</option>
+            <option value="מבוא הדרום">מבוא הדרום</option>
+            <option value="מרכז העיר">מרכז העיר</option>
+            <option value="ותיקים">ותיקים</option>
+            <option value="הדרים">הדרים</option>
+          </select>
+        </div>
+
+        <label style="display:block;font-size:11px;font-weight:700;color:var(--navy);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px">מעניינים אותי</label>
+        <div class="check-group">
+          <label class="check-row"><input type="checkbox" id="t-news" checked> חדשות העיר</label>
+          <label class="check-row"><input type="checkbox" id="t-events"> אירועים ופעילויות</label>
+          <label class="check-row"><input type="checkbox" id="t-deals"> מבצעים וקופונים</label>
+          <label class="check-row"><input type="checkbox" id="t-business"> עסקים ושירותים</label>
+        </div>
+
+        <button class="btn-filled" style="width:100%;padding:14px" onclick="submitSubscribe()" id="sub-btn">הצטרפות</button>
+      </div>
+
+      <div class="benefits">
+        <h3>מה תקבלו <em style="color:var(--gold-dk)">בניוזלטר</em>?</h3>
+        <div class="benefit-item">סיכום שבועי של כל החדשות מהעיר</div>
+        <div class="benefit-item">אירועים ופעילויות לכל המשפחה</div>
+        <div class="benefit-item">קופונים בלעדיים והטבות ראשונים</div>
+        <div class="benefit-item">עדכונים מהעירייה והקהילה</div>
+        <div class="benefit-item">פרסום חינם — בלי ספאם</div>
+        <div class="benefit-item">ביטול הרשמה בלחיצה אחת</div>
+      </div>
+
+    </div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  let sb;
+
+  async function submitSubscribe() {
+    const errEl = $('err'), succEl = $('success');
+    errEl.classList.remove('show');
+    succEl.classList.remove('show');
+
+    const name = $('sub-name').value.trim();
+    const email = $('sub-email').value.trim();
+    const area = $('sub-area').value;
+
+    function err(m) { errEl.textContent = m; errEl.classList.add('show'); return false; }
+    if (!email) return err('נא להזין כתובת אימייל');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return err('כתובת אימייל לא תקינה');
+
+    const topics = [];
+    if ($('t-news').checked) topics.push('news');
+    if ($('t-events').checked) topics.push('events');
+    if ($('t-deals').checked) topics.push('deals');
+    if ($('t-business').checked) topics.push('business');
+
+    const btn = $('sub-btn');
+    btn.disabled = true; btn.textContent = 'נרשם...';
+
+    try {
+      const { error } = await sb.from('newsletter_subscribers').insert({
+        name: name || null,
+        email,
+        neighborhood: area || null,
+        topics,
+        is_active: true,
+        source: 'subscribe-page'
+      });
+      if (error) {
+        if (error.code === '23505' || (error.message || '').includes('duplicate')) {
+          succEl.textContent = 'אתם כבר רשומים לניוזלטר. תודה!';
+        } else throw error;
+      }
+      succEl.classList.add('show');
+      $('sub-name').value = ''; $('sub-email').value = ''; $('sub-area').value = '';
+      btn.disabled = false; btn.textContent = 'הצטרפות';
+      succEl.scrollIntoView({behavior:'smooth', block:'center'});
+    } catch(e) {
+      errEl.textContent = 'שגיאה: ' + e.message;
+      errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'הצטרפות';
+    }
+  }
+
+  async function subInit() {
+    if (!window.supabase || !window.SB_URL) { setTimeout(subInit, 100); return; }
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  }
+
+  window.submitSubscribe = submitSubscribe;
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) subInit(); else window.addEventListener('load', subInit, {once:true}); });
+  else { if(window.supabase) subInit(); else window.addEventListener('load', subInit, {once:true}); }
+</script>
+</body>
+</html>

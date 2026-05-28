@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>אירועי קהילה באופקים | אופקים שלי</title>
+<meta name="description" content="לוח אירועי הקהילה של אופקים — אירועים, הרצאות, הופעות, ימי כיף ופעילויות בעיר.">
+<link rel="canonical" href="https://myofaqim.co.il/community-events">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+.events-list{display:flex;flex-direction:column;gap:16px}
+.event-card{background:var(--paper);border:1px solid var(--line);overflow:hidden;display:grid;grid-template-columns:auto 1fr;gap:0;transition:all .2s}
+.event-card:hover{border-color:var(--gold);box-shadow:0 8px 24px rgba(13,27,62,0.06)}
+
+.event-date{background:var(--navy);color:var(--cream);padding:24px 28px;text-align:center;min-width:120px;display:flex;flex-direction:column;justify-content:center}
+.event-day{font-family:var(--sans);font-size:42px;font-weight:900;line-height:1;letter-spacing:-0.02em;color:var(--gold)}
+.event-month{font-size:12px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-top:6px;color:rgba(255,255,255,0.8)}
+.event-time{font-size:13px;font-weight:600;color:var(--gold);margin-top:8px;direction:ltr;padding-top:8px;border-top:1px solid rgba(200,169,94,0.2)}
+
+.event-body{padding:24px 28px;display:flex;flex-direction:column;gap:8px}
+.event-cat{font-size:11px;font-weight:800;color:var(--gold-dk);letter-spacing:1.5px;text-transform:uppercase}
+.event-title{font-family:var(--sans);font-size:22px;font-weight:700;color:var(--navy);letter-spacing:-0.01em;line-height:1.3}
+.event-desc{font-size:14px;color:var(--ink-soft);line-height:1.65;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.event-meta{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--ink-mute);font-weight:600;margin-top:6px}
+.event-meta-item{display:inline-flex;align-items:center;gap:5px}
+
+.event-actions{padding:12px 28px;border-top:1px solid var(--line-soft);display:flex;gap:8px;justify-content:flex-end}
+.event-actions a{font-size:12px;font-weight:700;color:var(--gold-dk);letter-spacing:0.5px;padding:6px 14px;border:1px solid var(--gold);border-radius:2px;transition:all .15s}
+.event-actions a:hover{background:var(--gold);color:var(--navy)}
+
+@media(max-width:560px){
+  .event-card{grid-template-columns:1fr}
+  .event-date{padding:16px;flex-direction:row;gap:14px;align-items:center}
+  .event-day{font-size:32px}
+  .event-time{border:none;padding:0;margin:0}
+}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/">קהילה</a> · <span>אירועים</span></div>
+    <h1>אירועי <em>קהילה</em></h1>
+    <p>מה קורה בעיר השבוע, החודש והקרוב. אירועים, הרצאות, הופעות וימי כיף לכל המשפחה.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+    <div id="events-area" class="events-list"><div class="loader">טוען אירועים...</div></div>
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  let sb, allEvents = [];
+
+  const HE_MONTHS_SHORT = ['ינו','פבר','מרץ','אפר','מאי','יונ','יול','אוג','ספט','אוק','נוב','דצמ'];
+
+  function eventCard(e) {
+    const date = new Date(e.event_date);
+    const day = date.getDate();
+    const month = HE_MONTHS_SHORT[date.getMonth()];
+    const time = (e.event_time || '').slice(0, 5);
+    return `
+      <article class="event-card">
+        <div class="event-date">
+          <div class="event-day">${day}</div>
+          <div class="event-month">${month}</div>
+          ${time ? `<div class="event-time">${time}</div>` : ''}
+        </div>
+        <div>
+          <div class="event-body">
+            ${e.category ? `<div class="event-cat">${esc(e.category)}</div>` : ''}
+            <h3 class="event-title">${esc(e.title)}</h3>
+            ${e.description ? `<p class="event-desc">${esc(e.description)}</p>` : ''}
+            <div class="event-meta">
+              ${e.location ? `<span class="event-meta-item">${esc(e.location)}</span>` : ''}
+              ${e.organizer ? `<span class="event-meta-item">מארגן: ${esc(e.organizer)}</span>` : ''}
+              ${e.price === 0 || e.is_free ? `<span class="event-meta-item" style="color:var(--green)">חינם</span>` : (e.price ? `<span class="event-meta-item">${fmt(e.price)} ₪</span>` : '')}
+            </div>
+          </div>
+          ${e.link_url || e.contact_phone ? `
+            <div class="event-actions">
+              ${e.link_url ? `<a href="${esc(e.link_url)}" target="_blank" rel="noopener">פרטים נוספים ←</a>` : ''}
+              ${e.contact_phone ? `<a href="tel:${esc(e.contact_phone)}">חיוג</a>` : ''}
+            </div>` : ''}
+        </div>
+      </article>`;
+  }
+
+  async function loadEvents() {
+    try {
+      const today = new Date().toISOString().slice(0, 10);
+      const { data, error } = await sb.from('community_events').select('*')
+        .gte('event_date', today)
+        .eq('is_active', true)
+        .order('event_date').limit(100);
+      if (error) throw error;
+      allEvents = data || [];
+      const area = $('events-area');
+      if (!allEvents.length) {
+        area.innerHTML = '<div class="empty"><h3>אין אירועים מתוכננים</h3><p>חזרו לבדוק בקרוב — מעדכנים אירועים כל שבוע.</p></div>';
+        return;
+      }
+      area.innerHTML = allEvents.map(eventCard).join('');
+    } catch(e) {
+      $('events-area').innerHTML = '<div class="empty"><h3>שגיאה</h3><p>'+esc(e.message)+'</p></div>';
+    }
+  }
+
+  async function evInit() {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    loadEvents();
+  }
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) evInit(); else window.addEventListener('load', evInit, {once:true}); });
+  else { if(window.supabase) evInit(); else window.addEventListener('load', evInit, {once:true}); }
+</script>
+</body>
+</html>

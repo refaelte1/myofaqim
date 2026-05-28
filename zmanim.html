@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGZ7EHLP4',{anonymize_ip:true});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>זמני היום והלכה | אופקים שלי</title>
+<meta name="description" content="זמני התפילה היומיים באופקים - עלות השחר, נץ החמה, סוף קריאת שמע, מנחה, צאת הכוכבים וזמני שבת. לוח זמנים מדויק לפי שיטות הפסיקה.">
+<meta property="og:title" content="זמני היום והלכה - אופקים שלי">
+<meta property="og:description" content="לוח זמני התפילה היומי של העיר אופקים">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+<link rel="canonical" href="https://myofaqim.co.il/zmanim">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: #F0F2F5; }
+
+  /* ── HERO ── */
+  .zm-hero {
+    background: linear-gradient(135deg, #1A2E5C 0%, #243B6E 50%, #2563EB 100%);
+    color: #fff; padding: 28px 20px 90px;
+    position: relative; overflow: hidden;
+  }
+  .zm-hero::before {
+    content: ''; position: absolute; top: -120px; left: 50%;
+    transform: translateX(-50%); width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .zm-hero-inner { max-width: 720px; margin: 0 auto; position: relative; z-index: 1; text-align: center; }
+  .zm-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    color: #F59E0B; margin-bottom: 10px; text-transform: uppercase;
+  }
+  .zm-hero h1 { font-size: clamp(24px, 4vw, 32px); font-weight: 900; margin: 0 0 6px; letter-spacing: -0.02em; }
+  .zm-hero p.subtitle { opacity: 0.85; font-size: 14px; margin: 0 0 16px; }
+  .zm-date-row {
+    display: inline-flex; align-items: center; gap: 18px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 10px 20px; border-radius: 100px;
+    margin-top: 8px; flex-wrap: wrap; justify-content: center;
+  }
+  .zm-date-row .item { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.95); }
+  .zm-date-row .item strong { color: #F59E0B; font-weight: 900; margin-right: 4px; }
+  .zm-date-row .sep { color: rgba(255,255,255,0.3); }
+
+  /* ── CONTAINER ── */
+  .zm-container { max-width: 720px; margin: -56px auto 100px; padding: 0 12px; position: relative; z-index: 2; }
+
+  /* ── Next Prayer Card ── */
+  .next-card {
+    background: linear-gradient(135deg, #fff 0%, #FFFBEB 100%);
+    border: 1.5px solid #F59E0B;
+    border-radius: 18px; padding: 18px 22px;
+    margin-bottom: 12px; box-shadow: 0 8px 24px rgba(245,158,11,0.15);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .next-card .pulse {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #F59E0B; flex-shrink: 0;
+    animation: pulse-orange 2s infinite;
+  }
+  @keyframes pulse-orange {
+    0% { box-shadow: 0 0 0 0 rgba(245,158,11,0.7); }
+    70% { box-shadow: 0 0 0 12px rgba(245,158,11,0); }
+    100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+  }
+  .next-card .info { flex: 1; min-width: 0; }
+  .next-card .lbl { font-size: 11px; font-weight: 800; color: #92400E; letter-spacing: 1.5px; text-transform: uppercase; }
+  .next-card .name { font-size: 18px; font-weight: 900; color: #1A2E5C; margin: 2px 0 4px; }
+  .next-card .countdown { font-size: 13px; color: #4B5563; font-weight: 700; }
+  .next-card .time-val {
+    font-size: 24px; font-weight: 900; color: #1A2E5C;
+    font-variant-numeric: tabular-nums;
+    background: rgba(245,158,11,0.15);
+    padding: 8px 14px; border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  /* ── Shabbat Card ── */
+  .shabbat-card {
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    color: #fff; border-radius: 18px;
+    padding: 20px 24px; margin-bottom: 12px;
+    position: relative; overflow: hidden;
+    box-shadow: 0 8px 24px rgba(26,46,92,0.15);
+  }
+  .shabbat-card::before {
+    content: ''; position: absolute;
+    top: -50px; right: -50px; width: 200px; height: 200px;
+    background: radial-gradient(circle, rgba(245,158,11,0.2) 0%, transparent 70%);
+  }
+  .shabbat-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px; position: relative;
+  }
+  .shabbat-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: rgba(245,158,11,0.2); color: #F59E0B;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .shabbat-title { font-size: 16px; font-weight: 900; line-height: 1.2; }
+  .shabbat-parasha { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+
+  .shabbat-times {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    position: relative;
+  }
+  .shabbat-time-box {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 12px; border-radius: 12px;
+    backdrop-filter: blur(4px);
+  }
+  .shabbat-time-lbl { font-size: 11px; font-weight: 800; letter-spacing: 1px; color: rgba(255,255,255,0.7); text-transform: uppercase; margin-bottom: 4px; }
+  .shabbat-time-val { font-size: 22px; font-weight: 900; color: #F59E0B; font-variant-numeric: tabular-nums; }
+
+  /* ── Section Card ── */
+  .section-card {
+    background: #fff; border-radius: 18px;
+    padding: 18px; margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(26,46,92,0.06);
+    border: 1px solid #E5E7EB;
+  }
+  .section-card h2 {
+    font-size: 15px; font-weight: 900; color: #1A2E5C;
+    margin: 0 0 14px; padding: 0 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-card h2 svg { color: #F59E0B; }
+
+  /* ── Zmanim Grid ── */
+  .zmanim-list {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 6px;
+  }
+  .zman-item {
+    background: #F8FAFC; border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: all 0.15s;
+    border: 1.5px solid transparent;
+  }
+  .zman-item:hover { background: #EFF6FF; border-color: #2563EB; }
+  .zman-item.passed {
+    background: #fff; opacity: 0.55;
+  }
+  .zman-item.next {
+    background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+    border-color: #F59E0B;
+    box-shadow: 0 4px 12px rgba(245,158,11,0.15);
+  }
+  .zman-item.next .zman-time { color: #92400E; }
+  .zman-name { font-size: 13px; font-weight: 700; color: #1A2E5C; }
+  .zman-time {
+    font-size: 14px; font-weight: 900; color: #2563EB;
+    font-variant-numeric: tabular-nums;
+    background: #fff; padding: 3px 8px; border-radius: 6px;
+    border: 1px solid #E5E7EB;
+  }
+  .zman-item.passed .zman-time { color: #94A3B8; border-color: transparent; background: transparent; }
+
+  /* ── Action Grid ── */
+  .links-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .link-card {
+    background: #F8FAFC; border-radius: 14px;
+    padding: 14px; text-decoration: none;
+    border: 1.5px solid #E5E7EB;
+    transition: all 0.15s;
+    display: flex; gap: 10px; align-items: center;
+  }
+  .link-card:hover { border-color: #2563EB; transform: translateY(-1px); }
+  .link-card-icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    color: #F59E0B; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .link-card-text { flex: 1; min-width: 0; }
+  .link-card .name { font-size: 13px; font-weight: 800; color: #1A2E5C; }
+  .link-card .desc { font-size: 11px; color: #6B7280; margin-top: 1px; }
+
+  .loader-state, .empty-state {
+    background: #F8FAFC; border-radius: 12px;
+    padding: 40px 20px; text-align: center; color: #6B7280;
+    grid-column: 1 / -1;
+  }
+
+  .source-note {
+    background: #F8FAFC; border-radius: 10px;
+    padding: 10px 14px; margin-top: 12px;
+    font-size: 11px; color: #94A3B8;
+    text-align: center; font-weight: 600;
+  }
+
+  @media (max-width: 480px) {
+    .zm-container { padding: 0 8px; }
+    .zmanim-list { grid-template-columns: 1fr; }
+    .shabbat-times { grid-template-columns: 1fr; }
+    .links-grid { grid-template-columns: 1fr; }
+    .next-card { padding: 14px 16px; }
+    .next-card .time-val { font-size: 20px; padding: 6px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="zm-hero">
+    <div class="zm-hero-inner">
+      <div class="zm-eyebrow">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        זמני היום
+      </div>
+      <h1>זמני התפילה והלכה</h1>
+      <p class="subtitle">לוח זמני התפילה היומי לפי קואורדינטות העיר אופקים</p>
+      <div class="zm-date-row">
+        <div class="item"><strong>עברי:</strong><span id="he-date">—</span></div>
+        <span class="sep">·</span>
+        <div class="item"><strong>לועזי:</strong><span id="gr-date">—</span></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="zm-container">
+
+    <!-- Next Prayer / Time -->
+    <div class="next-card" id="next-card" style="display:none">
+      <div class="pulse"></div>
+      <div class="info">
+        <div class="lbl">הזמן הקרוב</div>
+        <div class="name" id="next-name">—</div>
+        <div class="countdown" id="next-countdown">—</div>
+      </div>
+      <div class="time-val" id="next-time">—:—</div>
+    </div>
+
+    <!-- Shabbat Card -->
+    <div class="shabbat-card" id="shabbat-card" style="display:none">
+      <div class="shabbat-header">
+        <div class="shabbat-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2 L13.5 9 L20 9 L14.5 13 L17 19 L12 15 L7 19 L9.5 13 L4 9 L10.5 9 Z"/></svg>
+        </div>
+        <div>
+          <div class="shabbat-title">שבת קודש</div>
+          <div class="shabbat-parasha" id="parasha">—</div>
+        </div>
+      </div>
+      <div class="shabbat-times">
+        <div class="shabbat-time-box">
+          <div class="shabbat-time-lbl">כניסת שבת</div>
+          <div class="shabbat-time-val" id="candles">—:—</div>
+        </div>
+        <div class="shabbat-time-box">
+          <div class="shabbat-time-lbl">צאת שבת</div>
+          <div class="shabbat-time-val" id="havdalah">—:—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Zmanim List -->
+    <div class="section-card">
+      <h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        זמני היום
+      </h2>
+      <div class="zmanim-list" id="zmanim-list">
+        <div class="loader-state">טוען זמנים...</div>
+      </div>
+      <div class="source-note">מקור: לוח אור החיים · מחושב לפי קואורדינטות אופקים</div>
+    </div>
+
+    <!-- Quick Links -->
+    <div class="section-card">
+      <h2>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        שירותי יהדות בעיר
+      </h2>
+      <div class="links-grid">
+        <a href="/prayer-times" class="link-card">
+          <div class="link-card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          </div>
+          <div class="link-card-text">
+            <div class="name">בתי כנסת</div>
+            <div class="desc">זמני תפילה וניווט</div>
+          </div>
+        </a>
+        <a href="/prayer-times#lessons" class="link-card">
+          <div class="link-card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          </div>
+          <div class="link-card-text">
+            <div class="name">שיעורי תורה</div>
+            <div class="desc">לפי יום ונושא</div>
+          </div>
+        </a>
+        <a href="/mikvaot" class="link-card">
+          <div class="link-card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a9 9 0 0 1-9 9 9 9 0 0 1-9-9c0-5 9-15 9-15s9 10 9 15z"/></svg>
+          </div>
+          <div class="link-card-text">
+            <div class="name">מקוואות</div>
+            <div class="desc">שעות פתיחה וכתובות</div>
+          </div>
+        </a>
+        <a href="/religious-services" class="link-card">
+          <div class="link-card-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 8v8M8 12h8"/></svg>
+          </div>
+          <div class="link-card-text">
+            <div class="name">שירותי דת</div>
+            <div class="desc">רבנים ומועצה דתית</div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+function pad(n) { return String(n).padStart(2, '0'); }
+function timeToMinutes(t) {
+  if (!t) return null;
+  const m = String(t).match(/(\d{1,2}):(\d{2})/);
+  if (!m) return null;
+  return parseInt(m[1], 10) * 60 + parseInt(m[2], 10);
+}
+
+async function loadZmanim() {
+  try {
+    const res = await fetch('/.netlify/functions/zmanim');
+    if (!res.ok) throw new Error('זמני התפילה אינם זמינים כעת');
+    const data = await res.json();
+    const T = data.times || {};
+    const I = data.info || {};
+
+    // תאריכים
+    const today = new Date();
+    $('he-date').textContent = I.hebrew_date || data.hebrew_date || '';
+    $('gr-date').textContent = today.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    // שבת
+    if (T.candles_lighting || T.shabbat_candles) {
+      const candles = T.candles_lighting || T.shabbat_candles;
+      const havdalah = T.shabbat_end || T.havdalah;
+      if (candles) $('candles').textContent = candles;
+      if (havdalah) $('havdalah').textContent = havdalah;
+      if (I.parasha) $('parasha').textContent = I.parasha;
+      $('shabbat-card').style.display = '';
+    }
+
+    // זמני יום מלאים
+    const zmanim = [
+      { name: 'עלות השחר',     time: T.alot_hashachar },
+      { name: 'טלית ותפילין',  time: T.talit_tefilin },
+      { name: 'זריחה',          time: T.sunrise || T.sunrise_flat },
+      { name: 'סוף ק"ש מג"א',   time: T.shma_mga },
+      { name: 'סוף ק"ש גר"א',   time: T.shma_gra },
+      { name: 'סוף תפילה מג"א', time: T.tefila_mga },
+      { name: 'סוף תפילה גר"א', time: T.tefila_gra },
+      { name: 'חצות היום',     time: T.chatzot },
+      { name: 'מנחה גדולה',     time: T.mincha_gedola },
+      { name: 'מנחה קטנה',      time: T.mincha_ktana },
+      { name: 'פלג המנחה',     time: T.plag_mincha },
+      { name: 'שקיעה',          time: T.sunset || T.sunset_flat },
+      { name: 'צאת הכוכבים',   time: T.tzet_hakochavim },
+      { name: 'רבנו תם',        time: T.tzet_rabenu_tam }
+    ].filter(z => z.time);
+
+    if (zmanim.length === 0) {
+      $('zmanim-list').innerHTML = '<div class="empty-state">לא נמצאו זמנים</div>';
+      return;
+    }
+
+    const nowMin = today.getHours() * 60 + today.getMinutes();
+    let nextIdx = -1;
+    for (let i = 0; i < zmanim.length; i++) {
+      const tm = timeToMinutes(zmanim[i].time);
+      if (tm && tm > nowMin) { nextIdx = i; break; }
+    }
+
+    $('zmanim-list').innerHTML = zmanim.map((z, i) => {
+      const tm = timeToMinutes(z.time);
+      const passed = tm && tm < nowMin && i !== nextIdx;
+      const isNext = i === nextIdx;
+      return `
+        <div class="zman-item ${passed ? 'passed' : ''} ${isNext ? 'next' : ''}">
+          <span class="zman-name">${esc(z.name)}</span>
+          <span class="zman-time">${esc(z.time)}</span>
+        </div>`;
+    }).join('');
+
+    // Next prayer card
+    if (nextIdx >= 0) {
+      const next = zmanim[nextIdx];
+      const tm = timeToMinutes(next.time);
+      const minsLeft = tm - nowMin;
+      const hrs = Math.floor(minsLeft / 60);
+      const mins = minsLeft % 60;
+      let countdown;
+      if (hrs > 0) countdown = `בעוד ${hrs} שעות${mins > 0 ? ` ו-${mins} דקות` : ''}`;
+      else countdown = `בעוד ${mins} דקות`;
+      $('next-name').textContent = next.name;
+      $('next-countdown').textContent = countdown;
+      $('next-time').textContent = next.time;
+      $('next-card').style.display = '';
+    }
+  } catch (e) {
+    console.error('Zmanim error:', e);
+    $('zmanim-list').innerHTML = `<div class="empty-state"><p>שגיאה: ${esc(e.message)}</p></div>`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', loadZmanim);
+</script>
+</body>
+</html>

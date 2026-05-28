@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+<title>מדיניות פרטיות | אופקים שלי</title>
+<meta name="description" content="מדיניות הפרטיות של אופקים שלי - איך אנחנו אוספים, שומרים ומשתמשים במידע האישי שלך.">
+<meta name="robots" content="noindex,follow">
+
+<link rel="canonical" href="https://myofaqim.co.il/privacy">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, var(--cream) 0%, #FFFFFF 100%); }
+
+  .legal-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff;
+    padding: 48px 24px;
+    text-align: center;
+  }
+  .legal-hero .eyebrow {
+    display: inline-block;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.2);
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    color: var(--orange);
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .legal-hero h1 { font-size: clamp(28px, 5vw, 40px); font-weight: 900; letter-spacing: -0.02em; margin: 0 0 8px; }
+  .legal-hero p { font-size: 14px; opacity: 0.85; margin: 0; }
+
+  .legal-body { max-width: 820px; margin: 0 auto; padding: 48px 24px 80px; }
+
+  .legal-meta {
+    background: var(--cream);
+    border-radius: 12px;
+    padding: 14px 18px;
+    margin-bottom: 32px;
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+    border-right: 4px solid var(--blue);
+  }
+  .legal-meta strong { color: var(--navy); }
+
+  .legal-toc { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px; margin-bottom: 32px; }
+  .legal-toc h2 { font-size: 13px; color: var(--ink-mute); margin: 0 0 12px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; }
+  .legal-toc ol { margin: 0; padding-right: 20px; columns: 2; column-gap: 24px; }
+  @media (max-width: 640px) { .legal-toc ol { columns: 1; } }
+  .legal-toc li { padding: 4px 0; font-size: 13px; break-inside: avoid; }
+  .legal-toc a { color: var(--blue); text-decoration: none; font-weight: 600; }
+
+  .legal-section { margin-bottom: 36px; scroll-margin-top: 100px; }
+  .legal-section h2 {
+    font-size: 22px; font-weight: 900; color: var(--navy);
+    margin: 0 0 14px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .legal-section h2 .num {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--navy) 100%);
+    color: #fff; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px; font-weight: 900; flex-shrink: 0;
+  }
+  .legal-section h3 { font-size: 16px; font-weight: 800; color: var(--navy); margin: 20px 0 8px; }
+  .legal-section p { font-size: 15px; line-height: 1.8; color: var(--ink-soft); margin: 0 0 12px; }
+  .legal-section ul, .legal-section ol { padding-right: 24px; line-height: 1.8; color: var(--ink-soft); font-size: 15px; }
+  .legal-section li { margin-bottom: 6px; }
+  .legal-section strong { color: var(--navy); font-weight: 700; }
+
+  .legal-box {
+    background: var(--cream);
+    border-right: 4px solid var(--blue);
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .legal-box.success {
+    background: rgba(101, 163, 13, 0.06);
+    border-right-color: var(--green);
+  }
+
+  .data-table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 16px 0;
+    border: 1px solid var(--line);
+    font-size: 14px;
+  }
+  .data-table th {
+    background: var(--cream);
+    color: var(--navy);
+    padding: 12px;
+    text-align: right;
+    font-weight: 800;
+    font-size: 13px;
+    border-bottom: 2px solid var(--line);
+  }
+  .data-table td {
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+    color: var(--ink-soft);
+    line-height: 1.6;
+    vertical-align: top;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+
+  .contact-footer { background: var(--cream); border-radius: 14px; padding: 24px; margin-top: 40px; text-align: center; }
+  .contact-footer h3 { font-size: 18px; color: var(--navy); margin: 0 0 8px; }
+  .contact-footer a { color: var(--blue); text-decoration: none; font-weight: 700; margin: 0 8px; }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="legal-hero">
+    <div class="eyebrow">פרטיות שלך, חשובה לנו</div>
+    <h1>מדיניות פרטיות</h1>
+    <p>כל מה שאתה צריך לדעת על המידע שלך אצלנו</p>
+  </section>
+
+  <div class="legal-body">
+
+    <div class="legal-meta">
+      <span><strong>תאריך עדכון אחרון:</strong> 24 במאי 2026</span>
+      <span><strong>גרסה:</strong> 1.0</span>
+    </div>
+
+    <div class="legal-box success">
+      <strong>מחויבות שלנו:</strong> אנחנו רואים בפרטיות שלך זכות בסיסית. מסמך זה מסביר בשקיפות מלאה איזה מידע אנחנו אוספים, למה, ואיך אנחנו שומרים עליו.
+    </div>
+
+    <div class="legal-toc">
+      <h2>תוכן עניינים</h2>
+      <ol>
+        <li><a href="#sec-1">כללי</a></li>
+        <li><a href="#sec-2">איזה מידע אנחנו אוספים</a></li>
+        <li><a href="#sec-3">איך אנחנו משתמשים במידע</a></li>
+        <li><a href="#sec-4">שיתוף עם צדדים שלישיים</a></li>
+        <li><a href="#sec-5">Cookies וטכנולוגיות מעקב</a></li>
+        <li><a href="#sec-6">אבטחת מידע</a></li>
+        <li><a href="#sec-7">תקופת שמירה</a></li>
+        <li><a href="#sec-8">זכויות המשתמש</a></li>
+        <li><a href="#sec-9">קטינים</a></li>
+        <li><a href="#sec-10">הודעות שיווקיות (SMS ומייל)</a></li>
+        <li><a href="#sec-11">שינויים במדיניות</a></li>
+        <li><a href="#sec-12">צור קשר</a></li>
+      </ol>
+    </div>
+
+    <!-- ─── סעיף 1 ─── -->
+    <section class="legal-section" id="sec-1">
+      <h2><span class="num">1</span> כללי</h2>
+      <p>
+        מדיניות פרטיות זו חלה על כל מי שמשתמש באתר אופקים שלי (להלן: "<strong>האתר</strong>") הפועל בכתובת myofaqim.co.il.
+      </p>
+      <p>
+        מדיניות זו פועלת בהתאם ל<strong>חוק הגנת הפרטיות, התשמ"א-1981</strong> ולתקנותיו, וכן בהתאם לעקרונות תקנון הגנת המידע הכללי האירופי (GDPR) במידה ויחולו.
+      </p>
+      <p>
+        עצם השימוש באתר מהווה הסכמה למדיניות פרטיות זו.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 2 ─── -->
+    <section class="legal-section" id="sec-2">
+      <h2><span class="num">2</span> איזה מידע אנחנו אוספים</h2>
+
+      <h3>2.1 מידע שאתה מוסר לנו ביוזמתך</h3>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>סוג מידע</th>
+            <th>מתי נאסף</th>
+            <th>למה</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>שם פרטי</strong></td>
+            <td>בעת הרשמה לאתר</td>
+            <td>כדי לפנות אליך באופן אישי</td>
+          </tr>
+          <tr>
+            <td><strong>כתובת דוא"ל</strong></td>
+            <td>בעת הרשמה</td>
+            <td>אישור הרשמה ושליחת עדכונים</td>
+          </tr>
+          <tr>
+            <td><strong>מספר טלפון</strong></td>
+            <td>בעת הרשמה (אופציונלי)</td>
+            <td>שליחת SMS חשובים ויצירת קשר</td>
+          </tr>
+          <tr>
+            <td><strong>פרטי עסק</strong></td>
+            <td>בעת רישום עסק</td>
+            <td>הצגת העסק בקטלוג</td>
+          </tr>
+          <tr>
+            <td><strong>תחום מקצוע</strong></td>
+            <td>בעת רישום בעל מקצוע</td>
+            <td>הצגת הפרופיל בקטלוג</td>
+          </tr>
+          <tr>
+            <td><strong>תוכן שאתה מעלה</strong></td>
+            <td>בכל שלב</td>
+            <td>הצגת התוכן באתר (ביקורות, תיאורים)</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>2.2 מידע שנאסף אוטומטית</h3>
+      <ul>
+        <li><strong>נתוני שימוש:</strong> דפים שביקרת בהם, זמן השימוש, פעולות שביצעת</li>
+        <li><strong>נתונים טכניים:</strong> סוג מכשיר, דפדפן, מערכת הפעלה, רזולוציית מסך</li>
+        <li><strong>כתובת IP:</strong> לזיהוי מיקום גיאוגרפי כללי ולמטרות אבטחה</li>
+        <li><strong>מיקום:</strong> אם נתת הרשאה - מיקום מדויק לתצוגת עסקים קרובים ובתי כנסת</li>
+        <li><strong>Cookies:</strong> פרטים נוספים בסעיף 5</li>
+      </ul>
+
+      <h3>2.3 מידע שאנחנו <span style="color: #DC2626;">לא</span> אוספים</h3>
+      <div class="legal-box">
+        <strong>חשוב לדעת:</strong> אנחנו לעולם <strong>לא</strong> אוספים:
+        <ul style="margin-top: 8px;">
+          <li>פרטי כרטיס אשראי או חשבון בנק</li>
+          <li>תעודת זהות</li>
+          <li>מידע רפואי או מידע רגיש</li>
+          <li>סיסמאות בטקסט פתוח (כל הסיסמאות מוצפנות)</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ─── סעיף 3 ─── -->
+    <section class="legal-section" id="sec-3">
+      <h2><span class="num">3</span> איך אנחנו משתמשים במידע</h2>
+      <p>אנו משתמשים במידע שנאסף למטרות הבאות בלבד:</p>
+      <ul>
+        <li><strong>מתן השירות:</strong> הפעלת האתר, הצגת תוכן רלוונטי, ניהול חשבונך</li>
+        <li><strong>תקשורת עסקאית:</strong> אישור הרשמה, אישור פעולות, הודעות חשובות</li>
+        <li><strong>תקשורת שיווקית:</strong> רק אם הסכמת מפורשת - שליחת מבצעים והטבות</li>
+        <li><strong>שיפור השירות:</strong> ניתוח שימוש לאיתור בעיות ושיפור החוויה</li>
+        <li><strong>אבטחה:</strong> זיהוי שימוש זדוני, מניעת הונאות והגנה מפני התקפות</li>
+        <li><strong>עמידה בחוק:</strong> מילוי חובות חוקיות, מענה לדרישות רשויות</li>
+      </ul>
+    </section>
+
+    <!-- ─── סעיף 4 ─── -->
+    <section class="legal-section" id="sec-4">
+      <h2><span class="num">4</span> שיתוף עם צדדים שלישיים</h2>
+      <p>
+        אנחנו <strong>לא מוכרים</strong> את המידע שלך לאף גוף. עם זאת, אנחנו משתמשים בספקי שירות מהימנים שעוזרים לנו להפעיל את האתר:
+      </p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>שירות</th>
+            <th>תפקיד</th>
+            <th>מידע משותף</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Netlify</strong></td>
+            <td>אחסון האתר</td>
+            <td>נתוני גישה טכניים</td>
+          </tr>
+          <tr>
+            <td><strong>Supabase</strong></td>
+            <td>מסד נתונים</td>
+            <td>כל המידע השמור</td>
+          </tr>
+          <tr>
+            <td><strong>Resend</strong></td>
+            <td>שליחת אימיילים</td>
+            <td>כתובת דוא"ל ושם</td>
+          </tr>
+          <tr>
+            <td><strong>019 SMS</strong></td>
+            <td>שליחת SMS</td>
+            <td>מספר טלפון בלבד</td>
+          </tr>
+          <tr>
+            <td><strong>Hebcal API</strong></td>
+            <td>זמני הלכה</td>
+            <td>מיקום גיאוגרפי כללי</td>
+          </tr>
+          <tr>
+            <td><strong>Google Maps</strong></td>
+            <td>תצוגת מפות וניווט</td>
+            <td>קואורדינטות (כאשר משתמשים)</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>
+        בנוסף, אנו עשויים לחשוף מידע אם נדרשים לכך על פי דין, צו בית משפט, או לצורך הגנה על זכויותינו או על שלום הציבור.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 5 ─── -->
+    <section class="legal-section" id="sec-5">
+      <h2><span class="num">5</span> Cookies וטכנולוגיות מעקב</h2>
+      <p>
+        האתר משתמש ב-<strong>Cookies</strong> (עוגיות) - קבצים קטנים שנשמרים בדפדפן שלך לצורך:
+      </p>
+      <ul>
+        <li><strong>Cookies הכרחיים:</strong> שמירה על הפעלת האתר (לא ניתן לבטל)</li>
+        <li><strong>Cookies תפעוליים:</strong> זכירת העדפות (שפה, מיקום, רכיבים נצפים)</li>
+        <li><strong>Cookies אנליטיים:</strong> איסוף נתונים אנונימיים על שימוש (ניתן לבטל)</li>
+      </ul>
+      <p>
+        ניתן לבטל את ה-Cookies בהגדרות הדפדפן, אולם הדבר עלול לפגוע בחוויית השימוש.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 6 ─── -->
+    <section class="legal-section" id="sec-6">
+      <h2><span class="num">6</span> אבטחת מידע</h2>
+      <p>
+        אנו נוקטים אמצעי אבטחה מקובלים להגנה על המידע שלך:
+      </p>
+      <ul>
+        <li>הצפנת תעבורה באמצעות <strong>SSL/TLS</strong> (HTTPS)</li>
+        <li>הצפנת סיסמאות באמצעות אלגוריתמי גיבוב מתקדמים</li>
+        <li>גישה מבוקרת למידע - רק לאנשי צוות מורשים</li>
+        <li>גיבויים תקופתיים</li>
+        <li>חומות אש ומערכות זיהוי חדירות</li>
+        <li>עדכוני אבטחה שוטפים של כל המערכות</li>
+      </ul>
+      <div class="legal-box warning">
+        <strong>חשוב להבין:</strong> אף מערכת אינה חסינה ב-100%. אנו עושים את מירב המאמצים, אך לא יכולים להתחייב להגנה מוחלטת.
+      </div>
+    </section>
+
+    <!-- ─── סעיף 7 ─── -->
+    <section class="legal-section" id="sec-7">
+      <h2><span class="num">7</span> תקופת שמירה</h2>
+      <p>
+        אנחנו שומרים את המידע שלך כל עוד יש לנו מטרה לגיטימית או חובה חוקית לעשות זאת:
+      </p>
+      <ul>
+        <li><strong>מידע חשבון:</strong> כל עוד החשבון פעיל + 12 חודשים לאחר ביטולו</li>
+        <li><strong>נתוני שימוש:</strong> עד 24 חודשים מאיסוף</li>
+        <li><strong>תקשורת (אימיילים, SMS):</strong> עד 12 חודשים</li>
+        <li><strong>מידע לצורך חוק:</strong> בהתאם לדרישות החוק (לרוב 7 שנים)</li>
+      </ul>
+      <p>
+        בכל עת ניתן לבקש מאיתנו למחוק את המידע, בכפוף לסעיף 8 להלן.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 8 ─── -->
+    <section class="legal-section" id="sec-8">
+      <h2><span class="num">8</span> זכויות המשתמש</h2>
+      <p>
+        לפי החוק, יש לך הזכויות הבאות לגבי המידע האישי שלך:
+      </p>
+      <ul>
+        <li><strong>זכות עיון:</strong> לבקש לראות איזה מידע שמור עליך</li>
+        <li><strong>זכות תיקון:</strong> לתקן מידע לא מדויק</li>
+        <li><strong>זכות מחיקה ("הזכות להישכח"):</strong> לבקש מחיקת המידע</li>
+        <li><strong>זכות התנגדות:</strong> להתנגד לעיבוד המידע למטרות שיווק</li>
+        <li><strong>זכות ניידות:</strong> לקבל את המידע בפורמט סטנדרטי</li>
+        <li><strong>זכות לביטול הסכמה:</strong> בכל עת, ללא הסבר</li>
+      </ul>
+      <p>
+        למימוש זכויותיך, פנה אלינו ב-<a href="mailto:privacy@myofaqim.co.il" style="color: var(--blue);">privacy@myofaqim.co.il</a>. נשיב תוך 30 ימים.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 9 ─── -->
+    <section class="legal-section" id="sec-9">
+      <h2><span class="num">9</span> קטינים</h2>
+      <p>
+        האתר אינו מיועד לילדים מתחת לגיל 13. <strong>אנחנו לא אוספים ביודעין מידע מקטינים מתחת לגיל 13</strong>. אם הוריך/אפוטרופוסיך גילו שילדם מתחת לגיל 13 מסר לנו מידע, אנא צרו קשר ונמחק זאת מיד.
+      </p>
+      <p>
+        משתמשים בני 13-18 רשאים להירשם לאתר רק באישור הורה או אפוטרופוס.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 10 ─── -->
+    <section class="legal-section" id="sec-10">
+      <h2><span class="num">10</span> הודעות שיווקיות (SMS ומייל)</h2>
+      <p>
+        אנו פועלים בכפיפות מלאה ל<strong>סעיף 30א לחוק התקשורת</strong> ("חוק הספאם"):
+      </p>
+      <ul>
+        <li><strong>הודעות עסקאיות</strong> (אישור הרשמה, אישור פעולה) - נשלחות לכל משתמש שמסר טלפון/מייל, גם ללא הסכמה מפורשת לשיווק.</li>
+        <li><strong>הודעות שיווקיות</strong> (מבצעים, קופונים) - נשלחות <strong>רק</strong> אם סימנת מפורשות הסכמה לקבלת חומר שיווקי.</li>
+        <li><strong>ביטול הסכמה</strong> - ניתן בכל עת, בקלות:
+          <ul style="margin-top: 4px;">
+            <li>SMS: השב "הסר" / "stop"</li>
+            <li>מייל: לחץ על "ביטול הרשמה" בתחתית כל מייל</li>
+            <li>או פנה אלינו ישירות</li>
+          </ul>
+        </li>
+      </ul>
+    </section>
+
+    <!-- ─── סעיף 11 ─── -->
+    <section class="legal-section" id="sec-11">
+      <h2><span class="num">11</span> שינויים במדיניות</h2>
+      <p>
+        אנו עשויים לעדכן מדיניות זו מעת לעת. שינויים מהותיים יפורסמו באתר וישלחו בהודעה למשתמשים רשומים. תאריך העדכון האחרון מופיע בראש המסמך.
+      </p>
+    </section>
+
+    <!-- ─── סעיף 12 ─── -->
+    <section class="legal-section" id="sec-12">
+      <h2><span class="num">12</span> צור קשר</h2>
+      <p>
+        לכל שאלה, בקשה או תלונה בנושאי פרטיות, פנה אלינו:
+      </p>
+      <div class="contact-footer">
+        <h3>צור קשר בנושאי פרטיות</h3>
+        <p style="margin: 0;">
+          <a href="mailto:privacy@myofaqim.co.il">privacy@myofaqim.co.il</a> ·
+          <a href="https://wa.me/972542338233">WhatsApp: 054-233-8233</a>
+        </p>
+        <p style="margin: 12px 0 0; font-size: 13px; color: var(--ink-mute);">
+          זמן תגובה ממוצע: עד 7 ימי עסקים
+        </p>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+</body>
+</html>

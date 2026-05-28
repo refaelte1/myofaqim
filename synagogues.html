@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>בתי כנסת באופקים | אופקים שלי</title>
+<meta name="description" content="אינדקס בתי הכנסת בעיר אופקים — נוסחים, זמני תפילה, מנהגים, ופרטי קשר.">
+<link rel="canonical" href="https://myofaqim.co.il/synagogues">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:title" content="בתי כנסת באופקים">
+<meta property="og:description" content="אינדקס בתי הכנסת בעיר">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/zmanim">יהדות</a> · <span>בתי כנסת</span></div>
+    <h1>בתי כנסת <em>בעיר אופקים</em></h1>
+    <p>אינדקס בתי הכנסת בעיר — נוסחים, זמני תפילה, מנהגים, ופרטי יצירת קשר ישירים.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="syn-search" class="search-input" placeholder="חפשו בית כנסת, רב או שכונה..." oninput="renderSynagogues()">
+      <select id="syn-nusach" class="filter-select" onchange="renderSynagogues()">
+        <option value="">כל הנוסחים</option>
+        <option value="אשכנז">אשכנז</option>
+        <option value="ספרד">ספרד</option>
+        <option value="עדות המזרח">עדות המזרח</option>
+        <option value='חב"ד'>חב"ד</option>
+        <option value="תימני">תימני</option>
+        <option value="מעורב">מעורב</option>
+      </select>
+    </div>
+
+    <div id="syn-count" class="result-count"></div>
+
+    <div id="syn-area" class="content-grid">
+      <div class="state-loading">טוען בתי כנסת...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>יש לכם בית כנסת בעיר ותרצו להירשם?</h3>
+      <p>נשמח להוסיף אותו לאינדקס בעיר. צרו קשר ונעדכן את הפרטים.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+let synSb;
+let allSynagogues = [];
+
+async function initSyn() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initSyn, 100); return; }
+  synSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadSynagogues();
+}
+
+async function loadSynagogues() {
+  try {
+    const { data, error } = await synSb.from('synagogues').select('*').order('name', { ascending: true });
+    if (error) throw error;
+    allSynagogues = data || [];
+    renderSynagogues();
+  } catch (e) {
+    console.error('[synagogues] error:', e);
+    document.getElementById('syn-area').innerHTML =
+      '<div class="state-empty"><h3>בעיה זמנית</h3><p>לא הצלחנו לטעון את הרשימה. נסו לרענן את הדף.</p></div>';
+  }
+}
+
+function renderSynagogues() {
+  const search = (document.getElementById('syn-search').value || '').toLowerCase();
+  const nusach = document.getElementById('syn-nusach').value;
+
+  let items = allSynagogues;
+  if (search) {
+    items = items.filter(s => {
+      const text = [s.name, s.rabbi_name, s.neighborhood, s.address, s.description].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+  if (nusach) items = items.filter(s => s.nusach === nusach);
+
+  document.getElementById('syn-count').innerHTML = `נמצאו <strong>${items.length}</strong> בתי כנסת`;
+
+  const area = document.getElementById('syn-area');
+  if (items.length === 0) {
+    area.innerHTML = '<div class="state-empty"><h3>לא נמצאו בתי כנסת</h3><p>נסו חיפוש אחר או שנו את הסינון</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(s => {
+    const phone = s.contact_phone || '';
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const waPhone = cleanPhone.startsWith('0') ? '972' + cleanPhone.slice(1) : cleanPhone;
+    const hasTimes = s.shacharit_time || s.mincha_time || s.arvit_time;
+
+    const rabbiPhone = s.rabbi_phone || '';
+    const rabbiClean = rabbiPhone.replace(/[^0-9]/g, '');
+    const rabbiWa = rabbiClean.startsWith('0') ? '972' + rabbiClean.slice(1) : rabbiClean;
+
+    const gabaiPhone = s.gabai_phone || '';
+    const gabaiClean = gabaiPhone.replace(/[^0-9]/g, '');
+    const gabaiWa = gabaiClean.startsWith('0') ? '972' + gabaiClean.slice(1) : gabaiClean;
+
+    return `
+      <div class="content-card">
+        ${s.image_url ? `<img src="${esc(s.image_url)}" alt="${esc(s.name)}" style="width:100%;height:160px;object-fit:cover;border-radius:10px;margin-bottom:8px" loading="lazy">` : ''}
+        <div class="content-card-header">
+          ${s.nusach ? `<span class="content-card-tag">נוסח ${esc(s.nusach)}</span>` : ''}
+        </div>
+        <h3>${esc(s.name || 'ללא שם')}</h3>
+
+        <div class="card-info">
+          ${s.rabbi_name ? `
+            <div class="card-info-row"><strong>הרב:</strong>
+              <span>${esc(s.rabbi_name)}</span>
+              ${s.rabbi_phone ? `<a href="tel:${esc(s.rabbi_phone)}" style="color:var(--blue);font-weight:700;margin-right:6px">${esc(s.rabbi_phone)}</a>` : ''}
+            </div>
+          ` : ''}
+          ${s.gabai_name ? `
+            <div class="card-info-row"><strong>גבאי:</strong>
+              <span>${esc(s.gabai_name)}</span>
+              ${s.gabai_phone ? `<a href="tel:${esc(s.gabai_phone)}" style="color:var(--blue);font-weight:700;margin-right:6px">${esc(s.gabai_phone)}</a>` : ''}
+            </div>
+          ` : ''}
+          ${s.address ? `<div class="card-info-row"><strong>כתובת:</strong> ${esc(s.address)}</div>` : ''}
+          ${s.neighborhood ? `<div class="card-info-row"><strong>שכונה:</strong> ${esc(s.neighborhood)}</div>` : ''}
+        </div>
+
+        ${hasTimes ? `
+          <div class="times-grid">
+            <div class="time-item">
+              <span class="time-label">שחרית</span>
+              <span class="time-value">${esc(s.shacharit_time || '—')}</span>
+            </div>
+            <div class="time-item">
+              <span class="time-label">מנחה</span>
+              <span class="time-value">${esc(s.mincha_time || '—')}</span>
+            </div>
+            <div class="time-item">
+              <span class="time-label">ערבית</span>
+              <span class="time-value">${esc(s.arvit_time || '—')}</span>
+            </div>
+          </div>
+        ` : ''}
+
+        ${s.shabbat_times ? `<p style="font-size:13px;background:var(--cream-warm);padding:10px 12px;border-radius:8px;margin:0"><strong>זמני שבת:</strong> ${esc(s.shabbat_times)}</p>` : ''}
+
+        ${s.description ? `<p>${esc(s.description)}</p>` : ''}
+
+        ${(phone || s.gabai_phone || s.rabbi_phone) ? `
+          <div class="card-actions">
+            ${phone ? `<a href="tel:${esc(phone)}" class="card-btn primary">בירורים</a>` : ''}
+            ${gabaiPhone ? `<a href="https://wa.me/${esc(gabaiWa)}" target="_blank" rel="noopener" class="card-btn whatsapp">WhatsApp לגבאי</a>` : (phone ? `<a href="https://wa.me/${esc(waPhone)}" target="_blank" rel="noopener" class="card-btn whatsapp">WhatsApp</a>` : '')}
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initSyn);
+} else {
+  initSyn();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>חדשות אופקים | אופקים שלי</title>
+<meta name="description" content="עדכוני חדשות מהעיר אופקים - אירועים, פיתוח, מסחר, קהילה ועוד.">
+<link rel="canonical" href="https://myofaqim.co.il/news">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="חדשות אופקים">
+<meta property="og:description" content="עדכונים מהעיר">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<style>
+  .news-card { padding: 0; overflow: hidden; }
+  .news-card-banner {
+    height: 6px;
+    background: linear-gradient(90deg, var(--navy) 0%, var(--blue) 100%);
+    margin: -1px -1px 0;
+  }
+  .news-card-body { padding: 22px 24px 24px; display: flex; flex-direction: column; gap: 10px; }
+  .news-card.cat-news .news-card-banner { background: linear-gradient(90deg, var(--navy) 0%, var(--blue) 100%); }
+  .news-card.cat-events .news-card-banner { background: linear-gradient(90deg, var(--orange) 0%, var(--orange-light) 100%); }
+  .news-card.cat-business .news-card-banner { background: linear-gradient(90deg, var(--blue) 0%, var(--blue-light) 100%); }
+  .news-card.cat-culture .news-card-banner { background: linear-gradient(90deg, #7C3AED 0%, #A78BFA 100%); }
+  .news-card.cat-sports .news-card-banner { background: linear-gradient(90deg, var(--green) 0%, var(--green-light) 100%); }
+  .news-card.cat-community .news-card-banner { background: linear-gradient(90deg, #DC2626 0%, #F59E0B 100%); }
+  .news-cover {
+    width: 100%; aspect-ratio: 16/9; object-fit: cover;
+    background: var(--cream-warm);
+  }
+  .news-subtitle {
+    font-size: 14px; color: var(--ink-soft); line-height: 1.55;
+    margin: 0;
+  }
+  .news-date {
+    font-size: 12px; color: var(--ink-mute); font-weight: 600;
+    margin-top: auto;
+  }
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <span>חדשות</span></div>
+    <h1>חדשות <em>אופקים</em></h1>
+    <p>עדכונים שוטפים מהעיר — אירועים, פיתוח, מסחר, קהילה, וכל מה שחשוב לדעת.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="news-search" class="search-input" placeholder="חפשו ידיעה..." oninput="renderNews()">
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all" onclick="filterCat('all', this)">הכל</button>
+      <button class="cat-chip" data-cat="news" onclick="filterCat('news', this)">חדשות</button>
+      <button class="cat-chip" data-cat="events" onclick="filterCat('events', this)">אירועים</button>
+      <button class="cat-chip" data-cat="culture" onclick="filterCat('culture', this)">תרבות</button>
+      <button class="cat-chip" data-cat="sports" onclick="filterCat('sports', this)">ספורט</button>
+      <button class="cat-chip" data-cat="community" onclick="filterCat('community', this)">קהילה</button>
+      <button class="cat-chip" data-cat="business" onclick="filterCat('business', this)">עסקים</button>
+    </div>
+
+    <div id="news-count" class="result-count"></div>
+
+    <div id="news-area" class="content-grid">
+      <div class="state-loading">טוען חדשות...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>יש לכם סיפור מעניין לסקר?</h3>
+      <p>שלחו לנו טיפ או ידיעה ונדאג לפרסם.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+const CAT_LABELS = {
+  news: 'חדשות', events: 'אירועים', culture: 'תרבות',
+  sports: 'ספורט', community: 'קהילה', business: 'עסקים'
+};
+
+let newsSb, allNews = [], currentCat = 'all';
+
+async function initNews() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initNews, 100); return; }
+  newsSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadNews();
+}
+
+async function loadNews() {
+  try {
+    const { data, error } = await newsSb.from('news_articles').select('*')
+      .eq('status', 'published')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    allNews = data || [];
+    renderNews();
+  } catch (e) {
+    console.error('[news] error:', e);
+    document.getElementById('news-area').innerHTML =
+      '<div class="state-empty"><h3>בקרוב</h3><p>תוכן החדשות בהשלמה. חזרו בקרוב!</p></div>';
+  }
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderNews();
+}
+
+function fmtDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' });
+  } catch { return ''; }
+}
+
+function renderNews() {
+  const search = (document.getElementById('news-search').value || '').toLowerCase();
+  let items = allNews;
+
+  if (currentCat !== 'all') items = items.filter(n => n.category === currentCat);
+
+  if (search) {
+    items = items.filter(n => {
+      const text = [n.title, n.subtitle, n.content, n.author].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  document.getElementById('news-count').innerHTML = `נמצאו <strong>${items.length}</strong> ידיעות`;
+
+  const area = document.getElementById('news-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>אין ידיעות בקטגוריה זו</h3><p>נסו קטגוריה אחרת או חזרו בקרוב.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(n => {
+    const catLabel = CAT_LABELS[n.category] || n.category || 'חדשות';
+    const slug = n.slug || n.id;
+    return `
+      <a href="/article/${esc(slug)}" class="content-card news-card cat-${esc(n.category || 'news')}" style="text-decoration:none;color:inherit">
+        <div class="news-card-banner"></div>
+        ${n.cover_image_url ? `<img src="${esc(n.cover_image_url)}" alt="${esc(n.title)}" class="news-cover" loading="lazy">` : ''}
+        <div class="news-card-body">
+          <div class="content-card-header">
+            <span class="content-card-tag blue">${esc(catLabel)}</span>
+          </div>
+          <h3>${esc(n.title || 'ללא כותרת')}</h3>
+          ${n.subtitle ? `<p class="news-subtitle">${esc(n.subtitle)}</p>` : ''}
+          ${n.author || n.created_at ? `
+            <div class="card-meta news-date">
+              ${n.author ? `<span>${esc(n.author)}</span>` : ''}
+              ${n.created_at ? `<span>${fmtDate(n.created_at)}</span>` : ''}
+            </div>
+          ` : ''}
+        </div>
+      </a>
+    `;
+  }).join('');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initNews);
+} else {
+  initNews();
+}
+</script>
+</body>
+</html>

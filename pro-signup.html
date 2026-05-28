@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>הצטרפות כבעל מקצוע | אופקים שלי</title>
+<meta name="description" content="הצטרפו לאינדקס בעלי המקצוע של אופקים שלי. קבלו לידים, פנו ישירות ללקוחות וצמחו לעסק מבוסס.">
+<link rel="canonical" href="https://myofaqim.co.il/pro-signup">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+.signup-section{padding:48px 0}
+.plans-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:32px}
+@media(max-width:1024px){.plans-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.plans-grid{grid-template-columns:1fr}}
+
+.plan{background:var(--paper);border:2px solid var(--line);padding:32px 24px;display:flex;flex-direction:column;gap:14px;transition:all .25s;cursor:pointer;position:relative}
+.plan:hover{transform:translateY(-3px);box-shadow:0 16px 40px rgba(13,27,62,0.08);border-color:var(--gold)}
+.plan.selected{border-color:var(--navy);background:var(--cream-warm)}
+.plan.enterprise{border-color:var(--gold)}
+.plan.recommended::before{content:'מומלץ';position:absolute;top:-12px;right:20px;background:var(--navy);color:var(--gold);font-size:10px;font-weight:800;padding:5px 14px;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px}
+.plan.enterprise::before{content:'VIP';background:var(--gold);color:var(--navy);position:absolute;top:-12px;right:20px;font-size:10px;font-weight:800;padding:5px 14px;letter-spacing:1.5px;text-transform:uppercase;border-radius:2px}
+
+.plan-tag{font-size:11px;color:var(--ink-mute);font-weight:700;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px}
+.plan-name{font-family:var(--sans);font-size:22px;font-weight:900;color:var(--navy);letter-spacing:-0.01em}
+.plan-price{font-family:var(--sans);font-size:34px;font-weight:900;color:var(--navy);line-height:1;letter-spacing:-0.02em;display:flex;align-items:baseline;gap:6px}
+.plan-price small{font-size:14px;font-weight:500;color:var(--ink-mute)}
+.plan-price-old{font-size:14px;color:var(--ink-mute);text-decoration:line-through;font-weight:500}
+.plan-launch{font-size:10px;background:var(--red);color:#fff;font-weight:800;padding:3px 8px;letter-spacing:1px;text-transform:uppercase;border-radius:2px;align-self:flex-start}
+
+.plan-features{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-soft);line-height:1.6;flex:1}
+.plan-features li{padding-right:18px;position:relative;list-style:none}
+.plan-features li::before{content:'✓';position:absolute;right:0;color:var(--green);font-weight:800}
+.plan-features li.no::before{content:'✗';color:var(--ink-mute)}
+
+.plan-select{margin-top:auto;padding:13px;width:100%;border-radius:2px;font-weight:700;letter-spacing:0.5px;font-family:var(--sans);cursor:pointer;font-size:13px;border:none}
+
+.stepper{display:flex;justify-content:center;gap:8px;margin-bottom:48px;flex-wrap:wrap}
+.step{padding:10px 18px;font-size:13px;font-weight:700;color:var(--ink-mute);letter-spacing:0.5px;border-bottom:2px solid var(--line);transition:all .2s}
+.step.active{color:var(--navy);border-color:var(--gold)}
+.step.done{color:var(--green);border-color:var(--green)}
+.step-num{display:inline-block;width:22px;height:22px;border-radius:50%;background:var(--line);color:var(--ink-mute);font-size:11px;text-align:center;line-height:22px;margin-left:8px;font-weight:700}
+.step.active .step-num{background:var(--gold);color:var(--navy)}
+.step.done .step-num{background:var(--green);color:#fff}
+
+.form-card{background:var(--paper);border:1px solid var(--line);padding:40px;max-width:780px;margin:0 auto}
+.form-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:16px}
+@media(max-width:560px){.form-grid-2{grid-template-columns:1fr}}
+
+.success-card{background:var(--paper);border:2px solid var(--green);padding:60px 40px;max-width:680px;margin:0 auto;text-align:center}
+.success-card h2{font-family:var(--sans);font-size:32px;color:var(--navy);margin-bottom:14px;letter-spacing:-0.02em}
+.success-card p{color:var(--ink-soft);font-size:16px;margin-bottom:14px;line-height:1.7}
+
+.summary-box{background:var(--cream-warm);border:1px solid var(--gold);padding:24px;margin-bottom:24px}
+.summary-box h4{font-family:var(--sans);font-size:18px;color:var(--navy);margin-bottom:14px}
+.summary-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:14px}
+.summary-row:last-child{border-bottom:none;font-weight:700;color:var(--navy)}
+</style>
+</head>
+<body class="minimal-chrome">
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/professionals">בעלי מקצוע</a> · <span>הצטרפות</span></div>
+    <h1>הצטרפו <em>כבעל מקצוע</em></h1>
+    <p>קבלו פניות איכותיות מתושבי אופקים. בלי תיווך, בלי עמלות. ישירות מהלקוח אליכם.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="stepper">
+      <div class="step active" id="step1"><span class="step-num">1</span>בחירת מסלול</div>
+      <div class="step" id="step2"><span class="step-num">2</span>פרטי המקצוע</div>
+      <div class="step" id="step3"><span class="step-num">3</span>סיום</div>
+    </div>
+
+    <!-- STEP 1: Plans -->
+    <div id="step1-content">
+      <div class="section-head" style="margin-bottom:32px">
+        <div class="eyebrow">בחירת מסלול</div>
+        <h2>בחרו את <em>המסלול</em> שמתאים לכם</h2>
+        <p>התחילו ב-FREE ושדרגו בכל עת. מחירי השקה תקפים לחודשי הפעילות הראשונים.</p>
+      </div>
+
+      <div class="plans-grid">
+
+        <div class="plan" data-plan="free" onclick="selectPlan('free')">
+          <div>
+            <div class="plan-tag">בסיסי</div>
+            <div class="plan-name">FREE</div>
+          </div>
+          <div class="plan-price">0 <small>₪</small></div>
+          <div style="font-size:12px;color:var(--ink-mute)">לתמיד · ללא תשלום</div>
+          <ul class="plan-features">
+            <li>הופעה באינדקס</li>
+            <li>פרטי קשר בסיסיים</li>
+            <li>תחומי שירות</li>
+            <li class="no">לידים</li>
+            <li class="no">תמונות</li>
+            <li class="no">דירוגים</li>
+          </ul>
+          <button class="plan-select btn-outline">בחירה</button>
+        </div>
+
+        <div class="plan" data-plan="basic" onclick="selectPlan('basic')">
+          <div>
+            <div class="plan-tag">בסיס+</div>
+            <div class="plan-name">BASIC</div>
+          </div>
+          <div>
+            <div class="plan-price">99 <small>₪/חודש</small></div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span class="plan-launch">השקה</span>
+              <span class="plan-price-old">149 ₪</span>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li>כל מה ש-FREE</li>
+            <li>תמונת פרופיל</li>
+            <li>תיאור מקצועי</li>
+            <li>עד 5 לידים בחודש</li>
+            <li>דירוגים מלקוחות</li>
+            <li class="no">זמינות בזמן אמת</li>
+          </ul>
+          <button class="plan-select btn-outline">בחירה</button>
+        </div>
+
+        <div class="plan recommended" data-plan="pro" onclick="selectPlan('pro')">
+          <div>
+            <div class="plan-tag">מקצועי</div>
+            <div class="plan-name">PRO</div>
+          </div>
+          <div>
+            <div class="plan-price">149 <small>₪/חודש</small></div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span class="plan-launch">השקה</span>
+              <span class="plan-price-old">249 ₪</span>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li>כל מה ש-BASIC</li>
+            <li>לידים ללא הגבלה</li>
+            <li>כפתור "פנוי עכשיו"</li>
+            <li>גלריית עבודות</li>
+            <li>דחיפה לבר התראות</li>
+            <li>סטטיסטיקות</li>
+          </ul>
+          <button class="plan-select btn-outline">בחירה</button>
+        </div>
+
+        <div class="plan enterprise" data-plan="enterprise" onclick="selectPlan('enterprise')">
+          <div>
+            <div class="plan-tag">בכיר</div>
+            <div class="plan-name" style="color:var(--gold-dk)">ENTERPRISE</div>
+          </div>
+          <div>
+            <div class="plan-price">449 <small>₪/חודש</small></div>
+            <div style="display:flex;gap:10px;align-items:center">
+              <span class="plan-launch">השקה</span>
+              <span class="plan-price-old">649 ₪</span>
+            </div>
+          </div>
+          <ul class="plan-features">
+            <li>כל מה ש-PRO</li>
+            <li>הופעה ראשונה</li>
+            <li>באנר בדף הבית</li>
+            <li>4 פוסטים מקודמים</li>
+            <li>נציג אישי 24/6</li>
+            <li>דוחות מותאמים</li>
+          </ul>
+          <button class="plan-select btn-outline">בחירה</button>
+        </div>
+
+      </div>
+
+      <div style="text-align:center;margin-top:32px;font-size:13px;color:var(--ink-mute)">
+        כל המסלולים כוללים: הופעה באינדקס · התראות WhatsApp ללידים · אזור אישי לניהול<br>
+        ביטול בכל עת · ללא התחייבות
+      </div>
+    </div>
+
+    <!-- STEP 2: Details -->
+    <div id="step2-content" style="display:none">
+      <div class="form-card">
+        <h2 style="font-family:var(--sans);font-size:26px;color:var(--navy);margin-bottom:24px;letter-spacing:-0.01em">פרטי <em style="color:var(--gold-dk)">המקצוע</em></h2>
+
+        <div class="modal-err" id="signup-err"></div>
+
+        <div class="form-grid-2">
+          <div class="field-group" style="margin:0">
+            <label>שם מלא *</label>
+            <input type="text" id="pro-name" maxlength="60">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label>מקצוע *</label>
+            <select id="pro-trade">
+              <option value="">בחרו...</option>
+              <option value="renovation">שיפוצים</option>
+              <option value="electrician">חשמלאי</option>
+              <option value="plumber">אינסטלטור</option>
+              <option value="ac">מיזוג אוויר</option>
+              <option value="cleaning">ניקיון</option>
+              <option value="gardening">גינון</option>
+              <option value="locksmith">מנעולן</option>
+              <option value="tutor">מורה פרטי</option>
+              <option value="tech">טכנאי מחשבים</option>
+              <option value="moving">הובלות</option>
+              <option value="other">אחר</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>תיאור מקצועי *</label>
+          <textarea id="pro-bio" placeholder="ספרו על הניסיון, על מה שאתם עושים הכי טוב..."></textarea>
+        </div>
+
+        <div class="field-group">
+          <label>שנות ניסיון</label>
+          <input type="number" id="pro-years" placeholder="5" min="0" max="60">
+        </div>
+
+        <div class="form-grid-2">
+          <div class="field-group" style="margin:0">
+            <label>טלפון *</label>
+            <input type="tel" id="pro-phone" dir="ltr" placeholder="050-0000000">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label>אימייל *</label>
+            <input type="email" id="pro-email" dir="ltr">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>אזורי שירות (מופרדים בפסיק)</label>
+          <input type="text" id="pro-areas" placeholder="אופקים, נתיבות, אזור">
+        </div>
+
+        <div class="summary-box">
+          <h4>סיכום הבחירה</h4>
+          <div class="summary-row">
+            <span>מסלול:</span>
+            <span id="summary-plan">—</span>
+          </div>
+          <div class="summary-row">
+            <span>תשלום חודשי:</span>
+            <span id="summary-price">—</span>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn-outline" onclick="goToStep(1)" style="flex:1;min-width:140px">← חזרה</button>
+          <button class="btn-filled" onclick="submitProSignup()" id="signup-submit" style="flex:2;min-width:200px;padding:14px">הצטרפות</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Success -->
+    <div id="step3-content" style="display:none">
+      <div class="success-card">
+        <div style="font-family:var(--sans);font-size:48px;color:var(--green);font-weight:900;margin-bottom:14px">✓</div>
+        <h2>ההרשמה התקבלה!</h2>
+        <p>נציג שלנו יחזור אליכם תוך 24 שעות לאישור הפרטים והתחלת הפעילות באתר.</p>
+        <p style="font-size:13px;color:var(--ink-mute);margin-top:18px">קיבלתם אימייל אישור.</p>
+        <div style="display:inline-flex;gap:12px;flex-wrap:wrap;margin-top:24px">
+          <a href="/" class="btn-outline">חזרה לדף הבית</a>
+          <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">דברו איתנו ב-WhatsApp</a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  const PLAN_DATA = {
+    free:        { name: 'FREE', price: 0, label: 'חינם' },
+    basic:       { name: 'BASIC', price: 99, label: '99 ₪/חודש (השקה)' },
+    pro:         { name: 'PRO', price: 149, label: '149 ₪/חודש (השקה)' },
+    enterprise:  { name: 'ENTERPRISE', price: 449, label: '449 ₪/חודש (השקה)' }
+  };
+  let selectedPlan = 'pro', sb;
+
+  function selectPlan(p) {
+    selectedPlan = p;
+    document.querySelectorAll('.plan').forEach(el => el.classList.toggle('selected', el.dataset.plan === p));
+    setTimeout(() => goToStep(2), 200);
+  }
+
+  function goToStep(n) {
+    [1,2,3].forEach(i => {
+      $('step' + i + '-content').style.display = i === n ? '' : 'none';
+      $('step' + i).classList.toggle('active', i === n);
+      $('step' + i).classList.toggle('done', i < n);
+    });
+    if (n === 2) {
+      $('summary-plan').textContent = PLAN_DATA[selectedPlan].name;
+      $('summary-price').textContent = PLAN_DATA[selectedPlan].label;
+    }
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function submitProSignup() {
+    const errEl = $('signup-err');
+    errEl.classList.remove('show');
+    const name = $('pro-name').value.trim();
+    const trade = $('pro-trade').value;
+    const bio = $('pro-bio').value.trim();
+    const phone = $('pro-phone').value.trim();
+    const email = $('pro-email').value.trim();
+
+    function err(m) { errEl.textContent = m; errEl.classList.add('show'); return false; }
+    if (!name) return err('שם מלא חובה');
+    if (!trade) return err('יש לבחור מקצוע');
+    if (!bio) return err('תיאור מקצועי חובה');
+    if (!phone) return err('טלפון חובה');
+    if (!email) return err('אימייל חובה');
+
+    const btn = $('signup-submit');
+    btn.disabled = true; btn.textContent = 'שולח...';
+
+    try {
+      const areas = $('pro-areas').value.trim();
+      const { error } = await sb.from('professional_signups').insert({
+        full_name: name,
+        trade,
+        bio,
+        years_of_experience: $('pro-years').value ? parseInt($('pro-years').value) : null,
+        phone,
+        email,
+        service_areas: areas ? areas.split(',').map(s => s.trim()).filter(Boolean) : ['אופקים'],
+        selected_plan: selectedPlan,
+        plan_tier: selectedPlan,
+        status: 'pending'
+      });
+      if (error) throw error;
+
+      // שליחת מייל אישור מותאם לבעל מקצוע
+      try {
+        const emailRes = await fetch('/.netlify/functions/newsletter-subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            first_name: name,
+            email,
+            phone,
+            wants_email: true,
+            wants_sms: !!phone,
+            subscriber_type: 'professional',
+            trade,
+            source: 'pro-signup-' + selectedPlan
+          })
+        });
+        if (!emailRes.ok) {
+          const errText = await emailRes.text();
+          console.warn('[pro-signup] email send returned non-200:', emailRes.status, errText);
+        } else {
+          console.log('[pro-signup] email sent successfully');
+        }
+      } catch(emailErr) {
+        console.warn('[pro-signup] email send error:', emailErr);
+      }
+
+      goToStep(3);
+    } catch(e) {
+      err('שגיאה: ' + e.message + '. ניתן ליצור קשר ב-WhatsApp');
+      btn.disabled = false; btn.textContent = 'הצטרפות';
+    }
+  }
+
+  async function psInit() {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+    // קריאת המסלול מ-URL (?plan=basic/pro/enterprise/free)
+    const urlParams = new URLSearchParams(window.location.search);
+    const planFromUrl = (urlParams.get('plan') || '').toLowerCase();
+    const validPlans = ['free', 'basic', 'pro', 'enterprise'];
+
+    if (validPlans.includes(planFromUrl)) {
+      selectedPlan = planFromUrl;
+      document.querySelectorAll('.plan').forEach(el =>
+        el.classList.toggle('selected', el.dataset.plan === planFromUrl)
+      );
+      goToStep(2);
+    } else {
+      selectedPlan = 'pro';
+      document.querySelectorAll('.plan').forEach(el =>
+        el.classList.toggle('selected', el.dataset.plan === 'pro')
+      );
+      goToStep(1);
+    }
+  }
+
+  window.selectPlan = selectPlan;
+  window.goToStep = goToStep;
+  window.submitProSignup = submitProSignup;
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) psInit(); else window.addEventListener('load', psInit, {once:true}); });
+  else { if(window.supabase) psInit(); else window.addEventListener('load', psInit, {once:true}); }
+</script>
+</body>
+</html>

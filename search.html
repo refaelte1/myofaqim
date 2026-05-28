@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+<title>תוצאות חיפוש | אופקים שלי</title>
+<meta name="description" content="חיפוש מקיף בכל הפלטפורמה - עסקים, בעלי מקצוע, קופונים, בתי כנסת, שיעורי תורה ומאמרים.">
+<meta name="robots" content="noindex,follow">
+
+<meta property="og:title" content="תוצאות חיפוש - אופקים שלי">
+<meta property="og:url" content="https://myofaqim.co.il/search">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, var(--cream) 0%, #FFFFFF 100%); }
+
+  /* ── Search Hero ── */
+  .search-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #243B6E 60%, var(--blue) 100%);
+    color: #fff;
+    padding: 40px 24px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .search-hero::before {
+    content: '';
+    position: absolute; top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .search-hero-inner { max-width: 880px; margin: 0 auto; position: relative; z-index: 1; }
+  .search-hero h1 {
+    font-size: clamp(22px, 4vw, 32px);
+    font-weight: 900; margin: 0 0 8px;
+    letter-spacing: -0.02em;
+  }
+  .search-hero p { opacity: 0.75; font-size: 14px; margin: 0 0 24px; }
+
+  /* ── Search Box ── */
+  .search-box {
+    background: #fff;
+    border-radius: 16px;
+    padding: 6px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  .search-box input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 14px 18px;
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--navy);
+    background: transparent;
+    min-width: 0;
+  }
+  .search-box input::placeholder { color: var(--ink-mute); }
+  .search-box button {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+    color: var(--navy);
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-family: inherit;
+    font-weight: 900;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+  .search-box button:hover { transform: translateY(-1px); }
+
+  /* ── Filters ── */
+  .filter-bar {
+    max-width: 1080px; margin: -20px auto 24px; padding: 0 16px;
+    position: relative; z-index: 2;
+  }
+  .filter-wrap {
+    background: #fff; border-radius: 14px;
+    box-shadow: 0 8px 24px rgba(26,46,92,0.08);
+    border: 1px solid var(--line);
+    padding: 10px;
+    display: flex; gap: 6px; overflow-x: auto;
+  }
+  .filter-wrap::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 8px;
+    background: var(--cream); color: var(--navy);
+    border: 1.5px solid transparent; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 800;
+    transition: all 0.15s; white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-chip:hover { border-color: var(--blue); }
+  .filter-chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .filter-chip .count {
+    background: rgba(245,158,11,0.2);
+    color: var(--orange-dk);
+    padding: 1px 7px; border-radius: 8px; font-size: 11px;
+  }
+  .filter-chip.active .count { background: rgba(245,158,11,0.25); color: var(--orange); }
+
+  /* ── Results ── */
+  .results-section {
+    max-width: 1080px; margin: 0 auto 80px;
+    padding: 0 16px;
+  }
+
+  .result-group {
+    margin-bottom: 36px;
+  }
+  .result-group-header {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 4px; border-bottom: 2px solid var(--line);
+    margin-bottom: 14px;
+  }
+  .result-group-icon {
+    width: 32px; height: 32px;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+    color: #fff; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .result-group-title {
+    font-size: 16px; font-weight: 900; color: var(--navy);
+    letter-spacing: -0.01em;
+  }
+  .result-group-count {
+    color: var(--ink-mute); font-size: 12px; font-weight: 700;
+    margin-right: auto;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  /* ── Result Card ── */
+  .result-card {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 16px 18px;
+    text-decoration: none;
+    color: var(--navy);
+    display: flex; flex-direction: column; gap: 6px;
+    transition: all 0.2s;
+  }
+  .result-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(26,46,92,0.08);
+    border-color: var(--blue);
+  }
+  .result-card .label {
+    display: inline-block;
+    background: rgba(37,99,235,0.08);
+    color: var(--blue);
+    padding: 3px 9px; border-radius: 5px;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+    width: fit-content;
+  }
+  .result-card.business .label { background: rgba(245,158,11,0.1); color: var(--orange-dk); }
+  .result-card.professional .label { background: rgba(124,58,237,0.1); color: #7C3AED; }
+  .result-card.coupon .label { background: rgba(220,38,38,0.1); color: #DC2626; }
+  .result-card.synagogue .label { background: rgba(101,163,13,0.1); color: var(--green); }
+  .result-card.lesson .label { background: rgba(26,46,92,0.1); color: var(--navy); }
+  .result-card.article .label { background: rgba(37,99,235,0.1); color: var(--blue); }
+  .result-card.service .label { background: rgba(245,158,11,0.1); color: var(--orange-dk); }
+
+  .result-card h3 {
+    font-size: 15px; font-weight: 900;
+    color: var(--navy); line-height: 1.35;
+    margin: 0;
+    overflow: hidden;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .result-card .meta {
+    font-size: 12px; color: var(--ink-soft);
+    line-height: 1.5;
+    overflow: hidden;
+    display: -webkit-box; -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+  .result-card .footer {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 4px; padding-top: 8px;
+    border-top: 1px solid var(--line);
+    font-size: 11px; color: var(--ink-mute);
+  }
+  .result-card .footer .arrow {
+    color: var(--blue); font-weight: 800;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  /* ── Empty / Loading ── */
+  .search-state {
+    text-align: center; padding: 60px 24px;
+    color: var(--ink-soft);
+  }
+  .search-state-icon {
+    width: 60px; height: 60px;
+    background: var(--cream); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; color: var(--ink-mute);
+  }
+  .search-state h3 {
+    font-size: 18px; font-weight: 800;
+    color: var(--navy); margin: 0 0 6px;
+  }
+  .search-state p { font-size: 14px; line-height: 1.6; margin: 0; }
+
+  /* ── Suggestions for empty search ── */
+  .suggestions {
+    max-width: 720px; margin: 40px auto 0; padding: 0 16px;
+  }
+  .suggestions h4 {
+    font-size: 13px; font-weight: 800;
+    color: var(--ink-mute); letter-spacing: 1.5px;
+    text-transform: uppercase; margin: 0 0 12px;
+  }
+  .suggestion-chips {
+    display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .suggestion-chip {
+    background: #fff; border: 1.5px solid var(--line);
+    border-radius: 100px; padding: 8px 16px;
+    color: var(--navy); text-decoration: none;
+    font-weight: 700; font-size: 13px;
+    cursor: pointer;
+  }
+  .suggestion-chip:hover { border-color: var(--blue); background: var(--cream); }
+
+  @media (max-width: 480px) {
+    .search-hero { padding: 32px 16px 48px; }
+    .search-hero h1 { font-size: 22px; }
+    .search-box input { font-size: 14px; padding: 12px 14px; }
+    .search-box button { padding: 10px 14px; font-size: 13px; }
+    .search-box button .label-text { display: none; }
+    .result-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="search-hero">
+    <div class="search-hero-inner">
+      <h1>חיפוש באתר</h1>
+      <p>חיפוש מקיף בעסקים, בעלי מקצוע, קופונים, בתי כנסת, שיעורי תורה, שירותי קהילה ומאמרים</p>
+      <div class="search-box">
+        <input type="text" id="search-input" placeholder="מה תרצו לחפש? (לדוגמה: פיצה, חשמלאי, בית כנסת...)" autocomplete="off">
+        <button onclick="performSearch()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <span class="label-text">חפש</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <div class="filter-bar" id="filter-bar" style="display:none">
+    <div class="filter-wrap">
+      <button class="filter-chip active" data-filter="all">הכל <span class="count" id="count-all">0</span></button>
+      <button class="filter-chip" data-filter="business">עסקים <span class="count" id="count-business">0</span></button>
+      <button class="filter-chip" data-filter="professional">בעלי מקצוע <span class="count" id="count-professional">0</span></button>
+      <button class="filter-chip" data-filter="coupon">קופונים <span class="count" id="count-coupon">0</span></button>
+      <button class="filter-chip" data-filter="synagogue">בתי כנסת <span class="count" id="count-synagogue">0</span></button>
+      <button class="filter-chip" data-filter="lesson">שיעורי תורה <span class="count" id="count-lesson">0</span></button>
+      <button class="filter-chip" data-filter="service">שירותים <span class="count" id="count-service">0</span></button>
+      <button class="filter-chip" data-filter="article">מאמרים <span class="count" id="count-article">0</span></button>
+    </div>
+  </div>
+
+  <section class="results-section">
+    <div id="results-area">
+      <!-- מצב ראשוני - הצעות -->
+      <div class="search-state" id="initial-state">
+        <div class="search-state-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+        </div>
+        <h3>מה תרצו לחפש?</h3>
+        <p>הקלידו מילה לחיפוש או בחרו מההצעות למטה</p>
+        <div class="suggestions">
+          <h4>חיפושים פופולריים</h4>
+          <div class="suggestion-chips">
+            <button class="suggestion-chip" onclick="searchFor('פיצה')">פיצה</button>
+            <button class="suggestion-chip" onclick="searchFor('חשמלאי')">חשמלאי</button>
+            <button class="suggestion-chip" onclick="searchFor('אינסטלטור')">אינסטלטור</button>
+            <button class="suggestion-chip" onclick="searchFor('סופרמרקט')">סופרמרקט</button>
+            <button class="suggestion-chip" onclick="searchFor('בית כנסת')">בית כנסת</button>
+            <button class="suggestion-chip" onclick="searchFor('מקווה')">מקווה</button>
+            <button class="suggestion-chip" onclick="searchFor('קופון')">קופון</button>
+            <button class="suggestion-chip" onclick="searchFor('עירייה')">עירייה</button>
+            <button class="suggestion-chip" onclick="searchFor('קופת חולים')">קופת חולים</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+let sb = null;
+let currentFilter = 'all';
+let allResults = { business: [], professional: [], coupon: [], synagogue: [], lesson: [], service: [], article: [] };
+
+const ICONS = {
+  business: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>`,
+  professional: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>`,
+  coupon: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>`,
+  synagogue: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+  lesson: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
+  service: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+  article: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
+};
+
+const LABELS = {
+  business: 'עסק', professional: 'בעל מקצוע', coupon: 'קופון',
+  synagogue: 'בית כנסת', lesson: 'שיעור תורה', service: 'שירות', article: 'מאמר'
+};
+
+const GROUP_TITLES = {
+  business: 'עסקים', professional: 'בעלי מקצוע', coupon: 'קופונים',
+  synagogue: 'בתי כנסת', lesson: 'שיעורי תורה', service: 'שירותי קהילה', article: 'מאמרים'
+};
+
+// מאמרים סטטיים (לא ב-DB)
+const STATIC_ARTICLES = [
+  { title: 'היסטוריה של אופקים - מ-1955 ועד היום', desc: 'הסיפור המלא של העיר', url: '/articles/history-of-ofaqim', keywords: 'היסטוריה אופקים 1955 עיר' },
+  { title: 'מדריך לתושב חדש באופקים', desc: 'כל מה שצריך לדעת', url: '/articles/new-resident-guide', keywords: 'תושב חדש מדריך מעבר' },
+  { title: 'איך לקבל קופון או הטבה באופקים', desc: 'המדריך המלא', url: '/articles/coupons-guide', keywords: 'קופון הטבה מבצע' },
+  { title: 'רוצה לרשום את העסק שלך באופקים?', desc: 'המדריך לעסקים', url: '/articles/business-signup', keywords: 'עסק רישום פרסום שיווק' },
+  { title: 'בעלי מקצוע באופקים - איך למצוא ולקבל לידים', desc: 'מדריך מקיף', url: '/articles/professionals-guide', keywords: 'בעל מקצוע ליד חשמלאי אינסטלטור' },
+];
+
+// פונקציית esc מ-site.js (window.esc)
+function searchFor(q) {
+  document.getElementById('search-input').value = q;
+  performSearch();
+}
+
+async function performSearch() {
+  const query = document.getElementById('search-input').value.trim();
+  if (!query) return;
+
+  // עדכון URL
+  const url = new URL(window.location);
+  url.searchParams.set('q', query);
+  window.history.replaceState({}, '', url);
+
+  // הצג טעינה
+  document.getElementById('results-area').innerHTML = `
+    <div class="search-state">
+      <div class="search-state-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite">
+          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <h3>מחפש...</h3>
+      <p>בודקים בכל המאגרים</p>
+    </div>
+    <style>@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }</style>
+  `;
+
+  // אפס תוצאות
+  allResults = { business: [], professional: [], coupon: [], synagogue: [], lesson: [], service: [], article: [] };
+
+  const q = query.toLowerCase();
+
+  // חיפוש במקביל בכל המקורות
+  const [biz, pro, coup, syn, lesson, svc] = await Promise.allSettled([
+    sb.from('businesses').select('id,name,short_description,description,category_slug,city,status').or(`name.ilike.%${query}%,short_description.ilike.%${query}%,description.ilike.%${query}%`).limit(20),
+    sb.from('professionals').select('id,full_name,profession,bio,city,status').or(`full_name.ilike.%${query}%,profession.ilike.%${query}%,bio.ilike.%${query}%`).limit(20),
+    sb.from('coupons').select('id,title,description,business_id,status,expires_at').or(`title.ilike.%${query}%,description.ilike.%${query}%`).limit(20),
+    sb.from('synagogues').select('id,name,address,nusach').or(`name.ilike.%${query}%,address.ilike.%${query}%`).limit(20),
+    sb.from('torah_lessons').select('id,topic,teacher,location_name,day_of_week').or(`topic.ilike.%${query}%,teacher.ilike.%${query}%`).limit(20),
+    sb.from('public_services').select('id,name,subname,category,address,phone').or(`name.ilike.%${query}%,subname.ilike.%${query}%,address.ilike.%${query}%`).limit(20)
+  ]);
+
+  // עיבוד תוצאות
+  if (biz.status === 'fulfilled' && biz.value.data) {
+    allResults.business = biz.value.data.filter(b => b.status !== 'rejected' && b.status !== 'pending');
+  }
+  if (pro.status === 'fulfilled' && pro.value.data) {
+    allResults.professional = pro.value.data.filter(p => p.status !== 'rejected' && p.status !== 'pending');
+  }
+  if (coup.status === 'fulfilled' && coup.value.data) {
+    allResults.coupon = coup.value.data.filter(c => !c.expires_at || new Date(c.expires_at) > new Date());
+  }
+  if (syn.status === 'fulfilled' && syn.value.data) allResults.synagogue = syn.value.data;
+  if (lesson.status === 'fulfilled' && lesson.value.data) allResults.lesson = lesson.value.data;
+  if (svc.status === 'fulfilled' && svc.value.data) allResults.service = svc.value.data;
+
+  // מאמרים סטטיים
+  allResults.article = STATIC_ARTICLES.filter(a =>
+    a.title.toLowerCase().includes(q) ||
+    a.desc.toLowerCase().includes(q) ||
+    a.keywords.toLowerCase().includes(q)
+  );
+
+  renderResults();
+}
+
+function renderResults() {
+  const total = Object.values(allResults).reduce((sum, arr) => sum + arr.length, 0);
+
+  // עדכון counts
+  document.getElementById('count-all').textContent = total;
+  Object.keys(allResults).forEach(k => {
+    const el = document.getElementById('count-' + k);
+    if (el) el.textContent = allResults[k].length;
+  });
+
+  // הצג סרגל סינון
+  document.getElementById('filter-bar').style.display = '';
+
+  if (total === 0) {
+    document.getElementById('results-area').innerHTML = `
+      <div class="search-state">
+        <div class="search-state-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/><line x1="8" y1="11" x2="14" y2="11"/>
+          </svg>
+        </div>
+        <h3>לא נמצאו תוצאות</h3>
+        <p>נסו לחפש מילה אחרת או חיפושים פופולריים</p>
+        <div class="suggestions">
+          <div class="suggestion-chips" style="justify-content:center">
+            <button class="suggestion-chip" onclick="searchFor('פיצה')">פיצה</button>
+            <button class="suggestion-chip" onclick="searchFor('חשמלאי')">חשמלאי</button>
+            <button class="suggestion-chip" onclick="searchFor('סופרמרקט')">סופרמרקט</button>
+            <button class="suggestion-chip" onclick="searchFor('קופון')">קופון</button>
+          </div>
+        </div>
+      </div>`;
+    return;
+  }
+
+  // ארגן לפי קבוצות
+  const html = Object.entries(allResults)
+    .filter(([cat, items]) => items.length > 0)
+    .filter(([cat]) => currentFilter === 'all' || currentFilter === cat)
+    .map(([cat, items]) => `
+      <div class="result-group" data-cat="${cat}">
+        <div class="result-group-header">
+          <div class="result-group-icon">${ICONS[cat]}</div>
+          <div class="result-group-title">${GROUP_TITLES[cat]}</div>
+          <div class="result-group-count">${items.length} ${items.length === 1 ? 'תוצאה' : 'תוצאות'}</div>
+        </div>
+        <div class="result-grid">
+          ${items.map(item => renderCard(cat, item)).join('')}
+        </div>
+      </div>
+    `).join('');
+
+  document.getElementById('results-area').innerHTML = html || `
+    <div class="search-state">
+      <h3>אין תוצאות בקטגוריה זו</h3>
+      <p>נסו לבחור קטגוריה אחרת</p>
+    </div>`;
+}
+
+function renderCard(type, item) {
+  const arrow = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`;
+
+  if (type === 'business') {
+    return `<a href="/business?id=${item.id}" class="result-card business">
+      <span class="label">${LABELS.business}</span>
+      <h3>${esc(item.name)}</h3>
+      <div class="meta">${esc(item.short_description || item.description || 'עסק באופקים')}</div>
+      <div class="footer"><span>${esc(item.city || 'אופקים')}</span><span class="arrow">צפה ${arrow}</span></div>
+    </a>`;
+  }
+  if (type === 'professional') {
+    return `<a href="/professionals" class="result-card professional">
+      <span class="label">${LABELS.professional}</span>
+      <h3>${esc(item.full_name)}</h3>
+      <div class="meta">${esc(item.profession || '')}${item.bio ? ' · ' + esc(item.bio.slice(0,80)) : ''}</div>
+      <div class="footer"><span>${esc(item.city || 'אופקים')}</span><span class="arrow">צפה ${arrow}</span></div>
+    </a>`;
+  }
+  if (type === 'coupon') {
+    return `<a href="/deals" class="result-card coupon">
+      <span class="label">${LABELS.coupon}</span>
+      <h3>${esc(item.title)}</h3>
+      <div class="meta">${esc(item.description || 'הטבה לתושבי אופקים')}</div>
+      <div class="footer"><span>${item.expires_at ? 'תוקף: ' + new Date(item.expires_at).toLocaleDateString('he-IL') : 'פעיל'}</span><span class="arrow">צפה ${arrow}</span></div>
+    </a>`;
+  }
+  if (type === 'synagogue') {
+    return `<a href="/synagogues" class="result-card synagogue">
+      <span class="label">${LABELS.synagogue}</span>
+      <h3>${esc(item.name)}</h3>
+      <div class="meta">${esc(item.address || '')}${item.nusach ? ' · נוסח ' + esc(item.nusach) : ''}</div>
+      <div class="footer"><span>פרטים מלאים</span><span class="arrow">צפה ${arrow}</span></div>
+    </a>`;
+  }
+  if (type === 'lesson') {
+    const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+    return `<a href="/prayer-times#lessons" class="result-card lesson">
+      <span class="label">${LABELS.lesson}</span>
+      <h3>${esc(item.topic)}</h3>
+      <div class="meta">${esc(item.teacher || '')}${item.location_name ? ' · ' + esc(item.location_name) : ''}${item.day_of_week !== undefined ? ' · יום ' + days[item.day_of_week] : ''}</div>
+      <div class="footer"><span>שיעור תורה</span><span class="arrow">צפה ${arrow}</span></div>
+    </a>`;
+  }
+  if (type === 'service') {
+    return `<a href="/public-services" class="result-card service">
+      <span class="label">${LABELS.service}</span>
+      <h3>${esc(item.name)}</h3>
+      <div class="meta">${esc(item.subname || '')}${item.address ? ' · ' + esc(item.address) : ''}</div>
+      <div class="footer"><span>${esc(item.phone || '')}</span><span class="arrow">פרטים ${arrow}</span></div>
+    </a>`;
+  }
+  if (type === 'article') {
+    return `<a href="${item.url}" class="result-card article">
+      <span class="label">${LABELS.article}</span>
+      <h3>${esc(item.title)}</h3>
+      <div class="meta">${esc(item.desc)}</div>
+      <div class="footer"><span>מאמר באתר</span><span class="arrow">קרא ${arrow}</span></div>
+    </a>`;
+  }
+  return '';
+}
+
+// סינון
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFilter = chip.dataset.filter;
+    renderResults();
+  });
+});
+
+// Enter בשדה החיפוש
+document.getElementById('search-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') performSearch();
+});
+
+// אם יש שאילתה ב-URL - בצע חיפוש אוטומטית
+function initSearchFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  const q = params.get('q');
+  if (q) {
+    document.getElementById('search-input').value = q;
+    performSearch();
+  } else {
+    document.getElementById('search-input').focus();
+  }
+}
+
+// init אחרי שsupabase-js נטען
+function searchInit() {
+  if (!window.supabase) {
+    setTimeout(searchInit, 200);
+    return;
+  }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  initSearchFromUrl();
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', searchInit);
+} else {
+  searchInit();
+}
+
+window.performSearch = performSearch;
+window.searchFor = searchFor;
+</script>
+</body>
+</html>
