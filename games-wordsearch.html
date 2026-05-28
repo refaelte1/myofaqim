@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGZ7EHLP4',{anonymize_ip:true});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>תפזורת אופקים | משחקים | אופקים שלי</title>
+<meta name="description" content="תפזורת מילים על מקומות באופקים - מצא 10 שמות של אתרים בעיר.">
+<meta property="og:title" content="תפזורת אופקים - מצא את המקומות!">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="canonical" href="https://myofaqim.co.il/games-wordsearch">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, #0F1E3D 0%, #1A2E5C 100%); min-height: 100vh; color: #fff; touch-action: manipulation; }
+
+  .ws-wrap { max-width: 720px; margin: 24px auto; padding: 0 12px; }
+
+  /* ── Back Link ── */
+  .back-link {
+    color: rgba(255,255,255,0.7); text-decoration: none;
+    font-size: 13px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 14px;
+  }
+  .back-link:hover { color: #F59E0B; }
+
+  /* ── Header ── */
+  .ws-head {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 14px 20px;
+    margin-bottom: 14px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap;
+  }
+  .ws-stats { display: flex; gap: 18px; flex-wrap: wrap; font-size: 13px; font-weight: 700; }
+  .ws-stat { display: flex; align-items: center; gap: 6px; }
+  .ws-stat .num { color: #F59E0B; font-weight: 900; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .ws-stat .lbl { color: rgba(255,255,255,0.7); }
+  .timer-pill {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C; padding: 6px 16px; border-radius: 100px;
+    font-weight: 900; font-size: 14px;
+    display: flex; align-items: center; gap: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Grid (לוח האותיות) ── */
+  .grid-card {
+    background: #fff; border-radius: 18px;
+    padding: 12px; margin-bottom: 14px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    user-select: none; -webkit-user-select: none;
+  }
+  .word-grid {
+    display: grid; gap: 2px;
+    /* dynamic columns set by JS */
+  }
+  .cell {
+    aspect-ratio: 1;
+    background: #F8FAFC; color: #1A2E5C;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: clamp(13px, 3.5vw, 18px);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.08s;
+    position: relative;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cell:hover { background: #EFF6FF; }
+  .cell.selected {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #fff;
+    transform: scale(1.05);
+  }
+  .cell.found {
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    color: #fff;
+  }
+  .cell.found.selected { background: linear-gradient(135deg, #16A34A 0%, #15803D 100%); }
+
+  /* ── Words List ── */
+  .words-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 16px 20px;
+    margin-bottom: 14px;
+  }
+  .words-head {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .words-head h3 {
+    font-size: 14px; font-weight: 900; margin: 0;
+    color: #fff;
+  }
+  .words-count { color: #F59E0B; font-weight: 900; font-size: 13px; }
+  .words-list { display: flex; flex-wrap: wrap; gap: 6px; }
+  .word-chip {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.12);
+    padding: 6px 12px; border-radius: 100px;
+    font-size: 13px; font-weight: 700;
+    color: rgba(255,255,255,0.9);
+    transition: all 0.15s;
+  }
+  .word-chip.found {
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    color: #fff; border-color: transparent;
+    text-decoration: line-through;
+    opacity: 0.85;
+  }
+
+  /* ── Hint Button ── */
+  .actions { display: flex; gap: 8px; margin-bottom: 14px; }
+  .hint-btn {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.12);
+    color: #fff;
+    padding: 10px 18px; border-radius: 12px;
+    font-family: inherit; font-weight: 800; font-size: 13px;
+    cursor: pointer;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .hint-btn:hover { background: rgba(245,158,11,0.15); border-color: rgba(245,158,11,0.3); color: #F59E0B; }
+  .hint-btn:disabled { opacity: 0.5; cursor: default; }
+
+  /* ── Final Screen ── */
+  .final-card {
+    background: linear-gradient(135deg, #fff 0%, #FFFBEB 100%);
+    color: #1A2E5C;
+    border-radius: 22px; padding: 32px 26px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+  .final-icon {
+    width: 72px; height: 72px; border-radius: 50%;
+    margin: 0 auto 14px;
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    animation: pop 0.5s;
+  }
+  @keyframes pop {
+    0% { transform: scale(0); }
+    60% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .final-card h2 { font-size: 22px; font-weight: 900; margin: 0 0 6px; }
+  .final-card .grade { font-size: 14px; color: #6B7280; margin: 0 0 18px; }
+  .final-stats {
+    display: flex; gap: 14px; justify-content: center;
+    margin: 18px 0;
+    flex-wrap: wrap;
+  }
+  .final-stat {
+    background: #F8FAFC;
+    padding: 12px 18px; border-radius: 12px;
+    min-width: 100px;
+  }
+  .final-stat .v { font-size: 24px; font-weight: 900; color: #F59E0B; font-variant-numeric: tabular-nums; }
+  .final-stat .l { font-size: 11px; color: #6B7280; font-weight: 700; }
+
+  .final-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-top: 14px; }
+  .btn-play-again {
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    color: #fff; border: none;
+    padding: 12px 24px; border-radius: 12px;
+    font-family: inherit; font-weight: 900; font-size: 14px;
+    cursor: pointer;
+  }
+  .btn-share {
+    background: #25D366; color: #fff; border: none;
+    padding: 12px 24px; border-radius: 12px;
+    font-family: inherit; font-weight: 900; font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-back {
+    background: #F5F5F0; color: #1A2E5C;
+    border: 1.5px solid #E5E7EB;
+    padding: 12px 24px; border-radius: 12px;
+    font-family: inherit; font-weight: 800; font-size: 14px;
+    cursor: pointer; text-decoration: none;
+  }
+
+  /* ── Auth Banner ── */
+  .auth-banner {
+    background: linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(37,99,235,0.1) 100%);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 14px; padding: 12px 16px;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px;
+  }
+  .auth-banner svg { color: #F59E0B; flex-shrink: 0; }
+  .auth-banner button {
+    background: #F59E0B; color: #1A2E5C; border: none;
+    padding: 6px 14px; border-radius: 8px;
+    font-family: inherit; font-weight: 900; font-size: 12px;
+    cursor: pointer;
+    margin-right: auto;
+  }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1A2E5C; color: #fff;
+    padding: 12px 24px; border-radius: 100px;
+    font-weight: 700; font-size: 14px;
+    z-index: 99998; transition: transform .3s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { background: #16A34A; }
+  .toast.error { background: #DC2626; }
+
+  @media (max-width: 480px) {
+    .ws-wrap { padding: 0 8px; }
+    .grid-card { padding: 8px; }
+    .word-grid { gap: 1px; }
+    .cell { border-radius: 4px; }
+    .words-card { padding: 12px 16px; }
+    .word-chip { font-size: 12px; padding: 5px 10px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main class="ws-wrap">
+
+  <a href="/games" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    חזרה למשחקים
+  </a>
+
+  <!-- Auth Banner -->
+  <div class="auth-banner" id="auth-banner" style="display:none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span>התחבר כדי להיכנס לטופ 10 השבועי</span>
+    <button onclick="if(typeof mofOpenAuth==='function')mofOpenAuth()">התחבר</button>
+  </div>
+
+  <!-- Game Area -->
+  <div id="game-area">
+
+    <div class="ws-head">
+      <div class="ws-stats">
+        <div class="ws-stat"><span class="num" id="found-count">0</span><span class="lbl">/ <span id="total-count">10</span> מילים</span></div>
+        <div class="ws-stat"><span class="num" id="hints-left">3</span><span class="lbl">רמזים</span></div>
+      </div>
+      <div class="timer-pill">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span id="timer">00:00</span>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="hint-btn" onclick="useHint()" id="hint-btn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        רמז (חושף מילה אקראית)
+      </button>
+    </div>
+
+    <div class="grid-card">
+      <div class="word-grid" id="word-grid"></div>
+    </div>
+
+    <div class="words-card">
+      <div class="words-head">
+        <h3>מצא את המקומות באופקים</h3>
+        <div class="words-count"><span id="words-progress">0</span>/<span id="words-total">10</span></div>
+      </div>
+      <div class="words-list" id="words-list"></div>
+    </div>
+
+  </div>
+
+  <!-- Final Screen -->
+  <div id="final-screen" style="display:none">
+    <div class="final-card">
+      <div class="final-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h2>סיימת!</h2>
+      <div class="grade" id="grade">מצאת את כל המקומות</div>
+      <div class="final-stats">
+        <div class="final-stat">
+          <div class="v" id="final-time">—</div>
+          <div class="l">זמן</div>
+        </div>
+        <div class="final-stat">
+          <div class="v" id="final-score">—</div>
+          <div class="l">נקודות</div>
+        </div>
+        <div class="final-stat">
+          <div class="v" id="final-hints">—</div>
+          <div class="l">רמזים שהשתמשת</div>
+        </div>
+      </div>
+      <div class="final-actions">
+        <button class="btn-play-again" onclick="restart()">משחק נוסף</button>
+        <a class="btn-share" id="share-btn" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          שתף בWhatsApp
+        </a>
+        <a class="btn-back" href="/games">למשחקים</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+const HEBREW_LETTERS = 'אבגדהוזחטיכלמנסעפצקרשת';
+
+// ───── מאגר המילים ─────
+// כולן בעברית, ללא רווחים. מינימום 4 אותיות, מקסימום 8.
+const WORD_POOL = [
+  { word: 'אופקים', hint: 'העיר שלנו' },
+  { word: 'הפארק', hint: 'מקום ירוק לבילוי' },
+  { word: 'חורשה', hint: 'אזור עצים' },
+  { word: 'יביא', hint: 'מוסד חינוך תורני' },
+  { word: 'מתנס', hint: 'מרכז קהילתי' },
+  { word: 'היכל', hint: 'מקום אירועים גדול' },
+  { word: 'עירייה', hint: 'מרכז המינהל המוניציפלי' },
+  { word: 'רובע', hint: 'אזור מגורים' },
+  { word: 'הגפן', hint: 'מישור באופקים' },
+  { word: 'השקד', hint: 'רמת ה...' },
+  { word: 'הנגב', hint: 'האזור הגאוגרפי' },
+  { word: 'הרצל', hint: 'הרחוב המרכזי' },
+  { word: 'דרום', hint: 'הכיוון שלנו' },
+  { word: 'מקווה', hint: 'מקום טהרה' },
+  { word: 'מספרה', hint: 'עסק לתספורת' },
+  { word: 'אטליז', hint: 'חנות בשר' },
+  { word: 'מכולת', hint: 'חנות מצרכים' },
+  { word: 'גמחים', hint: 'גמלה - גמיל - גמ"ח' },
+  { word: 'תושב', hint: 'מי שגר כאן' },
+  { word: 'כנסת', hint: 'בית ה...' },
+  { word: 'הרבי', hint: 'מנהיג רוחני' },
+  { word: 'מנחה', hint: 'תפילה אחה"צ' },
+  { word: 'שחרית', hint: 'תפילת הבוקר' },
+  { word: 'מאפיה', hint: 'מקום ללחם טרי' },
+  { word: 'בריאות', hint: 'קופת ...' },
+  { word: 'מועצה', hint: 'דתית של העיר' },
+  { word: 'גנים', hint: 'מקום למשחק ילדים' },
+  { word: 'מטעם', hint: 'רשת מסעדות' },
+  { word: 'מבצע', hint: 'הצעת קופון' },
+  { word: 'מסעדה', hint: 'מקום לאכול בו' }
+];
+
+let GRID_SIZE = 12;
+let grid = [];
+let placedWords = [];     // [{word, start: [r,c], end: [r,c], direction, found}]
+let isSelecting = false;
+let selectionPath = [];
+let timer = 0;
+let timerInterval = null;
+let foundCount = 0;
+let hintsLeft = 3;
+let hintsUsed = 0;
+let sb = null;
+let currentUser = null;
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+function toast(msg, type) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function pad(n) { return String(n).padStart(2, '0'); }
+function fmtTime(s) {
+  return pad(Math.floor(s / 60)) + ':' + pad(s % 60);
+}
+
+function shuffle(a) {
+  const r = a.slice();
+  for (let i = r.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [r[i], r[j]] = [r[j], r[i]];
+  }
+  return r;
+}
+
+function randInt(n) { return Math.floor(Math.random() * n); }
+
+// ───── יצירת הלוח ─────
+function createGrid() {
+  // התחל עם מטריצה ריקה
+  grid = Array.from({ length: GRID_SIZE }, () =>
+    Array.from({ length: GRID_SIZE }, () => null)
+  );
+  placedWords = [];
+
+  // בחר 10 מילים אקראיות
+  const selected = shuffle(WORD_POOL).slice(0, 10);
+
+  // נסה לשבץ כל מילה
+  const directions = [
+    [0, 1],   // ימין->שמאל (בעברית RTL)
+    [1, 0],   // מטה
+    [1, 1],   // מטה-שמאלה
+    [1, -1],  // מטה-ימינה
+    [-1, 1],  // עולה-שמאלה
+  ];
+
+  for (const item of selected) {
+    const placed = tryPlace(item.word, directions);
+    if (placed) {
+      placedWords.push({
+        word: item.word,
+        hint: item.hint,
+        ...placed,
+        found: false
+      });
+    }
+  }
+
+  // מלא את שאר התאים באותיות אקראיות
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      if (grid[r][c] === null) {
+        grid[r][c] = HEBREW_LETTERS[randInt(HEBREW_LETTERS.length)];
+      }
+    }
+  }
+}
+
+function tryPlace(word, directions) {
+  const letters = word.split('');
+  const len = letters.length;
+
+  for (let attempt = 0; attempt < 200; attempt++) {
+    const dir = directions[randInt(directions.length)];
+    const [dr, dc] = dir;
+    const startR = randInt(GRID_SIZE);
+    const startC = randInt(GRID_SIZE);
+
+    const endR = startR + dr * (len - 1);
+    const endC = startC + dc * (len - 1);
+    if (endR < 0 || endR >= GRID_SIZE || endC < 0 || endC >= GRID_SIZE) continue;
+
+    // בדוק שאין התנגשות
+    let valid = true;
+    for (let i = 0; i < len; i++) {
+      const r = startR + dr * i;
+      const c = startC + dc * i;
+      if (grid[r][c] !== null && grid[r][c] !== letters[i]) {
+        valid = false; break;
+      }
+    }
+    if (!valid) continue;
+
+    // שבץ
+    for (let i = 0; i < len; i++) {
+      const r = startR + dr * i;
+      const c = startC + dc * i;
+      grid[r][c] = letters[i];
+    }
+    return { start: [startR, startC], end: [endR, endC], direction: [dr, dc] };
+  }
+  return null;
+}
+
+// ───── רינדור ─────
+function render() {
+  const g = $('word-grid');
+  g.style.gridTemplateColumns = `repeat(${GRID_SIZE}, 1fr)`;
+  g.innerHTML = '';
+  for (let r = 0; r < GRID_SIZE; r++) {
+    for (let c = 0; c < GRID_SIZE; c++) {
+      const cell = document.createElement('div');
+      cell.className = 'cell';
+      cell.dataset.r = r;
+      cell.dataset.c = c;
+      cell.textContent = grid[r][c];
+      // mouse
+      cell.addEventListener('mousedown', onCellStart);
+      cell.addEventListener('mouseenter', onCellMove);
+      cell.addEventListener('mouseup', onCellEnd);
+      // touch
+      cell.addEventListener('touchstart', onTouchStart, { passive: false });
+      g.appendChild(cell);
+    }
+  }
+  document.addEventListener('mouseup', onCellEnd);
+  document.addEventListener('touchend', onCellEnd);
+  document.addEventListener('touchmove', onTouchMove, { passive: false });
+
+  renderWords();
+  markFoundCells();
+}
+
+function renderWords() {
+  $('words-list').innerHTML = placedWords.map(w => `
+    <div class="word-chip ${w.found ? 'found' : ''}" title="${esc(w.hint)}">${esc(w.word)}</div>
+  `).join('');
+  $('found-count').textContent = foundCount;
+  $('total-count').textContent = placedWords.length;
+  $('words-progress').textContent = foundCount;
+  $('words-total').textContent = placedWords.length;
+}
+
+function markFoundCells() {
+  document.querySelectorAll('.cell.found').forEach(c => c.classList.remove('found'));
+  placedWords.filter(w => w.found).forEach(w => {
+    const len = w.word.length;
+    const [dr, dc] = w.direction;
+    for (let i = 0; i < len; i++) {
+      const r = w.start[0] + dr * i;
+      const c = w.start[1] + dc * i;
+      const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+      if (cell) cell.classList.add('found');
+    }
+  });
+}
+
+// ───── סלקציה ─────
+function onCellStart(e) {
+  e.preventDefault();
+  isSelecting = true;
+  selectionPath = [[parseInt(this.dataset.r), parseInt(this.dataset.c)]];
+  updateSelection();
+}
+
+function onCellMove(e) {
+  if (!isSelecting) return;
+  const r = parseInt(this.dataset.r);
+  const c = parseInt(this.dataset.c);
+  extendSelection(r, c);
+}
+
+function onTouchStart(e) {
+  e.preventDefault();
+  const t = e.touches[0];
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  if (el && el.classList.contains('cell')) {
+    isSelecting = true;
+    selectionPath = [[parseInt(el.dataset.r), parseInt(el.dataset.c)]];
+    updateSelection();
+  }
+}
+
+function onTouchMove(e) {
+  if (!isSelecting) return;
+  e.preventDefault();
+  const t = e.touches[0];
+  const el = document.elementFromPoint(t.clientX, t.clientY);
+  if (el && el.classList.contains('cell')) {
+    const r = parseInt(el.dataset.r);
+    const c = parseInt(el.dataset.c);
+    extendSelection(r, c);
+  }
+}
+
+function extendSelection(r, c) {
+  if (selectionPath.length === 0) return;
+  const [sr, sc] = selectionPath[0];
+
+  // קבע כיוון מההתחלה
+  const dr_total = r - sr;
+  const dc_total = c - sc;
+  const len = Math.max(Math.abs(dr_total), Math.abs(dc_total)) + 1;
+
+  // בדוק שהכיוון לגיטימי (אופקי/אנכי/אלכסוני)
+  if (dr_total !== 0 && dc_total !== 0 && Math.abs(dr_total) !== Math.abs(dc_total)) {
+    // לא קו ישר - השאר את הראשון בלבד
+    selectionPath = [[sr, sc]];
+    updateSelection();
+    return;
+  }
+
+  const ndr = dr_total === 0 ? 0 : dr_total / Math.abs(dr_total);
+  const ndc = dc_total === 0 ? 0 : dc_total / Math.abs(dc_total);
+
+  // בנה את הנתיב
+  selectionPath = [];
+  for (let i = 0; i < len; i++) {
+    selectionPath.push([sr + ndr * i, sc + ndc * i]);
+  }
+  updateSelection();
+}
+
+function updateSelection() {
+  document.querySelectorAll('.cell.selected').forEach(c => c.classList.remove('selected'));
+  selectionPath.forEach(([r, c]) => {
+    const cell = document.querySelector(`.cell[data-r="${r}"][data-c="${c}"]`);
+    if (cell) cell.classList.add('selected');
+  });
+}
+
+function onCellEnd() {
+  if (!isSelecting) return;
+  isSelecting = false;
+  checkSelection();
+  selectionPath = [];
+  document.querySelectorAll('.cell.selected').forEach(c => c.classList.remove('selected'));
+}
+
+function checkSelection() {
+  if (selectionPath.length < 2) return;
+
+  const selected = selectionPath.map(([r, c]) => grid[r][c]).join('');
+  const reversed = selected.split('').reverse().join('');
+
+  const match = placedWords.find(w => !w.found && (w.word === selected || w.word === reversed));
+  if (match) {
+    match.found = true;
+    foundCount++;
+    toast(`✓ ${match.word}!`, 'success');
+    renderWords();
+    markFoundCells();
+    if (foundCount === placedWords.length) {
+      finishGame();
+    }
+  }
+}
+
+// ───── רמז ─────
+function useHint() {
+  if (hintsLeft <= 0) {
+    toast('אין יותר רמזים', 'error');
+    return;
+  }
+  const unfound = placedWords.filter(w => !w.found);
+  if (unfound.length === 0) return;
+
+  const target = unfound[randInt(unfound.length)];
+  target.found = true;
+  foundCount++;
+  hintsLeft--;
+  hintsUsed++;
+
+  toast(`רמז: "${target.word}" נחשפה`, 'success');
+  $('hints-left').textContent = hintsLeft;
+  if (hintsLeft <= 0) $('hint-btn').disabled = true;
+
+  renderWords();
+  markFoundCells();
+
+  if (foundCount === placedWords.length) finishGame();
+}
+
+// ───── טיימר ─────
+function startTimer() {
+  timer = 0;
+  $('timer').textContent = '00:00';
+  if (timerInterval) clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    timer++;
+    $('timer').textContent = fmtTime(timer);
+  }, 1000);
+}
+
+// ───── סיום ─────
+async function finishGame() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+
+  // חישוב ניקוד: 100 לכל מילה - 5 לכל שנייה - 30 לכל רמז
+  const wordsFound = placedWords.filter(w => w.found).length - hintsUsed;
+  const baseScore = wordsFound * 100;
+  const timeBonus = Math.max(0, 600 - timer * 2);
+  const finalScore = Math.max(50, baseScore + timeBonus);
+
+  $('final-time').textContent = fmtTime(timer);
+  $('final-score').textContent = finalScore;
+  $('final-hints').textContent = hintsUsed;
+
+  let grade;
+  if (timer < 60 && hintsUsed === 0) grade = '🏆 מהיר וחכם!';
+  else if (timer < 120) grade = '⭐ מצוין!';
+  else if (timer < 240) grade = '👍 כל הכבוד';
+  else grade = '🎯 מצאת את הכל';
+  $('grade').textContent = grade;
+
+  $('game-area').style.display = 'none';
+  $('final-screen').style.display = '';
+
+  // שמור ניקוד
+  if (sb) {
+    try {
+      let userName = 'אורח';
+      if (currentUser) {
+        userName = currentUser.user_metadata?.full_name ||
+                  currentUser.user_metadata?.name ||
+                  currentUser.email?.split('@')[0] ||
+                  'תושב';
+      }
+      await sb.from('game_scores').insert({
+        user_id: currentUser?.id || null,
+        user_name: userName,
+        game_type: 'wordsearch',
+        score: finalScore,
+        max_score: placedWords.length * 100,
+        time_seconds: timer,
+        details: { hints_used: hintsUsed }
+      });
+    } catch (e) { console.warn('Save:', e); }
+  }
+
+  const shareText = `מצאתי ${placedWords.length} מילים בתפזורת אופקים תוך ${fmtTime(timer)} וקיבלתי ${finalScore} נקודות! נסה גם: https://myofaqim.co.il/games-wordsearch`;
+  $('share-btn').href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+}
+
+function restart() {
+  $('final-screen').style.display = 'none';
+  $('game-area').style.display = '';
+  hintsLeft = 3;
+  hintsUsed = 0;
+  foundCount = 0;
+  $('hints-left').textContent = hintsLeft;
+  $('hint-btn').disabled = false;
+  createGrid();
+  render();
+  startTimer();
+}
+
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) currentUser = session.user;
+  else $('auth-banner').style.display = 'flex';
+
+  // התאם גודל מטריצה לפי המסך
+  if (window.innerWidth < 480) GRID_SIZE = 11;
+  else GRID_SIZE = 12;
+
+  createGrid();
+  render();
+  startTimer();
+}
+
+window.useHint = useHint;
+window.restart = restart;
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>

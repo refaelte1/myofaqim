@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGZ7EHLP4',{anonymize_ip:true});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>טריוויה אופקים | משחקים | אופקים שלי</title>
+<meta name="description" content="טריוויה על העיר אופקים - 20 שאלות על תולדות, גאוגרפיה, אישים ועוד.">
+<meta property="og:title" content="טריוויה אופקים - שחקו ונצחו!">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="canonical" href="https://myofaqim.co.il/games-trivia">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, #0F1E3D 0%, #1A2E5C 100%); min-height: 100vh; color: #fff; }
+
+  .trivia-wrap { max-width: 640px; margin: 30px auto; padding: 0 16px; }
+
+  /* ── Back Link ── */
+  .back-link {
+    color: rgba(255,255,255,0.7); text-decoration: none;
+    font-size: 13px; font-weight: 700;
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-bottom: 16px;
+  }
+  .back-link:hover { color: #F59E0B; }
+
+  /* ── Progress Bar ── */
+  .progress-card {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px; padding: 16px 22px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 14px; flex-wrap: wrap;
+  }
+  .progress-info { font-size: 13px; font-weight: 700; }
+  .progress-info strong { color: #F59E0B; font-size: 16px; font-variant-numeric: tabular-nums; }
+  .progress-bar {
+    flex: 1; min-width: 120px;
+    height: 8px; background: rgba(255,255,255,0.1); border-radius: 100px;
+    overflow: hidden; position: relative;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #F59E0B 0%, #DC2626 100%);
+    border-radius: 100px;
+    transition: width 0.3s;
+  }
+  .score-pill {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C; padding: 6px 16px; border-radius: 100px;
+    font-weight: 900; font-size: 14px;
+    display: flex; align-items: center; gap: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Question Card ── */
+  .question-card {
+    background: #fff; color: #1A2E5C;
+    border-radius: 22px; padding: 26px 28px;
+    margin-bottom: 16px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.3);
+    position: relative; overflow: hidden;
+  }
+  .question-card::before {
+    content: ''; position: absolute;
+    top: -40px; right: -40px; width: 140px; height: 140px;
+    background: radial-gradient(circle, rgba(245,158,11,0.1) 0%, transparent 70%);
+  }
+  .q-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(37,99,235,0.1); color: #2563EB;
+    padding: 4px 12px; border-radius: 100px;
+    font-size: 11px; font-weight: 800; letter-spacing: 0.5px;
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .q-text {
+    font-size: clamp(17px, 4vw, 22px); font-weight: 900;
+    line-height: 1.4; margin: 0 0 18px;
+    color: #1A2E5C;
+    position: relative;
+  }
+
+  .options-grid { display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .option-btn {
+    background: #F8FAFC; border: 2px solid #E5E7EB;
+    color: #1A2E5C; padding: 14px 18px; border-radius: 14px;
+    font-family: inherit; font-size: 15px; font-weight: 700;
+    cursor: pointer; text-align: right;
+    display: flex; align-items: center; gap: 12px;
+    transition: all 0.15s;
+  }
+  .option-btn:hover { border-color: #2563EB; background: #EFF6FF; }
+  .option-btn:disabled { cursor: default; }
+  .option-letter {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(37,99,235,0.1); color: #2563EB;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 14px; flex-shrink: 0;
+  }
+  .option-btn.correct {
+    background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+    color: #fff; border-color: #16A34A;
+  }
+  .option-btn.correct .option-letter { background: rgba(255,255,255,0.25); color: #fff; }
+  .option-btn.wrong {
+    background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+    color: #fff; border-color: #DC2626;
+  }
+  .option-btn.wrong .option-letter { background: rgba(255,255,255,0.25); color: #fff; }
+  .option-btn.fade { opacity: 0.4; }
+
+  /* ── Explanation ── */
+  .explanation {
+    background: linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(245,158,11,0.04) 100%);
+    border: 1.5px solid rgba(37,99,235,0.2);
+    border-radius: 14px; padding: 14px 18px;
+    margin-top: 14px; font-size: 13px; line-height: 1.6;
+    color: #1A2E5C;
+    position: relative;
+  }
+  .explanation strong { color: #2563EB; }
+
+  /* ── Next Button ── */
+  .next-btn {
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C; border: none;
+    padding: 14px 26px; border-radius: 14px;
+    font-family: inherit; font-weight: 900; font-size: 15px;
+    cursor: pointer; width: 100%; margin-top: 14px;
+    box-shadow: 0 8px 20px rgba(245,158,11,0.3);
+    position: relative;
+  }
+  .next-btn:hover { transform: translateY(-1px); }
+
+  /* ── Final Screen ── */
+  .final-card {
+    background: linear-gradient(135deg, #fff 0%, #FFFBEB 100%);
+    color: #1A2E5C;
+    border-radius: 22px; padding: 36px 30px;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+  }
+  .final-icon {
+    width: 80px; height: 80px; border-radius: 50%;
+    margin: 0 auto 16px;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    animation: bounce 0.6s;
+  }
+  @keyframes bounce {
+    0% { transform: scale(0); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+  .final-card h2 { font-size: 24px; font-weight: 900; margin: 0 0 6px; color: #1A2E5C; }
+  .final-card .grade { font-size: 14px; color: #6B7280; margin: 0 0 18px; }
+  .final-score {
+    font-size: 48px; font-weight: 900;
+    color: #F59E0B; margin: 0 0 4px;
+    font-variant-numeric: tabular-nums;
+  }
+  .final-score-sub { font-size: 14px; color: #6B7280; margin: 0 0 22px; }
+
+  .final-actions { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  .btn-play-again {
+    background: linear-gradient(135deg, #2563EB 0%, #1E40AF 100%);
+    color: #fff; border: none;
+    padding: 12px 24px; border-radius: 12px;
+    font-family: inherit; font-weight: 900; font-size: 14px;
+    cursor: pointer;
+  }
+  .btn-share {
+    background: #25D366; color: #fff; border: none;
+    padding: 12px 24px; border-radius: 12px;
+    font-family: inherit; font-weight: 900; font-size: 14px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .btn-back {
+    background: #F5F5F0; color: #1A2E5C;
+    border: 1.5px solid #E5E7EB;
+    padding: 12px 24px; border-radius: 12px;
+    font-family: inherit; font-weight: 800; font-size: 14px;
+    cursor: pointer; text-decoration: none;
+  }
+
+  /* ── Loading/Empty ── */
+  .state-msg {
+    background: rgba(255,255,255,0.06);
+    border-radius: 18px; padding: 60px 24px;
+    text-align: center; color: rgba(255,255,255,0.7);
+  }
+
+  /* ── Auth Banner ── */
+  .auth-banner {
+    background: linear-gradient(135deg, rgba(245,158,11,0.15) 0%, rgba(37,99,235,0.1) 100%);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 14px; padding: 14px 18px;
+    margin-bottom: 14px;
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px;
+  }
+  .auth-banner svg { color: #F59E0B; flex-shrink: 0; }
+  .auth-banner button {
+    background: #F59E0B; color: #1A2E5C; border: none;
+    padding: 6px 14px; border-radius: 8px;
+    font-family: inherit; font-weight: 900; font-size: 12px;
+    cursor: pointer;
+    margin-right: auto;
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main class="trivia-wrap">
+
+  <a href="/games" class="back-link">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+    חזרה למשחקים
+  </a>
+
+  <!-- Auth Banner (if not logged in) -->
+  <div class="auth-banner" id="auth-banner" style="display:none">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <span>התחבר כדי להיכנס לטופ 10 השבועי ולקבל פרסים</span>
+    <button onclick="if(typeof mofOpenAuth==='function')mofOpenAuth()">התחבר</button>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" class="state-msg">טוען משחק...</div>
+
+  <!-- Game Area -->
+  <div id="game-area" style="display:none">
+    <div class="progress-card">
+      <div class="progress-info">שאלה <strong id="q-num">1</strong> מתוך <strong id="q-total">10</strong></div>
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:10%"></div></div>
+      <div class="score-pill">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+        <span id="current-score">0</span>
+      </div>
+    </div>
+
+    <div class="question-card" id="question-card"></div>
+  </div>
+
+  <!-- Final Screen -->
+  <div id="final-screen" style="display:none">
+    <div class="final-card">
+      <div class="final-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <h2>סיימת את הטריוויה!</h2>
+      <div class="grade" id="grade">—</div>
+      <div class="final-score" id="final-score">0</div>
+      <div class="final-score-sub">תשובות נכונות מתוך <span id="final-total">10</span></div>
+      <div class="final-actions">
+        <button class="btn-play-again" onclick="restart()">משחק נוסף</button>
+        <a class="btn-share" id="share-btn" target="_blank" rel="noopener">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+          שתף בWhatsApp
+        </a>
+        <a class="btn-back" href="/games">למשחקים</a>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+let sb = null;
+let currentUser = null;
+let questions = [];
+let currentIdx = 0;
+let score = 0;
+let answered = false;
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+// Fisher-Yates shuffle
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) currentUser = session.user;
+  else $('auth-banner').style.display = 'flex';
+
+  await loadQuestions();
+}
+
+async function loadQuestions() {
+  try {
+    const { data, error } = await sb.from('trivia_questions')
+      .select('*')
+      .eq('is_active', true);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      $('loading').innerHTML = '<p>אין כרגע שאלות במאגר.<br>הרץ את ה-SQL לטעון שאלות.</p>';
+      return;
+    }
+
+    // ערבב ובחר 10 (או כמה שיש אם פחות)
+    questions = shuffle(data).slice(0, 10);
+    currentIdx = 0;
+    score = 0;
+    answered = false;
+
+    $('loading').style.display = 'none';
+    $('game-area').style.display = '';
+    $('q-total').textContent = questions.length;
+    $('final-total').textContent = questions.length;
+
+    renderQuestion();
+  } catch (e) {
+    console.error('Load questions:', e);
+    $('loading').innerHTML = `<p style="color:#F87171">שגיאה: ${esc(e.message)}</p>`;
+  }
+}
+
+function renderQuestion() {
+  if (currentIdx >= questions.length) {
+    showFinal();
+    return;
+  }
+
+  const q = questions[currentIdx];
+  answered = false;
+
+  $('q-num').textContent = currentIdx + 1;
+  $('current-score').textContent = score;
+  $('progress-fill').style.width = ((currentIdx) / questions.length * 100) + '%';
+
+  const letters = ['א', 'ב', 'ג', 'ד'];
+  const options = Array.isArray(q.options) ? q.options : JSON.parse(q.options || '[]');
+
+  $('question-card').innerHTML = `
+    <div class="q-tag">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+      ${q.category ? translateCategory(q.category) : 'אופקים'} · ${translateDifficulty(q.difficulty)}
+    </div>
+    <h2 class="q-text">${esc(q.question)}</h2>
+    <div class="options-grid" id="options">
+      ${options.map((opt, idx) => `
+        <button class="option-btn" data-idx="${idx}" onclick="answer(${idx})">
+          <span class="option-letter">${letters[idx]}</span>
+          <span>${esc(opt)}</span>
+        </button>
+      `).join('')}
+    </div>
+    <div id="explanation-area"></div>
+    <button id="next-btn" class="next-btn" style="display:none" onclick="nextQuestion()">השאלה הבאה →</button>
+  `;
+}
+
+function translateDifficulty(d) {
+  return d === 'easy' ? 'קל' : d === 'medium' ? 'בינוני' : d === 'hard' ? 'קשה' : '';
+}
+function translateCategory(c) {
+  return ({
+    history: 'תולדות',
+    geography: 'גאוגרפיה',
+    culture: 'תרבות',
+    food: 'אוכל',
+    general: 'כללי'
+  })[c] || c;
+}
+
+function answer(idx) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentIdx];
+  const correct = q.correct_index;
+  const isCorrect = idx === correct;
+
+  if (isCorrect) {
+    score++;
+    $('current-score').textContent = score;
+  }
+
+  // צבוע את הכפתורים
+  document.querySelectorAll('.option-btn').forEach((btn, i) => {
+    btn.disabled = true;
+    if (i === correct) btn.classList.add('correct');
+    else if (i === idx) btn.classList.add('wrong');
+    else btn.classList.add('fade');
+  });
+
+  // הסבר
+  if (q.explanation) {
+    $('explanation-area').innerHTML = `
+      <div class="explanation">
+        <strong>${isCorrect ? '✓ נכון!' : '✗ התשובה הנכונה: ' + esc(Array.isArray(q.options) ? q.options[correct] : '')}</strong><br>
+        ${esc(q.explanation)}
+      </div>
+    `;
+  }
+
+  $('next-btn').style.display = '';
+  $('next-btn').textContent = currentIdx + 1 >= questions.length ? 'סיים משחק →' : 'השאלה הבאה →';
+}
+
+function nextQuestion() {
+  currentIdx++;
+  renderQuestion();
+}
+
+async function showFinal() {
+  $('game-area').style.display = 'none';
+  $('final-screen').style.display = '';
+
+  $('final-score').textContent = score;
+
+  // ציון
+  const pct = (score / questions.length) * 100;
+  let grade;
+  if (pct === 100) grade = '🏆 מושלם! אתה אלוף אופקים!';
+  else if (pct >= 80) grade = '⭐ מעולה! אתה מכיר את העיר היטב';
+  else if (pct >= 60) grade = '👍 לא רע, יש מקום לשיפור';
+  else if (pct >= 40) grade = '📚 כדאי ללמוד עוד על העיר';
+  else grade = '🌱 התחלה - נסה שוב!';
+  $('grade').textContent = grade;
+
+  // שמור ניקוד
+  if (sb && score > 0) {
+    try {
+      let userName = 'אורח';
+      if (currentUser) {
+        userName = currentUser.user_metadata?.full_name ||
+                  currentUser.user_metadata?.name ||
+                  currentUser.email?.split('@')[0] ||
+                  'תושב';
+      }
+      await sb.from('game_scores').insert({
+        user_id: currentUser?.id || null,
+        user_name: userName,
+        game_type: 'trivia',
+        score: score,
+        max_score: questions.length,
+        difficulty: 'mixed'
+      });
+    } catch (e) {
+      console.warn('Save score:', e);
+    }
+  }
+
+  // קישור לשיתוף
+  const shareText = `הצלחתי לענות נכון על ${score} מתוך ${questions.length} שאלות בטריוויית אופקים! נסה גם אתה: https://myofaqim.co.il/games-trivia`;
+  $('share-btn').href = `https://wa.me/?text=${encodeURIComponent(shareText)}`;
+}
+
+function restart() {
+  $('final-screen').style.display = 'none';
+  $('loading').style.display = '';
+  loadQuestions();
+}
+
+window.answer = answer;
+window.nextQuestion = nextQuestion;
+window.restart = restart;
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>

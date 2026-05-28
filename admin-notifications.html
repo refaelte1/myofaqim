@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>התראות אדמין | אופקים שלי</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, #F5F5F0 0%, #FFFFFF 100%); }
+
+  .notif-wrap { max-width: 900px; margin: 30px auto; padding: 0 16px; }
+
+  .notif-hero {
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    color: #fff; padding: 24px 28px; border-radius: 20px;
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 18px; flex-wrap: wrap;
+  }
+  .notif-hero-icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: rgba(245,158,11,0.2); color: #F59E0B;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .notif-hero h1 { font-size: 22px; font-weight: 900; margin: 0 0 4px; }
+  .notif-hero p { font-size: 13px; opacity: 0.85; margin: 0; }
+
+  /* ── Stats Row ── */
+  .stats-row {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 12px; margin-bottom: 20px;
+  }
+  .stat-box {
+    background: #fff; border-radius: 14px;
+    padding: 16px 18px; display: flex; align-items: center; gap: 12px;
+    box-shadow: 0 2px 8px rgba(26,46,92,0.06);
+    border: 1.5px solid transparent; transition: all 0.15s;
+  }
+  .stat-box:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(26,46,92,0.1); }
+  .stat-box.urgent { border-color: #DC2626; }
+  .stat-icon {
+    width: 38px; height: 38px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .stat-icon.biz { background: rgba(245,158,11,0.1); color: #D97706; }
+  .stat-icon.notif { background: rgba(220,38,38,0.1); color: #DC2626; }
+  .stat-icon.jobs { background: rgba(37,99,235,0.1); color: #2563EB; }
+  .stat-icon.re { background: rgba(124,58,237,0.1); color: #7C3AED; }
+  .stat-icon.today { background: rgba(101,163,13,0.1); color: #65A30D; }
+  .stat-num { font-size: 24px; font-weight: 900; color: #1A2E5C; line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat-lbl { font-size: 11px; color: #6B7280; font-weight: 700; margin-top: 3px; }
+  .stat-num.alert { color: #DC2626; }
+
+  /* ── Section ── */
+  .section-card {
+    background: #fff; border-radius: 18px;
+    padding: 20px 24px; margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(26,46,92,0.06);
+  }
+  .section-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .section-head h2 {
+    font-size: 16px; font-weight: 900; color: #1A2E5C; margin: 0;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section-head h2 .badge {
+    background: #DC2626; color: #fff;
+    padding: 2px 8px; border-radius: 100px;
+    font-size: 11px; font-weight: 900;
+    min-width: 20px; text-align: center;
+  }
+  .section-head .actions { display: flex; gap: 6px; }
+  .btn-sm {
+    background: #F5F5F0; color: #1A2E5C; border: 1px solid #E5E7EB;
+    padding: 6px 12px; border-radius: 8px; cursor: pointer;
+    font-family: inherit; font-size: 12px; font-weight: 700;
+  }
+  .btn-sm:hover { border-color: #2563EB; color: #2563EB; }
+
+  /* ── Pending Biz Cards ── */
+  .pending-list { display: flex; flex-direction: column; gap: 10px; }
+  .pending-card {
+    background: #FFFBEB; border-radius: 14px;
+    padding: 14px 18px;
+    border: 1.5px solid #FBBF24;
+    display: grid; grid-template-columns: 52px 1fr auto; gap: 14px;
+    align-items: center;
+  }
+  .pending-thumb {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: linear-gradient(135deg, #1A2E5C, #2563EB);
+    color: #F59E0B; flex-shrink: 0; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900;
+  }
+  .pending-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .pending-info { min-width: 0; }
+  .pending-name {
+    font-size: 15px; font-weight: 900; color: #1A2E5C;
+    margin-bottom: 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .pending-meta {
+    display: flex; gap: 6px; flex-wrap: wrap;
+    font-size: 11px; color: #6B7280; font-weight: 600;
+  }
+  .pending-meta span { background: rgba(255,255,255,0.6); padding: 2px 7px; border-radius: 6px; }
+  .pending-meta .time { color: #D97706; }
+
+  .pending-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .btn-approve {
+    background: linear-gradient(135deg, #16A34A, #15803D);
+    color: #fff; border: none;
+    padding: 9px 14px; border-radius: 10px;
+    font-family: inherit; font-weight: 900; font-size: 13px;
+    cursor: pointer; display: flex; align-items: center; gap: 4px;
+    box-shadow: 0 2px 8px rgba(22,163,74,0.3);
+  }
+  .btn-approve:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(22,163,74,0.4); }
+  .btn-reject {
+    background: #fff; color: #DC2626; border: 1.5px solid #FCA5A5;
+    padding: 9px 12px; border-radius: 10px;
+    font-family: inherit; font-weight: 800; font-size: 12px;
+    cursor: pointer;
+  }
+  .btn-reject:hover { background: #FEE2E2; border-color: #DC2626; }
+  .btn-view {
+    width: 36px; height: 36px;
+    background: #fff; border: 1.5px solid #E5E7EB;
+    border-radius: 10px; color: #1A2E5C; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-view:hover { border-color: #2563EB; color: #2563EB; }
+
+  /* ── Notification Items ── */
+  .notif-list { display: flex; flex-direction: column; gap: 8px; }
+  .notif-item {
+    background: #F8FAFC; border-radius: 12px;
+    padding: 12px 16px;
+    display: flex; gap: 12px; align-items: flex-start;
+    border: 1.5px solid transparent;
+    transition: all 0.15s;
+  }
+  .notif-item.unread { background: #EFF6FF; border-color: #2563EB; }
+  .notif-item:hover { transform: translateX(-2px); }
+  .notif-item-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: rgba(37,99,235,0.1); color: #2563EB;
+    flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .notif-item-content { flex: 1; min-width: 0; }
+  .notif-item-title {
+    font-size: 13px; font-weight: 800; color: #1A2E5C;
+    margin-bottom: 2px;
+  }
+  .notif-item-msg { font-size: 12px; color: #4B5563; line-height: 1.4; }
+  .notif-item-time {
+    font-size: 11px; color: #94A3B8; font-weight: 600;
+    margin-top: 4px;
+  }
+  .notif-item-link {
+    background: transparent; border: 1px solid #E5E7EB;
+    padding: 4px 10px; border-radius: 6px;
+    color: #1A2E5C; text-decoration: none;
+    font-size: 11px; font-weight: 700; flex-shrink: 0;
+  }
+  .notif-item-link:hover { border-color: #2563EB; color: #2563EB; }
+
+  /* ── States ── */
+  .access-denied, .state-msg {
+    background: #fff; border-radius: 16px;
+    padding: 60px 24px; text-align: center;
+  }
+  .access-denied h2 { color: #DC2626; font-size: 20px; margin: 0 0 8px; }
+  .empty-icon {
+    width: 56px; height: 56px; margin: 0 auto 12px;
+    background: #F5F5F0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #94A3B8;
+  }
+  .state-msg h3 { font-size: 16px; font-weight: 900; color: #1A2E5C; margin: 0 0 4px; }
+  .state-msg p { font-size: 13px; color: #6B7280; margin: 0; }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: #1A2E5C; color: #fff;
+    padding: 12px 24px; border-radius: 100px;
+    font-weight: 700; font-size: 14px; z-index: 99998;
+    transition: transform .3s; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #DC2626; }
+  .toast.success { background: #16A34A; }
+
+  @media (max-width: 600px) {
+    .pending-card { grid-template-columns: 44px 1fr; }
+    .pending-actions { grid-column: 1 / -1; justify-content: stretch; margin-top: 8px; }
+    .pending-actions > * { flex: 1; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main class="notif-wrap">
+
+  <div id="loading" class="state-msg" style="margin-top:60px"><p>טוען...</p></div>
+
+  <div id="denied" class="access-denied" style="display:none">
+    <h2>גישה אסורה</h2>
+    <p>דף זה למנהל בלבד</p>
+    <a href="/" style="color:#2563EB;font-weight:700">חזרה לדף הבית</a>
+  </div>
+
+  <div id="content" style="display:none">
+
+    <!-- Hero -->
+    <div class="notif-hero">
+      <div class="notif-hero-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <h1>מרכז ההתראות</h1>
+        <p>עסקים ממתינים לאישור, מודעות חדשות וכל מה שצריך לטפל</p>
+      </div>
+      <button class="btn-sm" onclick="refreshAll()" style="background:#F59E0B;color:#1A2E5C;border:none;padding:10px 18px;font-weight:900">
+        רענן
+      </button>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row"></div>
+
+    <!-- Pending Businesses -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2>
+          עסקים ממתינים לאישור
+          <span class="badge" id="pending-count" style="display:none">0</span>
+        </h2>
+        <div class="actions">
+          <a href="/admin-biz" class="btn-sm">לאדמין מלא</a>
+        </div>
+      </div>
+      <div id="pending-area">
+        <div class="state-msg" style="padding:30px"><p>טוען...</p></div>
+      </div>
+    </div>
+
+    <!-- Recent Notifications -->
+    <div class="section-card">
+      <div class="section-head">
+        <h2>
+          התראות אחרונות
+          <span class="badge" id="unread-count" style="display:none">0</span>
+        </h2>
+        <div class="actions">
+          <button class="btn-sm" onclick="markAllRead()">סמן הכל כנקרא</button>
+        </div>
+      </div>
+      <div id="notif-area">
+        <div class="state-msg" style="padding:30px"><p>טוען...</p></div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// משתמש ב-window.SB_URL ו-window.SB_KEY מ-site.js
+const ADMIN_EMAIL = 'refael@tedgi.co.il';
+
+let sb = null;
+let currentUser = null;
+let pendingBizs = [];
+let notifications = [];
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+function toast(msg, type) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + (type || '');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+function timeAgo(date) {
+  if (!date) return '';
+  const diff = (Date.now() - new Date(date).getTime()) / 1000;
+  if (diff < 60) return 'עכשיו';
+  if (diff < 3600) return `לפני ${Math.floor(diff/60)} דק׳`;
+  if (diff < 86400) return `לפני ${Math.floor(diff/3600)} שעות`;
+  if (diff < 604800) return `לפני ${Math.floor(diff/86400)} ימים`;
+  return new Date(date).toLocaleDateString('he-IL');
+}
+
+async function init() {
+  console.log('[admin-notif] init started');
+  // המתן עד שsupabase ייטען (עד 10 שניות)
+  if (!window.supabase) {
+    if (!window._notif_attempts) window._notif_attempts = 0;
+    window._notif_attempts++;
+    if (window._notif_attempts === 1) console.log('[admin-notif] waiting for supabase-js...');
+    if (window._notif_attempts > 50) {
+      console.error('[admin-notif] supabase-js failed to load');
+      $('loading').innerHTML = '<p style="color:#DC2626">שגיאה: ספריית Supabase לא נטענה. אנא רענן את הדף או בדוק את החיבור לאינטרנט.</p><button onclick="location.reload()" style="margin-top:10px;background:#1A2E5C;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:inherit;font-weight:700;cursor:pointer">רענן</button>';
+      return;
+    }
+    setTimeout(init, 200);
+    return;
+  }
+
+  console.log('[admin-notif] supabase loaded, creating client');
+
+  try {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    console.log('[admin-notif] client created, getting session');
+    const { data: { session }, error: sessErr } = await sb.auth.getSession();
+    console.log('[admin-notif] session result:', session ? 'logged in as ' + session.user.email : 'not logged in');
+
+    if (sessErr) throw sessErr;
+
+    if (!session) {
+      $('loading').style.display = 'none';
+      $('denied').style.display = '';
+      $('denied').innerHTML = '<h2>נדרשת התחברות</h2><p>יש להתחבר תחילה כדי לגשת לדף זה</p><a href="/" style="color:#2563EB;font-weight:700">חזרה לדף הבית</a>';
+      return;
+    }
+
+    if ((session.user.email || '').toLowerCase() !== ADMIN_EMAIL) {
+      $('loading').style.display = 'none';
+      $('denied').style.display = '';
+      return;
+    }
+
+    console.log('[admin-notif] admin verified, loading content');
+    currentUser = session.user;
+    $('loading').style.display = 'none';
+    $('content').style.display = '';
+    await refreshAll();
+    console.log('[admin-notif] all loaded successfully');
+  } catch (e) {
+    console.error('[admin-notif] Init error:', e);
+    $('loading').innerHTML = `<p style="color:#DC2626">שגיאה: ${e.message}</p><button onclick="location.reload()" style="margin-top:10px;background:#1A2E5C;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:inherit;font-weight:700;cursor:pointer">רענן</button>`;
+  }
+}
+
+async function refreshAll() {
+  await Promise.all([loadStats(), loadPending(), loadNotifications()]);
+}
+
+async function loadStats() {
+  try {
+    // נסה קודם RPC אם קיים
+    let s = {};
+    try {
+      const { data, error } = await sb.rpc('admin_get_pending_stats');
+      if (!error && data && !data.error) s = data;
+    } catch {}
+
+    // אם RPC נכשל - שאילתות ישירות
+    if (Object.keys(s).length === 0) {
+      console.log('[admin-notif] RPC not available, using direct queries');
+      try {
+        const [pBiz, pJobs, pRE, unread, today] = await Promise.all([
+          sb.from('businesses').select('id', { count: 'exact', head: true })
+            .eq('is_verified', false).neq('status', 'rejected'),
+          sb.from('jobs').select('id', { count: 'exact', head: true })
+            .eq('status', 'pending').then(r => r).catch(() => ({ count: 0 })),
+          sb.from('realestate_listings').select('id', { count: 'exact', head: true })
+            .eq('status', 'pending').then(r => r).catch(() => ({ count: 0 })),
+          sb.from('admin_notifications').select('id', { count: 'exact', head: true })
+            .eq('is_read', false).then(r => r).catch(() => ({ count: 0 })),
+          sb.from('businesses').select('id', { count: 'exact', head: true })
+            .gte('created_at', new Date(Date.now() - 86400000).toISOString())
+        ]);
+        s = {
+          pending_businesses: pBiz.count || 0,
+          pending_jobs: pJobs.count || 0,
+          pending_listings: pRE.count || 0,
+          unread_notifications: unread.count || 0,
+          today_signups: today.count || 0
+        };
+      } catch (e) {
+        console.warn('Direct queries failed:', e);
+        s = { pending_businesses: 0, pending_jobs: 0, pending_listings: 0, unread_notifications: 0, today_signups: 0 };
+      }
+    }
+
+    $('stats-row').innerHTML = `
+      <div class="stat-box ${s.pending_businesses > 0 ? 'urgent' : ''}">
+        <div class="stat-icon biz">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/></svg>
+        </div>
+        <div>
+          <div class="stat-num ${s.pending_businesses > 0 ? 'alert' : ''}">${s.pending_businesses || 0}</div>
+          <div class="stat-lbl">עסקים ממתינים</div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon notif">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+        </div>
+        <div>
+          <div class="stat-num">${s.unread_notifications || 0}</div>
+          <div class="stat-lbl">התראות לא נקראו</div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon jobs">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+        </div>
+        <div>
+          <div class="stat-num">${s.pending_jobs || 0}</div>
+          <div class="stat-lbl">משרות ממתינות</div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon re">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+        </div>
+        <div>
+          <div class="stat-num">${s.pending_listings || 0}</div>
+          <div class="stat-lbl">נכסים ממתינים</div>
+        </div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon today">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <div>
+          <div class="stat-num">${s.today_signups || 0}</div>
+          <div class="stat-lbl">הרשמות היום</div>
+        </div>
+      </div>
+    `;
+  } catch (e) {
+    console.error('Stats error:', e);
+    $('stats-row').innerHTML = `<div class="state-msg" style="grid-column:1/-1"><p style="color:#DC2626">${esc(e.message)}</p></div>`;
+  }
+}
+
+async function loadPending() {
+  try {
+    const { data, error } = await sb.from('businesses').select('*')
+      .eq('is_verified', false)
+      .neq('status', 'rejected')
+      .order('created_at', { ascending: false })
+      .limit(50);
+
+    if (error) throw error;
+    pendingBizs = data || [];
+
+    const count = pendingBizs.length;
+    $('pending-count').textContent = count;
+    $('pending-count').style.display = count > 0 ? '' : 'none';
+
+    if (count === 0) {
+      $('pending-area').innerHTML = `
+        <div class="state-msg" style="padding:30px">
+          <div class="empty-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <h3>הכל בסדר!</h3>
+          <p>אין עסקים שממתינים לאישור</p>
+        </div>`;
+      return;
+    }
+
+    $('pending-area').innerHTML = `<div class="pending-list">${pendingBizs.map(renderPendingCard).join('')}</div>`;
+  } catch (e) {
+    console.error('Pending error:', e);
+    $('pending-area').innerHTML = `<div class="state-msg"><p style="color:#DC2626">${esc(e.message)}</p></div>`;
+  }
+}
+
+function renderPendingCard(b) {
+  const initial = (b.business_name || b.name || '?').charAt(0);
+  const img = b.logo_url ? `<img src="${esc(b.logo_url)}" onerror="this.style.display='none'">` : esc(initial);
+
+  return `
+    <div class="pending-card" id="biz-${b.id}">
+      <div class="pending-thumb">${img}</div>
+      <div class="pending-info">
+        <div class="pending-name">${esc(b.business_name || b.name || 'ללא שם')}</div>
+        <div class="pending-meta">
+          ${b.category ? `<span>${esc(b.category)}</span>` : ''}
+          ${b.phone ? `<span dir="ltr">${esc(b.phone)}</span>` : ''}
+          ${b.address ? `<span>${esc(b.address)}</span>` : ''}
+          <span class="time">${timeAgo(b.created_at)}</span>
+        </div>
+      </div>
+      <div class="pending-actions">
+        <button class="btn-view" onclick="window.open('/admin-biz?id=${b.id}','_blank')" title="פתח לעריכה">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        </button>
+        <button class="btn-reject" onclick="rejectBiz('${b.id}', '${esc(b.business_name || 'עסק')}')">דחה</button>
+        <button class="btn-approve" onclick="approveBiz('${b.id}', '${esc(b.business_name || 'עסק')}')">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          אשר
+        </button>
+      </div>
+    </div>`;
+}
+
+async function approveBiz(id, name) {
+  if (!confirm(`לאשר את "${name}" ולהעלות אותו לאוויר?`)) return;
+  try {
+    const { data, error } = await sb.rpc('admin_approve_business', { p_business_id: id });
+    if (error) throw error;
+    if (data && data.error) throw new Error(data.error);
+    toast(`✓ "${name}" אושר ועלה לאוויר!`, 'success');
+    document.getElementById(`biz-${id}`)?.remove();
+    await Promise.all([loadStats(), loadNotifications()]);
+    if (pendingBizs.length <= 1) await loadPending();
+  } catch (e) {
+    console.error('Approve error:', e);
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+async function rejectBiz(id, name) {
+  const reason = prompt(`למה לדחות את "${name}"? (אופציונלי)`);
+  if (reason === null) return; // user cancelled
+  try {
+    const { data, error } = await sb.rpc('admin_reject_business', {
+      p_business_id: id,
+      p_reason: reason || null
+    });
+    if (error) throw error;
+    if (data && data.error) throw new Error(data.error);
+    toast(`"${name}" נדחה`, 'success');
+    document.getElementById(`biz-${id}`)?.remove();
+    await Promise.all([loadStats(), loadNotifications()]);
+    if (pendingBizs.length <= 1) await loadPending();
+  } catch (e) {
+    console.error('Reject error:', e);
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+async function loadNotifications() {
+  try {
+    const { data, error } = await sb.from('admin_notifications').select('*')
+      .order('created_at', { ascending: false })
+      .limit(30);
+    if (error) {
+      // אם הטבלה לא קיימת - הצג הודעה מתאימה
+      if (error.message && (error.message.includes('not found') || error.message.includes('does not exist') || error.message.includes('schema cache'))) {
+        $('notif-area').innerHTML = `
+          <div class="state-msg" style="padding:30px">
+            <div class="empty-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/></svg>
+            </div>
+            <h3>טבלת ההתראות לא קיימת</h3>
+            <p style="margin-top:8px;font-size:12px">הרץ את ה-SQL: CREATE-ADMIN-APPROVAL.sql</p>
+          </div>`;
+        return;
+      }
+      throw error;
+    }
+    notifications = data || [];
+
+    const unread = notifications.filter(n => !n.is_read).length;
+    $('unread-count').textContent = unread;
+    $('unread-count').style.display = unread > 0 ? '' : 'none';
+
+    if (notifications.length === 0) {
+      $('notif-area').innerHTML = `
+        <div class="state-msg" style="padding:30px">
+          <div class="empty-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+          </div>
+          <h3>אין התראות</h3>
+        </div>`;
+      return;
+    }
+
+    $('notif-area').innerHTML = `<div class="notif-list">${notifications.map(renderNotif).join('')}</div>`;
+  } catch (e) {
+    console.error('Notifications error:', e);
+    $('notif-area').innerHTML = `<div class="state-msg"><p style="color:#DC2626">${esc(e.message)}</p></div>`;
+  }
+}
+
+function renderNotif(n) {
+  return `
+    <div class="notif-item ${n.is_read ? '' : 'unread'}" onclick="markRead('${n.id}')">
+      <div class="notif-item-icon">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/></svg>
+      </div>
+      <div class="notif-item-content">
+        <div class="notif-item-title">${esc(n.title)}</div>
+        ${n.message ? `<div class="notif-item-msg">${esc(n.message)}</div>` : ''}
+        <div class="notif-item-time">${timeAgo(n.created_at)}</div>
+      </div>
+      ${n.link ? `<a href="${esc(n.link)}" class="notif-item-link" onclick="event.stopPropagation()">פתח →</a>` : ''}
+    </div>`;
+}
+
+async function markRead(id) {
+  try {
+    await sb.from('admin_notifications').update({ is_read: true }).eq('id', id);
+    const n = notifications.find(x => x.id === id);
+    if (n) n.is_read = true;
+    loadNotifications();
+    loadStats();
+  } catch {}
+}
+
+async function markAllRead() {
+  if (!confirm('לסמן את כל ההתראות כנקראו?')) return;
+  try {
+    const { error } = await sb.from('admin_notifications').update({ is_read: true }).eq('is_read', false);
+    if (error) throw error;
+    toast('הכל סומן כנקרא', 'success');
+    await Promise.all([loadNotifications(), loadStats()]);
+  } catch (e) {
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+window.refreshAll = refreshAll;
+window.approveBiz = approveBiz;
+window.rejectBiz = rejectBiz;
+window.markRead = markRead;
+window.markAllRead = markAllRead;
+
+console.log('[admin-notif] script loaded, starting init');
+init();
+
+// רענון אוטומטי כל 30 שניות
+setInterval(() => {
+  if (currentUser && document.visibilityState === 'visible') {
+    loadStats();
+  }
+}, 30000);
+</script>
+</body>
+</html>

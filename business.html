@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGZ7EHLP4',{anonymize_ip:true});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title id="page-title">עסק | אופקים שלי</title>
+<meta id="meta-desc" name="description" content="פרטי עסק באופקים - שעות פתיחה, יצירת קשר, ניווט וקופונים פעילים.">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: #F0F2F5; }
+
+  /* ── Cover ── */
+  .biz-cover {
+    height: 240px; position: relative;
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    overflow: hidden;
+  }
+  .biz-cover img { width: 100%; height: 100%; object-fit: cover; }
+  .biz-cover::after {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 30%, rgba(0,0,0,0.5) 100%);
+  }
+  .biz-cover-empty {
+    position: absolute; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: rgba(245,158,11,0.3);
+  }
+
+  /* ── Container ── */
+  .biz-wrap { max-width: 760px; margin: -80px auto 100px; padding: 0 14px; position: relative; z-index: 2; }
+
+  /* ── Header Card ── */
+  .biz-head {
+    background: #fff; border-radius: 22px;
+    padding: 22px 24px 20px;
+    box-shadow: 0 12px 32px rgba(26,46,92,0.1);
+    margin-bottom: 14px;
+    position: relative;
+  }
+  .biz-head-row { display: flex; gap: 16px; align-items: flex-start; }
+  .biz-logo {
+    width: 84px; height: 84px; border-radius: 20px;
+    background: linear-gradient(135deg, #1A2E5C, #2563EB);
+    color: #F59E0B;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; font-weight: 900;
+    flex-shrink: 0; overflow: hidden;
+    margin-top: -50px;
+    border: 4px solid #fff;
+    box-shadow: 0 8px 20px rgba(26,46,92,0.15);
+  }
+  .biz-logo img { width: 100%; height: 100%; object-fit: cover; }
+
+  .biz-head-info { flex: 1; min-width: 0; padding-top: 4px; }
+  .biz-name-line {
+    display: flex; align-items: center; gap: 6px;
+    flex-wrap: wrap; margin-bottom: 4px;
+  }
+  .biz-name {
+    font-size: 22px; font-weight: 900; color: #1A2E5C;
+    line-height: 1.2; margin: 0;
+    letter-spacing: -0.02em;
+  }
+  .verified-badge {
+    color: #2563EB; flex-shrink: 0;
+    display: inline-flex; align-items: center;
+  }
+  .biz-meta {
+    display: flex; gap: 6px; align-items: center; flex-wrap: wrap;
+    font-size: 12px; color: #6B7280; font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .cat-tag {
+    background: rgba(37,99,235,0.08); color: #2563EB;
+    padding: 3px 10px; border-radius: 6px;
+    font-size: 11px; font-weight: 800;
+  }
+  .price-range {
+    background: rgba(101,163,13,0.1); color: #15803D;
+    padding: 3px 8px; border-radius: 6px;
+    font-size: 11px; font-weight: 900;
+    font-variant-numeric: tabular-nums;
+  }
+  .biz-short {
+    font-size: 14px; color: #4B5563;
+    line-height: 1.5; margin: 0 0 14px;
+  }
+
+  /* ── Action Buttons ── */
+  .biz-actions {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+  }
+  .action-btn {
+    background: #F8FAFC; border: 1.5px solid #E5E7EB;
+    color: #1A2E5C; text-decoration: none;
+    padding: 12px 8px; border-radius: 12px;
+    font-family: inherit; font-weight: 800; font-size: 13px;
+    cursor: pointer; text-align: center;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    transition: all 0.15s;
+  }
+  .action-btn:hover { transform: translateY(-1px); border-color: #2563EB; color: #2563EB; }
+  .action-btn.primary {
+    background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+    color: #fff; border-color: transparent;
+    box-shadow: 0 4px 12px rgba(22,163,74,0.25);
+  }
+  .action-btn.primary:hover { color: #fff; transform: translateY(-1px); box-shadow: 0 6px 16px rgba(22,163,74,0.35); }
+  .action-btn.whatsapp {
+    background: #25D366; color: #fff; border-color: transparent;
+  }
+  .action-btn.whatsapp:hover { color: #fff; background: #128C7E; }
+
+  /* ── Section Cards ── */
+  .section {
+    background: #fff; border-radius: 18px;
+    padding: 18px 22px; margin-bottom: 12px;
+    box-shadow: 0 2px 10px rgba(26,46,92,0.06);
+  }
+  .section h2 {
+    font-size: 15px; font-weight: 900; color: #1A2E5C;
+    margin: 0 0 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .section h2 svg { color: #F59E0B; }
+
+  /* ── Description ── */
+  .biz-desc { font-size: 14px; color: #4B5563; line-height: 1.7; white-space: pre-wrap; }
+
+  /* ── Info Grid ── */
+  .info-grid { display: grid; gap: 8px; }
+  .info-row {
+    background: #F8FAFC; border-radius: 12px;
+    padding: 12px 14px;
+    display: flex; gap: 12px; align-items: center;
+    text-decoration: none; color: inherit;
+  }
+  .info-row.clickable { cursor: pointer; transition: all 0.15s; }
+  .info-row.clickable:hover { background: #EFF6FF; }
+  .info-row .icon {
+    width: 36px; height: 36px; border-radius: 10px;
+    background: #2563EB; color: #fff; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .info-row.green .icon { background: #16A34A; }
+  .info-row.orange .icon { background: #F59E0B; }
+  .info-row .text { flex: 1; min-width: 0; }
+  .info-row .lbl { font-size: 11px; color: #6B7280; font-weight: 700; }
+  .info-row .val {
+    font-size: 14px; color: #1A2E5C; font-weight: 700;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .info-row .val[dir="ltr"] { text-align: right; }
+
+  /* ── Hours ── */
+  .hours-grid { display: flex; flex-direction: column; gap: 6px; }
+  .hour-row {
+    display: grid; grid-template-columns: 80px 1fr auto;
+    gap: 12px; align-items: center;
+    padding: 8px 12px; background: #F8FAFC; border-radius: 10px;
+    font-size: 13px;
+  }
+  .hour-row.today {
+    background: linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%);
+    border: 1.5px solid #F59E0B;
+  }
+  .hour-row .day { font-weight: 800; color: #1A2E5C; }
+  .hour-row.today .day { color: #92400E; }
+  .hour-row .time { font-weight: 700; color: #4B5563; font-variant-numeric: tabular-nums; }
+  .hour-row .status {
+    font-size: 10px; padding: 2px 8px; border-radius: 6px;
+    font-weight: 800; letter-spacing: 0.5px;
+  }
+  .hour-row .status.open { background: rgba(22,163,74,0.1); color: #15803D; }
+  .hour-row .status.closed { background: rgba(220,38,38,0.1); color: #DC2626; }
+
+  /* ── Features ── */
+  .features-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+  .feature {
+    background: #F8FAFC; border-radius: 10px;
+    padding: 10px 12px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; color: #1A2E5C;
+  }
+  .feature svg { color: #16A34A; flex-shrink: 0; }
+
+  /* ── Coupons in Biz Page ── */
+  .coupon-card {
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    color: #fff; border-radius: 14px;
+    padding: 16px 18px; margin-bottom: 8px;
+    position: relative; overflow: hidden;
+  }
+  .coupon-card::before {
+    content: ''; position: absolute; top: -30px; right: -30px;
+    width: 100px; height: 100px;
+    background: radial-gradient(circle, rgba(245,158,11,0.3) 0%, transparent 70%);
+  }
+  .coupon-discount {
+    font-size: 26px; font-weight: 900; color: #F59E0B;
+    margin-bottom: 4px; position: relative;
+  }
+  .coupon-title { font-size: 14px; font-weight: 800; margin-bottom: 6px; position: relative; }
+  .coupon-meta {
+    font-size: 11px; opacity: 0.8; position: relative;
+    display: flex; gap: 10px; flex-wrap: wrap;
+  }
+
+  /* ── Gallery ── */
+  .gallery {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 8px;
+  }
+  .gallery img {
+    width: 100%; aspect-ratio: 1;
+    object-fit: cover; border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .gallery img:hover { transform: scale(1.05); }
+
+  /* ── Menu Items ── */
+  .menu-list { display: flex; flex-direction: column; gap: 6px; }
+  .menu-item {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 14px; background: #F8FAFC; border-radius: 10px;
+    gap: 12px;
+  }
+  .menu-item-info { flex: 1; min-width: 0; }
+  .menu-item-name { font-size: 13px; font-weight: 800; color: #1A2E5C; }
+  .menu-item-desc { font-size: 11px; color: #6B7280; margin-top: 2px; }
+  .menu-item-price {
+    font-size: 14px; font-weight: 900; color: #16A34A;
+    background: rgba(22,163,74,0.1);
+    padding: 4px 10px; border-radius: 8px;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+  }
+
+  /* ── Social Links ── */
+  .social-grid { display: flex; gap: 8px; flex-wrap: wrap; }
+  .social-btn {
+    width: 42px; height: 42px; border-radius: 12px;
+    background: #F8FAFC; color: #1A2E5C;
+    border: 1.5px solid #E5E7EB;
+    display: flex; align-items: center; justify-content: center;
+    text-decoration: none;
+    transition: all 0.15s;
+  }
+  .social-btn:hover { transform: translateY(-2px); border-color: #2563EB; color: #2563EB; }
+  .social-btn.fb:hover { background: #1877F2; color: #fff; border-color: transparent; }
+  .social-btn.ig:hover { background: linear-gradient(135deg, #833AB4, #FD1D1D, #FCB045); color: #fff; border-color: transparent; }
+
+  /* ── States ── */
+  .state-msg {
+    background: #fff; border-radius: 18px;
+    padding: 60px 24px; text-align: center;
+    margin: 30px 0;
+  }
+  .empty-icon {
+    width: 60px; height: 60px; margin: 0 auto 14px;
+    background: #F5F5F0; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: #94A3B8;
+  }
+
+  /* ── Share/Favorite Bar ── */
+  .float-bar {
+    position: absolute; top: 16px; left: 16px;
+    display: flex; gap: 6px; z-index: 3;
+  }
+  .float-btn {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(0,0,0,0.4); backdrop-filter: blur(8px);
+    border: none; color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .float-btn.saved { color: #F59E0B; }
+  .float-btn.saved svg { fill: #F59E0B; }
+  .float-btn:hover { background: rgba(0,0,0,0.6); }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(120px);
+    background: #1A2E5C; color: #fff;
+    padding: 12px 24px; border-radius: 100px;
+    font-weight: 700; font-size: 14px; z-index: 99998;
+    transition: transform .3s; box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 480px) {
+    .biz-wrap { padding: 0 10px; margin-top: -60px; }
+    .biz-head { padding: 18px 18px 16px; }
+    .biz-logo { width: 70px; height: 70px; margin-top: -42px; font-size: 26px; }
+    .biz-name { font-size: 19px; }
+    .biz-actions { grid-template-columns: 1fr 1fr; }
+    .biz-actions .action-btn:last-child { grid-column: span 2; }
+    .biz-cover { height: 180px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <!-- Loading -->
+  <div id="loading" style="text-align:center;padding:80px 20px;color:#6B7280">טוען...</div>
+
+  <!-- Not Found -->
+  <div id="not-found" style="display:none">
+    <div class="biz-wrap" style="margin-top:60px">
+      <div class="state-msg">
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <h3 style="color:#1A2E5C;margin:0 0 6px;font-weight:900">העסק לא נמצא</h3>
+        <p style="color:#6B7280;margin:0 0 16px">ייתכן שהעסק הוסר או שהקישור שגוי.</p>
+        <a href="/businesses" style="background:#1A2E5C;color:#fff;padding:10px 22px;border-radius:10px;text-decoration:none;font-weight:800">חזרה לרשימת העסקים</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Biz Page -->
+  <div id="biz-page" style="display:none">
+
+    <div class="biz-cover" id="biz-cover">
+      <div class="biz-cover-empty">
+        <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/></svg>
+      </div>
+      <div class="float-bar">
+        <button class="float-btn" onclick="shareBiz()" title="שתף">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        </button>
+        <button class="float-btn" id="fav-btn" onclick="toggleFav()" title="הוסף למועדפים">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="biz-wrap">
+
+      <!-- Head Card -->
+      <div class="biz-head">
+        <div class="biz-head-row">
+          <div class="biz-logo" id="biz-logo">?</div>
+          <div class="biz-head-info">
+            <div class="biz-name-line">
+              <h1 class="biz-name" id="biz-name">—</h1>
+              <span class="verified-badge" id="verified-badge" style="display:none" title="עסק מאומת">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" fill="none" stroke="currentColor" stroke-width="2.5"/><circle cx="12" cy="12" r="10" fill="#2563EB"/><polyline points="9 12 11 14 15 10" stroke="#fff" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </span>
+            </div>
+            <div class="biz-meta">
+              <span class="cat-tag" id="cat-tag">—</span>
+              <span id="biz-price" class="price-range" style="display:none"></span>
+              <span id="biz-kosher"></span>
+            </div>
+            <p class="biz-short" id="biz-short" style="display:none"></p>
+          </div>
+        </div>
+
+        <div class="biz-actions" id="biz-actions"></div>
+      </div>
+
+      <!-- Coupons (if any) -->
+      <div class="section" id="coupons-section" style="display:none">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/></svg>
+          מבצעים והטבות
+        </h2>
+        <div id="coupons-list"></div>
+      </div>
+
+      <!-- Description -->
+      <div class="section" id="desc-section" style="display:none">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          אודות העסק
+        </h2>
+        <p class="biz-desc" id="biz-desc"></p>
+      </div>
+
+      <!-- Hours -->
+      <div class="section" id="hours-section" style="display:none">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          שעות פתיחה
+        </h2>
+        <div class="hours-grid" id="hours-grid"></div>
+      </div>
+
+      <!-- Contact -->
+      <div class="section">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          יצירת קשר ומיקום
+        </h2>
+        <div class="info-grid" id="contact-grid"></div>
+
+        <div class="social-grid" id="social-grid" style="margin-top:12px"></div>
+      </div>
+
+      <!-- Features -->
+      <div class="section" id="features-section" style="display:none">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          מאפיינים ושירותים
+        </h2>
+        <div class="features-grid" id="features-grid"></div>
+      </div>
+
+      <!-- Menu -->
+      <div class="section" id="menu-section" style="display:none">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+          תפריט
+        </h2>
+        <div class="menu-list" id="menu-list"></div>
+        <a id="menu-url-btn" href="#" target="_blank" style="display:none;margin-top:12px;background:#1A2E5C;color:#fff;padding:10px 16px;border-radius:10px;text-decoration:none;font-weight:800;font-size:13px;text-align:center">לתפריט המלא ←</a>
+      </div>
+
+      <!-- Gallery -->
+      <div class="section" id="gallery-section" style="display:none">
+        <h2>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+          גלריית תמונות
+        </h2>
+        <div class="gallery" id="gallery"></div>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script type="application/ld+json" id="jsonld"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+let sb = null;
+let currentUser = null;
+let currentBiz = null;
+let isFav = false;
+
+const DAY_LABELS = { sun:'ראשון', mon:'שני', tue:'שלישי', wed:'רביעי', thu:'חמישי', fri:'שישי', sat:'שבת' };
+const DAY_ORDER = ['sun','mon','tue','wed','thu','fri','sat'];
+const CAT_LABELS = {
+  restaurant:'מסעדה', cafe:'בית קפה', bakery:'מאפיה',
+  supermarket:'סופרמרקט', butcher:'אטליז', grocery:'מכולת',
+  fashion:'אופנה', shoes:'נעליים', kids:'ילדים', gifts:'מתנות',
+  electronics:'אלקטרוניקה', cosmetics:'קוסמטיקה', barber:'מספרה',
+  gym:'חדר כושר', health:'בריאות', pharmacy:'בית מרקחת',
+  judaica:'יודאיקה', flowers:'פרחים', legal:'עורכי דין',
+  accountant:'רואי חשבון', realestate:'נדל"ן', insurance:'ביטוח',
+  education:'חינוך', other:'אחר'
+};
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+function toast(msg) {
+  const t = $('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) currentUser = session.user;
+
+  // קבלת ה-id/slug מה-URL
+  const params = new URLSearchParams(window.location.search);
+  const idOrSlug = params.get('id') || params.get('slug') ||
+    window.location.pathname.split('/').pop().replace('.html', '');
+
+  if (!idOrSlug || idOrSlug === 'business') {
+    showNotFound();
+    return;
+  }
+
+  await loadBiz(idOrSlug);
+}
+
+async function loadBiz(idOrSlug) {
+  try {
+    // נסה תחילה לפי id, ואז לפי slug
+    let { data, error } = await sb.from('businesses').select('*')
+      .or(`id.eq.${idOrSlug.match(/^[0-9a-f-]{36}$/) ? idOrSlug : '00000000-0000-0000-0000-000000000000'},slug.eq.${idOrSlug}`)
+      .limit(1)
+      .maybeSingle();
+
+    if (error || !data) {
+      // נסה רק לפי slug
+      const r2 = await sb.from('businesses').select('*').eq('slug', idOrSlug).maybeSingle();
+      data = r2.data;
+    }
+
+    if (!data) {
+      showNotFound();
+      return;
+    }
+
+    // וודא שזה עסק פעיל (אלא אם אדמין/בעלים)
+    const isAdmin = currentUser && (currentUser.email || '').toLowerCase() === 'refael@tedgi.co.il';
+    const isOwner = currentUser && data.owner_id === currentUser.id;
+    if (!data.is_active && !isAdmin && !isOwner) {
+      showNotFound();
+      return;
+    }
+
+    currentBiz = data;
+    render(data);
+
+    // tracking view
+    if (typeof mofTrackView === 'function') mofTrackView(data.id);
+
+    // טען מועדפים
+    if (currentUser) {
+      try {
+        const { data: favs } = await sb.from('user_favorites').select('id')
+          .eq('user_id', currentUser.id)
+          .eq('item_type', 'business')
+          .eq('item_id', data.id);
+        if (favs && favs.length > 0) {
+          isFav = true;
+          $('fav-btn').classList.add('saved');
+        }
+      } catch {}
+    }
+
+    // טען קופונים פעילים
+    try {
+      const { data: coupons } = await sb.from('coupons').select('*')
+        .eq('business_id', data.id)
+        .eq('is_active', true)
+        .order('display_order');
+      if (coupons && coupons.length > 0) renderCoupons(coupons);
+    } catch {}
+
+  } catch (e) {
+    console.error('Load biz error:', e);
+    $('loading').innerHTML = `<p style="color:#DC2626">שגיאה: ${esc(e.message)}</p>`;
+  }
+}
+
+function showNotFound() {
+  $('loading').style.display = 'none';
+  $('not-found').style.display = '';
+}
+
+function render(b) {
+  $('loading').style.display = 'none';
+  $('biz-page').style.display = '';
+
+  const name = b.business_name || b.name || 'עסק';
+
+  // Meta tags
+  $('page-title').textContent = `${name} | אופקים שלי`;
+  $('meta-desc').setAttribute('content', b.short_description || `פרטי ${name} באופקים - שעות פתיחה, יצירת קשר ועוד.`);
+
+  // Cover
+  if (b.cover_image_url) {
+    $('biz-cover').innerHTML = `<img src="${esc(b.cover_image_url)}" alt="${esc(name)}">` + $('biz-cover').innerHTML.match(/<div class="float-bar"[\s\S]*<\/div>/)[0];
+  }
+
+  // Logo
+  if (b.logo_url) {
+    $('biz-logo').innerHTML = `<img src="${esc(b.logo_url)}" alt="${esc(name)}">`;
+  } else {
+    $('biz-logo').textContent = name.charAt(0);
+  }
+
+  // Name + verified
+  $('biz-name').textContent = name;
+  if (b.is_verified) $('verified-badge').style.display = '';
+
+  // Meta
+  const catLabel = CAT_LABELS[b.category] || b.category || '';
+  $('cat-tag').textContent = catLabel + (b.sub_category ? ' · ' + b.sub_category : '');
+
+  if (b.price_range) {
+    $('biz-price').textContent = b.price_range;
+    $('biz-price').style.display = '';
+  }
+  if (b.kosher_certificate) {
+    $('biz-kosher').innerHTML = `<span style="background:rgba(124,58,237,0.1);color:#7C3AED;padding:3px 10px;border-radius:6px;font-size:11px;font-weight:800">כשר ${esc(b.kosher_certificate)}</span>`;
+  }
+
+  // Short description
+  if (b.short_description) {
+    $('biz-short').textContent = b.short_description;
+    $('biz-short').style.display = '';
+  }
+
+  // Action buttons
+  const actions = [];
+  if (b.phone) {
+    actions.push(`<a href="tel:${esc(b.phone.replace(/\D/g,''))}" class="action-btn primary" onclick="trackClick('phone')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.7 19.79 19.79 0 0 1 1.62 4.13 2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      חיוג
+    </a>`);
+  }
+  if (b.whatsapp) {
+    const wa = b.whatsapp.replace(/\D/g,'').replace(/^0/, '972');
+    actions.push(`<a href="https://wa.me/${wa}" target="_blank" rel="noopener" class="action-btn whatsapp" onclick="trackClick('whatsapp')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413Z"/></svg>
+      WhatsApp
+    </a>`);
+  }
+  if (b.address) {
+    actions.push(`<a href="https://maps.google.com/?q=${encodeURIComponent(b.address + ' אופקים')}" target="_blank" rel="noopener" class="action-btn" onclick="trackClick('navigation')">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+      ניווט
+    </a>`);
+  }
+  $('biz-actions').innerHTML = actions.join('');
+
+  // Description
+  if (b.description) {
+    $('biz-desc').textContent = b.description;
+    $('desc-section').style.display = '';
+  }
+
+  // Hours
+  if (b.opening_hours && typeof b.opening_hours === 'object' && Object.keys(b.opening_hours).length > 0) {
+    renderHours(b.opening_hours);
+    $('hours-section').style.display = '';
+  }
+
+  // Contact info
+  const contactItems = [];
+  if (b.address) {
+    contactItems.push(`<a href="https://maps.google.com/?q=${encodeURIComponent(b.address + ' אופקים')}" target="_blank" class="info-row clickable">
+      <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+      <div class="text"><div class="lbl">כתובת</div><div class="val">${esc(b.address)}</div></div>
+    </a>`);
+  }
+  if (b.phone) {
+    contactItems.push(`<a href="tel:${esc(b.phone.replace(/\D/g,''))}" class="info-row clickable green" onclick="trackClick('phone')">
+      <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.7 19.79 19.79 0 0 1 1.62 4.13 2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+      <div class="text"><div class="lbl">טלפון</div><div class="val" dir="ltr">${esc(b.phone)}</div></div>
+    </a>`);
+  }
+  if (b.phone_secondary) {
+    contactItems.push(`<a href="tel:${esc(b.phone_secondary.replace(/\D/g,''))}" class="info-row clickable">
+      <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.7 19.79 19.79 0 0 1 1.62 4.13 2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
+      <div class="text"><div class="lbl">טלפון משני</div><div class="val" dir="ltr">${esc(b.phone_secondary)}</div></div>
+    </a>`);
+  }
+  if (b.email) {
+    contactItems.push(`<a href="mailto:${esc(b.email)}" class="info-row clickable">
+      <div class="icon" style="background:#7C3AED"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+      <div class="text"><div class="lbl">אימייל</div><div class="val" dir="ltr">${esc(b.email)}</div></div>
+    </a>`);
+  }
+  if (b.website) {
+    contactItems.push(`<a href="${esc(b.website)}" target="_blank" rel="noopener" class="info-row clickable orange" onclick="trackClick('website')">
+      <div class="icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+      <div class="text"><div class="lbl">אתר אינטרנט</div><div class="val" dir="ltr">${esc(b.website.replace(/^https?:\/\//, ''))}</div></div>
+    </a>`);
+  }
+  $('contact-grid').innerHTML = contactItems.join('');
+
+  // Social Links
+  const socials = [];
+  if (b.facebook_url) socials.push(`<a href="${esc(b.facebook_url)}" target="_blank" rel="noopener" class="social-btn fb" title="פייסבוק">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07c0 6.02 4.39 11.01 10.12 11.93v-8.44H7.08v-3.49h3.04V9.41c0-3.02 1.79-4.69 4.53-4.69 1.31 0 2.68.24 2.68.24v2.97h-1.51c-1.49 0-1.96.93-1.96 1.89v2.26h3.32l-.53 3.49h-2.79V24C19.61 23.08 24 18.1 24 12.07z"/></svg>
+  </a>`);
+  if (b.instagram_url) socials.push(`<a href="${esc(b.instagram_url)}" target="_blank" rel="noopener" class="social-btn ig" title="אינסטגרם">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C8.74 0 8.333.015 7.053.072 5.775.132 4.905.333 4.14.63c-.789.306-1.459.717-2.126 1.384S.935 3.35.63 4.14C.333 4.905.131 5.775.072 7.053.012 8.333 0 8.74 0 12s.015 3.667.072 4.947c.06 1.277.261 2.148.558 2.913a5.885 5.885 0 0 0 1.384 2.126A5.868 5.868 0 0 0 4.14 23.37c.766.296 1.636.499 2.913.558C8.333 23.988 8.74 24 12 24s3.667-.015 4.947-.072c1.277-.06 2.148-.262 2.913-.558a5.898 5.898 0 0 0 2.126-1.384 5.86 5.86 0 0 0 1.384-2.126c.296-.765.499-1.636.558-2.913.06-1.28.072-1.687.072-4.947s-.015-3.667-.072-4.947c-.06-1.277-.262-2.149-.558-2.913a5.89 5.89 0 0 0-1.384-2.126A5.847 5.847 0 0 0 19.86.63c-.765-.297-1.636-.499-2.913-.558C15.667.012 15.26 0 12 0zm0 2.16c3.203 0 3.585.016 4.85.071 1.17.055 1.805.249 2.227.415.562.217.96.477 1.382.896.419.42.679.819.896 1.381.164.422.36 1.057.413 2.227.057 1.266.07 1.646.07 4.85s-.015 3.585-.074 4.85c-.061 1.17-.256 1.805-.421 2.227a3.81 3.81 0 0 1-.899 1.382 3.744 3.744 0 0 1-1.38.896c-.42.164-1.065.36-2.235.413-1.274.057-1.649.07-4.859.07-3.211 0-3.586-.015-4.859-.074-1.171-.061-1.816-.256-2.236-.421a3.716 3.716 0 0 1-1.379-.899 3.644 3.644 0 0 1-.9-1.38c-.165-.42-.359-1.065-.42-2.235-.045-1.26-.061-1.649-.061-4.844 0-3.196.016-3.586.061-4.861.061-1.17.255-1.814.42-2.234.21-.57.479-.96.9-1.381.419-.419.81-.689 1.379-.898.42-.166 1.051-.361 2.221-.421 1.275-.045 1.65-.06 4.859-.06l.045.03zm0 3.678a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm7.846-10.405a1.441 1.441 0 0 1-2.88 0 1.44 1.44 0 0 1 2.88 0z"/></svg>
+  </a>`);
+  $('social-grid').innerHTML = socials.join('');
+
+  // Features
+  const features = [];
+  if (b.has_parking) features.push(['חניה זמינה', 'P']);
+  if (b.has_accessibility) features.push(['נגיש לנכים', '♿']);
+  if (b.has_delivery) features.push(['משלוחים', '📦']);
+  if (b.has_takeaway) features.push(['טייק אווי', '🥡']);
+  if (b.accepts_credit) features.push(['אשראי', '💳']);
+  if (features.length > 0) {
+    $('features-grid').innerHTML = features.map(([name]) => `
+      <div class="feature">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        ${esc(name)}
+      </div>
+    `).join('');
+    $('features-section').style.display = '';
+  }
+
+  // Menu
+  if ((b.menu_items && b.menu_items.length > 0) || b.menu_url) {
+    if (b.menu_items && b.menu_items.length > 0) {
+      $('menu-list').innerHTML = b.menu_items.map(item => `
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">${esc(item.name)}</div>
+            ${item.description ? `<div class="menu-item-desc">${esc(item.description)}</div>` : ''}
+          </div>
+          ${item.price ? `<div class="menu-item-price">${esc(item.price)}</div>` : ''}
+        </div>
+      `).join('');
+    }
+    if (b.menu_url) {
+      $('menu-url-btn').href = b.menu_url;
+      $('menu-url-btn').style.display = 'block';
+    }
+    $('menu-section').style.display = '';
+  }
+
+  // Gallery
+  if (b.gallery_urls && b.gallery_urls.length > 0) {
+    $('gallery').innerHTML = b.gallery_urls.map(url => `
+      <img src="${esc(url)}" alt="${esc(name)}" onclick="window.open('${esc(url)}', '_blank')">
+    `).join('');
+    $('gallery-section').style.display = '';
+  }
+
+  // JSON-LD Schema
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "name": name,
+    "address": { "@type": "PostalAddress", "addressLocality": "אופקים", "addressCountry": "IL", "streetAddress": b.address || '' },
+    "telephone": b.phone || '',
+    "url": window.location.href
+  };
+  if (b.logo_url) schema.image = b.logo_url;
+  if (b.description) schema.description = b.description;
+  if (b.lat && b.lng) schema.geo = { "@type": "GeoCoordinates", latitude: b.lat, longitude: b.lng };
+  if (b.email) schema.email = b.email;
+  if (b.price_range) schema.priceRange = b.price_range;
+  $('jsonld').textContent = JSON.stringify(schema);
+}
+
+function renderHours(hours) {
+  const today = new Date().getDay();
+  const todayKey = DAY_ORDER[today];
+
+  const rows = DAY_ORDER.map(key => {
+    const d = hours[key];
+    const isToday = key === todayKey;
+    let timeText, statusClass, statusText;
+
+    if (!d || d.closed) {
+      timeText = 'סגור';
+      statusClass = 'closed';
+      statusText = isToday ? 'סגור היום' : '';
+    } else if (d.open && d.close) {
+      timeText = `${d.open} - ${d.close}`;
+      // בדוק אם פתוח עכשיו (רק להיום)
+      if (isToday) {
+        const now = new Date();
+        const nowMin = now.getHours() * 60 + now.getMinutes();
+        const [oh, om] = d.open.split(':').map(Number);
+        const [ch, cm] = d.close.split(':').map(Number);
+        const openMin = oh * 60 + om;
+        const closeMin = ch * 60 + cm;
+        if (nowMin >= openMin && nowMin <= closeMin) {
+          statusClass = 'open';
+          statusText = 'פתוח עכשיו';
+        } else {
+          statusClass = 'closed';
+          statusText = 'סגור עכשיו';
+        }
+      } else {
+        statusText = '';
+      }
+    } else {
+      timeText = '—';
+    }
+
+    return `
+      <div class="hour-row ${isToday ? 'today' : ''}">
+        <div class="day">${DAY_LABELS[key]}${isToday ? ' (היום)' : ''}</div>
+        <div class="time">${esc(timeText)}</div>
+        ${statusText ? `<div class="status ${statusClass}">${esc(statusText)}</div>` : '<div></div>'}
+      </div>
+    `;
+  });
+  $('hours-grid').innerHTML = rows.join('');
+}
+
+function renderCoupons(coupons) {
+  $('coupons-list').innerHTML = coupons.map(c => {
+    const discount = c.discount_type === 'percent' ? `${c.discount_value}% הנחה`
+      : c.discount_type === 'amount' ? `₪${c.discount_value} הנחה`
+      : c.discount_value ? `${c.discount_value}` : '';
+    return `
+      <a href="/deals?id=${c.id}" class="coupon-card" style="text-decoration:none;display:block" onclick="trackClick('coupon_view','${c.id}')">
+        ${discount ? `<div class="coupon-discount">${esc(discount)}</div>` : ''}
+        <div class="coupon-title">${esc(c.title)}</div>
+        <div class="coupon-meta">
+          ${c.expires_at ? `<span>תוקף עד: ${new Date(c.expires_at).toLocaleDateString('he-IL')}</span>` : ''}
+          ${c.coupon_code ? `<span>קוד: <strong>${esc(c.coupon_code)}</strong></span>` : ''}
+        </div>
+      </a>
+    `;
+  }).join('');
+  $('coupons-section').style.display = '';
+}
+
+async function toggleFav() {
+  if (!currentUser) {
+    if (typeof mofOpenAuth === 'function') mofOpenAuth();
+    return;
+  }
+  try {
+    if (isFav) {
+      await sb.from('user_favorites').delete()
+        .eq('user_id', currentUser.id)
+        .eq('item_type', 'business')
+        .eq('item_id', currentBiz.id);
+      isFav = false;
+      $('fav-btn').classList.remove('saved');
+      toast('הוסר מהמועדפים');
+    } else {
+      await sb.from('user_favorites').insert({
+        user_id: currentUser.id,
+        item_type: 'business',
+        item_id: currentBiz.id,
+        item_data: {
+          title: currentBiz.business_name || currentBiz.name,
+          description: currentBiz.short_description || '',
+          image: currentBiz.logo_url || currentBiz.cover_image_url
+        }
+      });
+      isFav = true;
+      $('fav-btn').classList.add('saved');
+      toast('נשמר במועדפים');
+    }
+  } catch (e) {
+    toast('שגיאה');
+  }
+}
+
+function shareBiz() {
+  const url = window.location.href;
+  const text = currentBiz?.business_name || currentBiz?.name || 'עסק באופקים';
+  if (navigator.share) {
+    navigator.share({ title: text, url }).catch(() => {});
+  } else {
+    navigator.clipboard?.writeText(url);
+    toast('הקישור הועתק');
+  }
+}
+
+function trackClick(type, couponId) {
+  if (typeof mofTrackClick === 'function' && currentBiz) {
+    mofTrackClick(currentBiz.id, type, null, couponId);
+  }
+}
+
+window.toggleFav = toggleFav;
+window.shareBiz = shareBiz;
+window.trackClick = trackClick;
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>

@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>אדמין מאסטר | אופקים שלי</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+  body { background: #F5F5F0; font-family: 'Heebo', sans-serif; padding: 0; margin: 0; }
+  .admin-wrap { max-width: 1400px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  .admin-header {
+    background: linear-gradient(135deg, #0F1E3D 0%, #1A2E5C 50%, #2563EB 100%);
+    color: #fff;
+    padding: 24px 28px;
+    border-radius: 18px;
+    margin-bottom: 18px;
+    box-shadow: 0 12px 30px rgba(26,46,92,0.2);
+  }
+  .admin-header h1 { font-size: 26px; font-weight: 900; margin: 0 0 6px; }
+  .admin-header p { font-size: 13px; opacity: 0.85; margin: 0; }
+  .admin-badge {
+    display: inline-block; background: rgba(245,158,11,0.2); color: #F59E0B;
+    padding: 4px 12px; border-radius: 100px;
+    font-size: 11px; font-weight: 800; letter-spacing: 1px;
+    margin-top: 8px;
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex; gap: 6px; overflow-x: auto; padding: 4px 0 12px;
+    margin-bottom: 16px; scrollbar-width: thin;
+  }
+  .tab {
+    background: #fff; border: 1.5px solid #E5E7EB;
+    padding: 10px 18px; border-radius: 100px;
+    font-family: inherit; font-weight: 700; font-size: 13px;
+    cursor: pointer; white-space: nowrap;
+    color: #6B7280; transition: all 0.15s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .tab:hover { border-color: #2563EB; color: #2563EB; }
+  .tab.active {
+    background: #1A2E5C; color: #fff; border-color: #1A2E5C;
+    box-shadow: 0 6px 14px rgba(26,46,92,0.25);
+  }
+  .tab-count {
+    background: rgba(0,0,0,0.1); padding: 2px 8px;
+    border-radius: 100px; font-size: 11px; font-weight: 800;
+  }
+  .tab.active .tab-count { background: rgba(255,255,255,0.2); color: #F59E0B; }
+
+  /* Actions */
+  .actions-bar {
+    display: flex; gap: 10px; align-items: center; flex-wrap: wrap;
+    margin-bottom: 14px;
+  }
+  .btn-add {
+    background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+    color: #fff; border: none;
+    padding: 11px 22px; border-radius: 100px;
+    font-family: inherit; font-weight: 800; font-size: 14px;
+    cursor: pointer; display: inline-flex; align-items: center; gap: 7px;
+    box-shadow: 0 6px 16px rgba(22,163,74,0.3);
+  }
+  .btn-add:hover { transform: translateY(-1px); }
+  .search-input {
+    flex: 1; min-width: 200px; max-width: 320px;
+    padding: 11px 16px; border: 1.5px solid #E5E7EB;
+    border-radius: 100px; font-family: inherit; font-size: 13px;
+    background: #fff;
+  }
+  .filter-select {
+    padding: 11px 14px; border: 1.5px solid #E5E7EB;
+    border-radius: 100px; font-family: inherit; font-size: 13px;
+    background: #fff; cursor: pointer;
+  }
+
+  /* Items list */
+  .items-grid { display: grid; gap: 10px; }
+  .item-card {
+    background: #fff; border: 1px solid #E5E7EB;
+    border-radius: 14px; padding: 16px 18px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .item-card:hover { box-shadow: 0 6px 18px rgba(0,0,0,0.08); border-color: #2563EB; }
+
+  .item-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, #2563EB, #1A2E5C);
+    color: #fff; display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 18px; flex-shrink: 0;
+  }
+  .item-info { flex: 1; min-width: 200px; }
+  .item-title { font-size: 15px; font-weight: 800; color: #1A2E5C; margin-bottom: 3px; }
+  .item-meta { font-size: 12px; color: #6B7280; display: flex; gap: 12px; flex-wrap: wrap; }
+  .item-meta span { display: inline-flex; align-items: center; gap: 4px; }
+
+  .item-status {
+    padding: 4px 10px; border-radius: 100px;
+    font-size: 11px; font-weight: 800;
+  }
+  .status-active, .status-approved { background: #D1FAE5; color: #166534; }
+  .status-pending { background: #FEF3C7; color: #92400E; }
+  .status-rejected, .status-inactive { background: #FEE2E2; color: #991B1B; }
+
+  .item-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+  .btn-action {
+    background: #F8FAFC; border: 1px solid #E5E7EB;
+    padding: 6px 12px; border-radius: 8px;
+    font-size: 12px; font-weight: 700; color: #1A2E5C;
+    cursor: pointer; font-family: inherit;
+    display: inline-flex; align-items: center; gap: 4px;
+  }
+  .btn-action:hover { background: #E5E7EB; }
+  .btn-edit { background: #DBEAFE; border-color: #93C5FD; color: #1E40AF; }
+  .btn-edit:hover { background: #BFDBFE; }
+  .btn-approve { background: #D1FAE5; border-color: #6EE7B7; color: #166534; }
+  .btn-approve:hover { background: #A7F3D0; }
+  .btn-reject { background: #FEE2E2; border-color: #FCA5A5; color: #991B1B; }
+  .btn-reject:hover { background: #FECACA; }
+  .btn-delete { background: #FEE2E2; border-color: #FCA5A5; color: #991B1B; }
+
+  /* Modal */
+  .modal-back {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: none; align-items: flex-start; justify-content: center;
+    z-index: 1000; padding: 20px;
+    overflow-y: auto;
+  }
+  .modal-back.show { display: flex; }
+  .modal {
+    background: #fff; border-radius: 18px;
+    max-width: 700px; width: 100%; margin: 20px auto;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+  }
+  .modal-header {
+    padding: 20px 24px; border-bottom: 1px solid #E5E7EB;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-header h2 { font-size: 18px; font-weight: 900; color: #1A2E5C; margin: 0; }
+  .modal-close {
+    background: #F8FAFC; border: none; width: 32px; height: 32px;
+    border-radius: 50%; font-size: 20px; cursor: pointer; color: #6B7280;
+  }
+  .modal-body { padding: 24px; }
+  .modal-footer {
+    padding: 16px 24px; border-top: 1px solid #E5E7EB;
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .form-row { margin-bottom: 14px; }
+  .form-row label {
+    display: block; font-size: 12px; font-weight: 700;
+    color: #1A2E5C; margin-bottom: 6px;
+  }
+  .form-row input, .form-row textarea, .form-row select {
+    width: 100%; padding: 10px 14px; border: 1.5px solid #E5E7EB;
+    border-radius: 10px; font-family: inherit; font-size: 14px;
+    background: #fff; box-sizing: border-box;
+  }
+  .form-row textarea { resize: vertical; min-height: 80px; }
+  .form-row.two-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .form-row.two-cols > div { margin: 0; }
+  .form-row .checkbox-label {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: #1A2E5C; font-weight: 600;
+    cursor: pointer; padding: 8px 0;
+  }
+  .form-row .checkbox-label input { width: auto; margin: 0; }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #16A34A 0%, #15803D 100%);
+    color: #fff; border: none;
+    padding: 11px 28px; border-radius: 10px;
+    font-family: inherit; font-weight: 800; font-size: 14px;
+    cursor: pointer; box-shadow: 0 4px 12px rgba(22,163,74,0.3);
+  }
+  .btn-secondary {
+    background: #F8FAFC; color: #1A2E5C; border: 1px solid #E5E7EB;
+    padding: 11px 22px; border-radius: 10px;
+    font-family: inherit; font-weight: 700; font-size: 14px;
+    cursor: pointer;
+  }
+
+  /* States */
+  .loading, .empty, .error {
+    background: #fff; border-radius: 14px; padding: 60px 20px;
+    text-align: center; color: #6B7280;
+  }
+  .error { background: #FEE2E2; color: #991B1B; }
+  .loading::before {
+    content: ''; display: block; width: 40px; height: 40px;
+    border: 3px solid #E5E7EB; border-top-color: #2563EB;
+    border-radius: 50%; margin: 0 auto 14px;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .toast {
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+    background: #1A2E5C; color: #fff;
+    padding: 12px 22px; border-radius: 100px;
+    font-weight: 700; font-size: 14px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    z-index: 2000; opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(-4px); }
+  .toast.error { background: #DC2626; }
+  .toast.success { background: #16A34A; }
+
+  .auth-needed {
+    background: #fff; padding: 60px 30px; border-radius: 18px;
+    text-align: center; max-width: 500px; margin: 60px auto;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+  }
+  .auth-needed h2 { color: #1A2E5C; font-size: 24px; margin: 0 0 12px; }
+  .auth-needed p { color: #6B7280; margin: 0 0 24px; }
+
+  /* ── Image upload fields ── */
+  .img-upload-wrap {
+    display: flex; flex-direction: column; gap: 10px;
+    background: #F8FAFC; border: 1.5px dashed #CBD5E1;
+    border-radius: 12px; padding: 14px;
+  }
+  .img-preview {
+    width: 100%; min-height: 140px; max-height: 200px;
+    background: #fff; border: 1px solid #E5E7EB; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden; position: relative;
+  }
+  .img-preview img {
+    max-width: 100%; max-height: 200px; object-fit: contain; display: block;
+  }
+  .img-placeholder {
+    color: #94A3B8; font-size: 13px; padding: 30px;
+  }
+  .img-remove {
+    position: absolute; top: 6px; left: 6px;
+    background: rgba(220,38,38,0.9); color: #fff; border: none;
+    width: 28px; height: 28px; border-radius: 50%;
+    font-size: 18px; font-weight: 800; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    line-height: 1;
+  }
+  .img-remove:hover { background: #DC2626; }
+  .img-upload-btn {
+    background: linear-gradient(135deg, #1A2E5C 0%, #2563EB 100%);
+    color: #fff; padding: 10px 16px; border-radius: 10px;
+    font-weight: 700; font-size: 13px; cursor: pointer;
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px; transition: all .15s;
+  }
+  .img-upload-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 14px rgba(37,99,235,0.3); }
+  .img-or {
+    text-align: center; color: #94A3B8; font-size: 11px;
+    font-weight: 700; letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .img-url-input {
+    width: 100%; padding: 9px 14px;
+    border: 1px solid #E5E7EB; border-radius: 8px;
+    font-family: inherit; font-size: 13px;
+    background: #fff; box-sizing: border-box;
+    direction: ltr; text-align: left;
+  }
+
+  /* Gallery (multiple images) */
+  .img-gallery-wrap {
+    background: #F8FAFC; border: 1.5px dashed #CBD5E1;
+    border-radius: 12px; padding: 14px;
+  }
+  .img-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+  }
+  .img-gallery-item {
+    position: relative; aspect-ratio: 1; background: #fff;
+    border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden;
+  }
+  .img-gallery-item img {
+    width: 100%; height: 100%; object-fit: cover; display: block;
+  }
+  .img-gallery-add {
+    aspect-ratio: 1;
+    background: #fff; border: 2px dashed #CBD5E1; border-radius: 8px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 6px; cursor: pointer; transition: all .15s;
+    color: #6B7280; font-size: 11px; font-weight: 700;
+  }
+  .img-gallery-add:hover { border-color: #2563EB; color: #2563EB; background: #EBF2FE; }
+
+  @media (max-width: 768px) {
+    .admin-wrap { padding: 14px 12px 80px; }
+    .admin-header { padding: 18px 20px; border-radius: 14px; }
+    .admin-header h1 { font-size: 22px; }
+    .admin-header p { font-size: 12px; }
+    .item-card { flex-direction: column; align-items: stretch; padding: 14px 16px; }
+    .item-actions { width: 100%; }
+    .form-row.two-cols { grid-template-columns: 1fr; }
+    .tabs { padding: 4px 4px 12px; gap: 5px; }
+    .tab { padding: 9px 14px; font-size: 12px; }
+    .tab-count { padding: 2px 6px; font-size: 10px; }
+    .actions-bar { gap: 8px; }
+    .btn-add { padding: 10px 18px; font-size: 13px; width: 100%; justify-content: center; }
+    .search-input { width: 100%; min-width: 0; max-width: 100%; }
+    .filter-select { width: 100%; }
+    .modal { max-width: 100%; border-radius: 14px; margin: 10px auto; }
+    .modal-header { padding: 16px 18px; }
+    .modal-header h2 { font-size: 16px; }
+    .modal-body { padding: 18px; }
+    .img-gallery { grid-template-columns: repeat(3, 1fr); }
+  }
+  @media (max-width: 480px) {
+    .tab { padding: 8px 12px; font-size: 11.5px; }
+    .img-gallery { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<div class="admin-wrap">
+
+  <!-- Header -->
+  <div class="admin-header">
+    <h1>אדמין מאסטר</h1>
+    <p>שליטה מלאה על כל התכנים באתר - הוסף, ערוך, אשר, מחק</p>
+    <div class="admin-badge">refael@tedgi.co.il</div>
+  </div>
+
+  <div id="auth-check" style="display:none">
+    <div class="auth-needed">
+      <h2>אזור אדמין</h2>
+      <p>אנא התחבר עם <strong>refael@tedgi.co.il</strong> כדי לגשת</p>
+      <button class="btn-primary" onclick="login()">התחבר עם Google</button>
+    </div>
+  </div>
+
+  <div id="main-content" style="display:none">
+
+    <!-- Tabs -->
+    <div class="tabs" id="tabs">
+      <button class="tab active" data-tab="businesses" onclick="switchTab('businesses')">
+        עסקים <span class="tab-count" id="count-businesses">0</span>
+      </button>
+      <button class="tab" data-tab="professionals" onclick="switchTab('professionals')">
+        בעלי מקצוע <span class="tab-count" id="count-pros">0</span>
+      </button>
+      <button class="tab" data-tab="jobs" onclick="switchTab('jobs')">
+        דרושים <span class="tab-count" id="count-jobs">0</span>
+      </button>
+      <button class="tab" data-tab="realestate_listings" onclick="switchTab('realestate_listings')">
+        נדל"ן <span class="tab-count" id="count-realestate">0</span>
+      </button>
+      <button class="tab" data-tab="synagogues" onclick="switchTab('synagogues')">
+        בתי כנסת <span class="tab-count" id="count-synagogues">0</span>
+      </button>
+      <button class="tab" data-tab="torah_lessons" onclick="switchTab('torah_lessons')">
+        שיעורי תורה <span class="tab-count" id="count-torah">0</span>
+      </button>
+      <button class="tab" data-tab="whatsapp_groups" onclick="switchTab('whatsapp_groups')">
+        קבוצות WhatsApp <span class="tab-count" id="count-wa">0</span>
+      </button>
+      <button class="tab" data-tab="deals_coupons" onclick="switchTab('deals_coupons')">
+        קופונים <span class="tab-count" id="count-coupons">0</span>
+      </button>
+      <button class="tab" data-tab="deals_supermarkets" onclick="switchTab('deals_supermarkets')">
+        מבצעי סופרמרקטים <span class="tab-count" id="count-supermarkets">0</span>
+      </button>
+      <button class="tab" data-tab="deals_stores" onclick="switchTab('deals_stores')">
+        מבצעי חנויות <span class="tab-count" id="count-stores">0</span>
+      </button>
+      <button class="tab" data-tab="news_articles" onclick="switchTab('news_articles')">
+        חדשות <span class="tab-count" id="count-news">0</span>
+      </button>
+      <button class="tab" data-tab="public_services" onclick="switchTab('public_services')">
+        שירותים <span class="tab-count" id="count-services">0</span>
+      </button>
+      <button class="tab" data-tab="forum_posts" onclick="switchTab('forum_posts')">
+        פורום <span class="tab-count" id="count-forum">0</span>
+      </button>
+    </div>
+
+    <!-- Actions Bar -->
+    <div class="actions-bar">
+      <button class="btn-add" onclick="openAddModal()">
+        + הוסף חדש
+      </button>
+      <input type="text" id="search" class="search-input" placeholder="חיפוש..." oninput="renderItems()">
+      <select id="filter-status" class="filter-select" onchange="renderItems()">
+        <option value="">כל הסטטוסים</option>
+        <option value="pending">ממתין</option>
+        <option value="active">פעיל</option>
+        <option value="approved">מאושר</option>
+        <option value="rejected">דחוי</option>
+      </select>
+    </div>
+
+    <!-- Items List -->
+    <div id="items-area">
+      <div class="loading">טוען...</div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal-back" id="modal-back">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 id="modal-title">הוספה</h2>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeModal()">ביטול</button>
+      <button class="btn-primary" id="save-btn" onclick="saveItem()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// משתמש ב-window.SB_URL ו-window.SB_KEY מ-site.js
+// esc כבר מוגדר גלובלית ב-site.js
+const ADMIN_EMAIL = 'refael@tedgi.co.il';
+
+let sb;
+let session = null;
+let currentTab = 'businesses';
+let allItems = [];
+let editingItem = null;
+
+// ════════ הגדרות לכל טאב ════════
+const TABS = {
+  professionals: {
+    label: 'בעלי מקצוע',
+    table: 'professionals',
+    fields: [
+      { name: 'name', label: 'שם בעל המקצוע', required: true },
+      { name: 'category', label: 'תחום', type: 'select', options: ['electrician','plumber','renovation','cleaning','gardening','moving','ac','locksmith','painting','handyman','tutoring','other'] },
+      { name: 'tagline', label: 'סלוגן קצר' },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'photo_url', label: 'תמונה', type: 'image', bucket: 'business-logos' },
+      { name: 'phone', label: 'טלפון' },
+      { name: 'whatsapp', label: 'WhatsApp' },
+      { name: 'email', label: 'אימייל' },
+      { name: 'years_experience', label: 'שנות ניסיון', type: 'number' },
+      { name: 'price_from', label: 'מחיר התחלתי', type: 'number' },
+      { name: 'price_unit', label: 'יחידת מחיר (לשעה/לעבודה)' },
+      { name: 'response_time', label: 'זמן תגובה' },
+      { name: 'serves_all_city', label: 'משרת את כל העיר', type: 'checkbox' },
+      { name: 'is_available', label: 'זמין כעת', type: 'checkbox' },
+      { name: 'is_verified', label: 'מאומת ✓', type: 'checkbox' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['pending','active','approved','rejected','suspended'] },
+    ],
+    display: (i) => ({
+      title: i.name || 'ללא שם',
+      avatar: (i.name || '?')[0],
+      meta: [
+        i.category,
+        i.phone,
+        i.is_available ? 'זמין' : 'לא זמין',
+        i.is_verified ? '✓ מאומת' : ''
+      ].filter(Boolean),
+      status: i.status,
+    }),
+  },
+  businesses: {
+    label: 'עסקים',
+    table: 'businesses',
+    fields: [
+      { name: 'business_name', label: 'שם העסק', required: true },
+      { name: 'category', label: 'קטגוריה', type: 'select', options: ['restaurants','food','beauty','health','services','shopping','education','automotive','professional','home','events','other'] },
+      { name: 'short_description', label: 'תיאור קצר (1-2 שורות)' },
+      { name: 'description', label: 'תיאור מלא', type: 'textarea' },
+      { name: 'logo_url', label: 'לוגו', type: 'image', bucket: 'business-logos' },
+      { name: 'cover_image_url', label: 'תמונת קאבר', type: 'image', bucket: 'business-covers' },
+      { name: 'gallery_urls', label: 'גלריית תמונות', type: 'images', bucket: 'business-gallery' },
+      { name: 'address', label: 'כתובת מלאה' },
+      { name: 'neighborhood', label: 'שכונה' },
+      { name: 'phone', label: 'טלפון ראשי' },
+      { name: 'phone_secondary', label: 'טלפון נוסף' },
+      { name: 'whatsapp', label: 'WhatsApp' },
+      { name: 'email', label: 'אימייל' },
+      { name: 'website', label: 'אתר אינטרנט' },
+      { name: 'facebook_url', label: 'דף Facebook' },
+      { name: 'instagram_url', label: 'Instagram' },
+      { name: 'hours', label: 'שעות פתיחה', type: 'textarea' },
+      { name: 'owner_name', label: 'שם בעל העסק' },
+      { name: 'plan', label: 'מסלול', type: 'select', options: ['free','popular','pro','enterprise','professional'] },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['pending','approved','rejected','active','suspended'] },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+      { name: 'is_featured', label: 'מומלץ (בולט)', type: 'checkbox' },
+      { name: 'is_verified', label: 'מאומת ✓', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.business_name || i.name || 'ללא שם',
+      avatar: (i.business_name || i.name || '?')[0],
+      meta: [
+        i.category,
+        i.address,
+        i.phone,
+        i.plan,
+        i.is_featured ? '⭐ מומלץ' : ''
+      ].filter(Boolean),
+      status: i.status || (i.is_approved ? 'approved' : 'pending'),
+    }),
+  },
+  jobs: {
+    label: 'דרושים',
+    table: 'jobs',
+    fields: [
+      { name: 'title', label: 'כותרת המשרה', required: true },
+      { name: 'kind', label: 'סוג', type: 'select', options: ['job','wanted'] },
+      { name: 'category', label: 'תחום' },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'scope', label: 'היקף', type: 'select', options: ['full_time','part_time','contract','one_time'] },
+      { name: 'salary_range', label: 'טווח שכר' },
+      { name: 'requirements', label: 'דרישות', type: 'textarea' },
+      { name: 'company_name', label: 'שם החברה' },
+      { name: 'location', label: 'מיקום' },
+      { name: 'contact_name', label: 'שם איש קשר' },
+      { name: 'contact_phone', label: 'טלפון' },
+      { name: 'contact_whatsapp', label: 'WhatsApp' },
+      { name: 'contact_email', label: 'אימייל' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['pending','active','approved','rejected','expired'] },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא כותרת',
+      avatar: i.kind === 'wanted' ? 'M' : 'D',
+      meta: [
+        i.kind === 'wanted' ? 'מחפש' : 'דרוש',
+        i.category,
+        i.scope === 'full_time' ? 'מלאה' : i.scope === 'part_time' ? 'חלקית' : i.scope,
+        i.contact_phone
+      ].filter(Boolean),
+      status: i.status,
+    }),
+  },
+  realestate_listings: {
+    label: 'נדל"ן',
+    table: 'realestate_listings',
+    fields: [
+      { name: 'title', label: 'כותרת', required: true },
+      { name: 'deal_type', label: 'סוג עסקה', type: 'select', options: ['sale','rent','sublet'] },
+      { name: 'property_type', label: 'סוג נכס', type: 'select', options: ['apartment','house','land','commercial','room'] },
+      { name: 'lister_type', label: 'מפרסם', type: 'select', options: ['private','agency'] },
+      { name: 'agency_name', label: 'שם משרד תיווך' },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'rooms', label: 'חדרים', type: 'number' },
+      { name: 'size_sqm', label: 'מ"ר', type: 'number' },
+      { name: 'floor', label: 'קומה', type: 'number' },
+      { name: 'price', label: 'מחיר (₪)', type: 'number' },
+      { name: 'neighborhood', label: 'שכונה' },
+      { name: 'images', label: 'תמונות הנכס', type: 'images', bucket: 'business-gallery' },
+      { name: 'has_parking', label: 'חניה', type: 'checkbox' },
+      { name: 'has_elevator', label: 'מעלית', type: 'checkbox' },
+      { name: 'has_balcony', label: 'מרפסת', type: 'checkbox' },
+      { name: 'has_storage', label: 'מחסן', type: 'checkbox' },
+      { name: 'has_safe_room', label: 'ממ"ד', type: 'checkbox' },
+      { name: 'is_furnished', label: 'מרוהט', type: 'checkbox' },
+      { name: 'is_renovated', label: 'משופץ', type: 'checkbox' },
+      { name: 'is_urgent', label: 'דחוף', type: 'checkbox' },
+      { name: 'contact_name', label: 'איש קשר' },
+      { name: 'contact_phone', label: 'טלפון' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['pending','active','approved','sold'] },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא כותרת',
+      avatar: '₪',
+      meta: [
+        i.deal_type === 'rent' ? 'השכרה' : i.deal_type === 'sublet' ? 'סאבלט' : 'מכירה',
+        i.rooms ? `${i.rooms} חד'` : '',
+        i.size_sqm ? `${i.size_sqm} מ"ר` : '',
+        i.price ? `${Number(i.price).toLocaleString()} ₪` : '',
+        i.neighborhood,
+        i.is_urgent ? '⚡ דחוף' : ''
+      ].filter(Boolean),
+      status: i.status,
+    }),
+  },
+  synagogues: {
+    label: 'בתי כנסת',
+    table: 'synagogues',
+    fields: [
+      { name: 'name', label: 'שם בית הכנסת', required: true },
+      { name: 'nusach', label: 'נוסח', type: 'select', options: ['אשכנז','ספרד','עדות המזרח','חב"ד','תימני','מעורב','אחר'] },
+      { name: 'address', label: 'כתובת' },
+      { name: 'neighborhood', label: 'שכונה' },
+      { name: 'rabbi_name', label: 'שם הרב' },
+      { name: 'rabbi_phone', label: 'טלפון הרב' },
+      { name: 'gabai_name', label: 'שם הגבאי' },
+      { name: 'gabai_phone', label: 'טלפון הגבאי' },
+      { name: 'contact_phone', label: 'טלפון ראשי לבירורים' },
+      { name: 'shacharit_time', label: 'זמן שחרית (HH:MM)' },
+      { name: 'mincha_time', label: 'זמן מנחה (HH:MM)' },
+      { name: 'arvit_time', label: 'זמן ערבית (HH:MM)' },
+      { name: 'shabbat_times', label: 'זמני שבת (חופשי)', type: 'textarea' },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'image_url', label: 'תמונה', type: 'image', bucket: 'synagogue-images' },
+    ],
+    display: (i) => ({
+      title: i.name || 'ללא שם',
+      avatar: '✡',
+      meta: [i.nusach, i.address, i.rabbi_name, i.gabai_name].filter(Boolean),
+      status: 'active',
+    }),
+  },
+  torah_lessons: {
+    label: 'שיעורי תורה',
+    table: 'torah_lessons',
+    fields: [
+      { name: 'title', label: 'שם השיעור', required: true },
+      { name: 'rabbi_name', label: 'שם הרב' },
+      { name: 'topic', label: 'נושא (גמרא, הלכה, חסידות וכו)' },
+      { name: 'description', label: 'תיאור מפורט', type: 'textarea' },
+      { name: 'location', label: 'מקום השיעור' },
+      { name: 'day_of_week', label: 'יום בשבוע', type: 'select', options: ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת','יומי','כל יום'] },
+      { name: 'time_str', label: 'שעה (HH:MM)' },
+      { name: 'audience', label: 'קהל יעד', type: 'select', options: ['גברים','נשים','משפחות','ילדים','בני נוער','כולם'] },
+      { name: 'is_recurring', label: 'שיעור קבוע', type: 'checkbox' },
+      { name: 'contact_phone', label: 'טלפון לבירורים' },
+      { name: 'contact_name', label: 'איש קשר' },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא שם',
+      avatar: 'ת',
+      meta: [i.rabbi_name, i.day_of_week, i.time_str, i.location].filter(Boolean),
+      status: i.is_active ? 'active' : 'inactive',
+    }),
+  },
+  whatsapp_groups: {
+    label: 'קבוצות WhatsApp',
+    table: 'whatsapp_groups',
+    fields: [
+      { name: 'name', label: 'שם הקבוצה', required: true },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'invite_link', label: 'קישור הזמנה (https://chat.whatsapp.com/...)', required: true },
+      { name: 'category', label: 'קטגוריה', type: 'select', options: ['general','neighborhood','parents','trade','religious','events','business','other'] },
+      { name: 'member_count', label: 'מספר חברים (משוער)', type: 'number' },
+      { name: 'admin_name', label: 'שם המנהל' },
+      { name: 'admin_phone', label: 'טלפון המנהל' },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.name || 'ללא שם',
+      avatar: 'W',
+      meta: [
+        i.category,
+        i.member_count ? `${i.member_count} חברים` : '',
+        i.admin_name
+      ].filter(Boolean),
+      status: i.is_active ? 'active' : 'inactive',
+    }),
+  },
+  deals_coupons: {
+    label: 'קופונים',
+    table: 'deals',
+    filter: { type: 'coupon' },
+    defaultValues: { type: 'coupon', coupon_code: 'MYOFAQIM', use_default_code: true },
+    fields: [
+      { name: 'title', label: 'כותרת הקופון', required: true },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'discount_text', label: 'טקסט הנחה (לדוגמה: 15% הנחה)' },
+      { name: 'discount_percent', label: 'אחוז הנחה', type: 'number' },
+      { name: 'business_id', label: 'ID עסק (אופציונלי)' },
+      { name: 'coupon_code', label: 'קוד קופון (ברירת מחדל: MYOFAQIM)' },
+      { name: 'category', label: 'קטגוריה', type: 'select', options: ['food','beauty','fashion','electronics','home','services','general'] },
+      { name: 'image_url', label: 'תמונה', type: 'image', bucket: 'deals-images' },
+      { name: 'expires_at', label: 'תאריך תפוגה', type: 'date' },
+      { name: 'terms', label: 'תנאים והגבלות', type: 'textarea' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['pending','active','approved','expired','paused'] },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+      { name: 'is_featured', label: 'חם (מומלץ)', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא כותרת',
+      avatar: '%',
+      meta: [
+        i.discount_text || (i.discount_percent ? `${i.discount_percent}%` : ''),
+        i.coupon_code,
+        i.expires_at ? `עד ${String(i.expires_at).slice(0,10)}` : '',
+      ].filter(Boolean),
+      status: i.status,
+    }),
+  },
+  deals_supermarkets: {
+    label: 'מבצעי סופרמרקטים',
+    table: 'deals',
+    filter: { type: 'supermarket' },
+    defaultValues: { type: 'supermarket', use_default_code: false },
+    fields: [
+      { name: 'title', label: 'כותרת המבצע (לדוגמה: מבצעי השבוע)', required: true },
+      { name: 'business_id', label: 'ID סופרמרקט (אופציונלי)' },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'cover_image_url', label: 'עלון מבצעים (תמונה ראשית)', type: 'image', bucket: 'deals-images' },
+      { name: 'image_url', label: 'תמונה נוספת', type: 'image', bucket: 'deals-images' },
+      { name: 'expires_at', label: 'מסתיים בתאריך', type: 'date' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['pending','active','approved','expired','paused'] },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+      { name: 'is_featured', label: 'חם (מומלץ)', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא כותרת',
+      avatar: 'S',
+      meta: [
+        i.expires_at ? `עד ${String(i.expires_at).slice(0,10)}` : '',
+        i.view_count ? `${i.view_count} צפיות` : '',
+      ].filter(Boolean),
+      status: i.status,
+    }),
+  },
+  deals_stores: {
+    label: 'מבצעי חנויות',
+    table: 'deals',
+    filter: { type: 'store' },
+    defaultValues: { type: 'store', use_default_code: false },
+    fields: [
+      { name: 'title', label: 'כותרת המבצע', required: true },
+      { name: 'business_id', label: 'ID חנות (אופציונלי)' },
+      { name: 'description', label: 'תיאור', type: 'textarea' },
+      { name: 'discount_text', label: 'טקסט הנחה (1+1, 50% הנחה, וכו)' },
+      { name: 'discount_percent', label: 'אחוז הנחה', type: 'number' },
+      { name: 'category', label: 'קטגוריה', type: 'select', options: ['fashion','electronics','home','beauty','kids','sports','general'] },
+      { name: 'image_url', label: 'תמונה', type: 'image', bucket: 'deals-images' },
+      { name: 'coupon_code', label: 'קוד (אופציונלי - השאר ריק אם אין)' },
+      { name: 'expires_at', label: 'תאריך תפוגה', type: 'date' },
+      { name: 'terms', label: 'תנאים והגבלות', type: 'textarea' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['pending','active','approved','expired','paused'] },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+      { name: 'is_featured', label: 'חם (מומלץ)', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא כותרת',
+      avatar: 'D',
+      meta: [
+        i.discount_text || (i.discount_percent ? `${i.discount_percent}%` : ''),
+        i.category,
+        i.expires_at ? `עד ${String(i.expires_at).slice(0,10)}` : '',
+      ].filter(Boolean),
+      status: i.status,
+    }),
+  },
+  news_articles: {
+    label: 'חדשות',
+    table: 'news_articles',
+    fields: [
+      { name: 'title', label: 'כותרת', required: true },
+      { name: 'subtitle', label: 'כותרת משנה' },
+      { name: 'slug', label: 'Slug URL (כתובת ידידותית)' },
+      { name: 'content', label: 'תוכן מלא', type: 'textarea' },
+      { name: 'category', label: 'קטגוריה', type: 'select', options: ['news','events','culture','sports','community','business','politics','education'] },
+      { name: 'cover_image_url', label: 'תמונת כיסוי', type: 'image', bucket: 'news-covers' },
+      { name: 'author', label: 'שם המחבר' },
+      { name: 'tags', label: 'תגיות (מופרדות בפסיק)' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['draft','published','archived'] },
+      { name: 'is_featured', label: 'מומלץ (בראש הדף)', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא כותרת',
+      avatar: 'N',
+      meta: [i.category, i.author, i.created_at?.slice(0,10), i.view_count ? `${i.view_count} צפיות` : ''].filter(Boolean),
+      status: i.status,
+    }),
+  },
+  public_services: {
+    label: 'שירותים ציבוריים',
+    table: 'public_services',
+    fields: [
+      { name: 'name', label: 'שם השירות', required: true },
+      { name: 'category', label: 'קטגוריה', type: 'select', options: ['emergency','municipality','health','education','welfare','culture','transport','religious','other'] },
+      { name: 'description', label: 'תיאור השירות', type: 'textarea' },
+      { name: 'address', label: 'כתובת' },
+      { name: 'phone', label: 'טלפון ראשי' },
+      { name: 'phone_secondary', label: 'טלפון נוסף' },
+      { name: 'whatsapp', label: 'WhatsApp' },
+      { name: 'email', label: 'אימייל' },
+      { name: 'website', label: 'אתר אינטרנט' },
+      { name: 'hours', label: 'שעות פתיחה', type: 'textarea' },
+      { name: 'is_active', label: 'פעיל', type: 'checkbox' },
+    ],
+    display: (i) => ({
+      title: i.name || 'ללא שם',
+      avatar: 'P',
+      meta: [i.category, i.address, i.phone].filter(Boolean),
+      status: i.is_active ? 'active' : 'inactive',
+    }),
+  },
+  forum_posts: {
+    label: 'פוסטי פורום',
+    table: 'forum_posts',
+    fields: [
+      { name: 'title', label: 'כותרת', required: true },
+      { name: 'content', label: 'תוכן הפוסט', type: 'textarea' },
+      { name: 'category', label: 'קטגוריה', type: 'select', options: ['general','community','events','recommendations','services','politics','education','help'] },
+      { name: 'sub_category', label: 'תת-קטגוריה' },
+      { name: 'status', label: 'סטטוס', type: 'select', options: ['active','hidden','deleted','flagged','archived'] },
+      { name: 'is_pinned', label: 'נעוץ למעלה', type: 'checkbox' },
+      { name: 'is_locked', label: 'נעול לתגובות', type: 'checkbox' },
+      { name: 'view_count', label: 'מספר צפיות', type: 'number' },
+      { name: 'reply_count', label: 'מספר תגובות', type: 'number' },
+    ],
+    display: (i) => ({
+      title: i.title || 'ללא כותרת',
+      avatar: 'F',
+      meta: [
+        i.category,
+        i.is_pinned ? 'נעוץ' : '',
+        i.view_count ? `${i.view_count} צפיות` : '',
+        i.reply_count ? `${i.reply_count} תגובות` : ''
+      ].filter(Boolean),
+      status: i.status,
+    }),
+  },
+};
+
+// ════════ Toast ════════
+function toast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ════════ Init ════════
+async function init() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(init, 100); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+  const { data: { session: s } } = await sb.auth.getSession();
+  session = s;
+
+  if (!session) {
+    document.getElementById('auth-check').style.display = '';
+    return;
+  }
+  if (session.user.email !== ADMIN_EMAIL) {
+    document.getElementById('auth-check').style.display = '';
+    document.querySelector('.auth-needed h2').textContent = 'אין הרשאה';
+    document.querySelector('.auth-needed p').innerHTML = `אתה מחובר כ-${session.user.email} - לא אדמין`;
+    return;
+  }
+
+  document.getElementById('main-content').style.display = '';
+  await loadCounts();
+  await loadItems();
+}
+
+async function login() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+}
+
+async function loadCounts() {
+  const queries = {
+    'count-businesses': { table: 'businesses' },
+    'count-pros': { table: 'professionals' },
+    'count-jobs': { table: 'jobs' },
+    'count-realestate': { table: 'realestate_listings' },
+    'count-synagogues': { table: 'synagogues' },
+    'count-torah': { table: 'torah_lessons' },
+    'count-wa': { table: 'whatsapp_groups' },
+    'count-coupons': { table: 'deals', filter: { type: 'coupon' } },
+    'count-supermarkets': { table: 'deals', filter: { type: 'supermarket' } },
+    'count-stores': { table: 'deals', filter: { type: 'store' } },
+    'count-news': { table: 'news_articles' },
+    'count-services': { table: 'public_services' },
+    'count-forum': { table: 'forum_posts' },
+  };
+  for (const [el, conf] of Object.entries(queries)) {
+    try {
+      let q = sb.from(conf.table).select('*', { count: 'exact', head: true });
+      if (conf.filter) {
+        for (const [k, v] of Object.entries(conf.filter)) {
+          q = q.eq(k, v);
+        }
+      }
+      const { count } = await q;
+      const elNode = document.getElementById(el);
+      if (elNode) elNode.textContent = count || 0;
+    } catch (e) {
+      const elNode = document.getElementById(el);
+      if (elNode) elNode.textContent = '!';
+    }
+  }
+}
+
+async function switchTab(tab) {
+  currentTab = tab;
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.tab === tab);
+  });
+  await loadItems();
+}
+
+async function loadItems() {
+  const cfg = TABS[currentTab];
+  if (!cfg) return;
+  document.getElementById('items-area').innerHTML = '<div class="loading">טוען...</div>';
+
+  try {
+    let q = sb.from(cfg.table).select('*');
+    if (cfg.filter) {
+      for (const [k, v] of Object.entries(cfg.filter)) {
+        q = q.eq(k, v);
+      }
+    }
+    const { data, error } = await q.order('created_at', { ascending: false }).limit(200);
+    if (error) throw error;
+    allItems = data || [];
+    renderItems();
+  } catch (e) {
+    document.getElementById('items-area').innerHTML = `<div class="error">שגיאה בטעינה: ${e.message}</div>`;
+  }
+}
+
+function renderItems() {
+  const cfg = TABS[currentTab];
+  const search = (document.getElementById('search').value || '').toLowerCase();
+  const filterStatus = document.getElementById('filter-status').value;
+
+  let items = allItems;
+
+  if (search) {
+    items = items.filter(i => {
+      const fields = Object.values(i).filter(v => typeof v === 'string').join(' ').toLowerCase();
+      return fields.includes(search);
+    });
+  }
+
+  if (filterStatus) {
+    items = items.filter(i => (i.status || '').toLowerCase() === filterStatus);
+  }
+
+  if (items.length === 0) {
+    document.getElementById('items-area').innerHTML = '<div class="empty">לא נמצאו פריטים. לחץ "הוסף חדש" להתחיל.</div>';
+    return;
+  }
+
+  document.getElementById('items-area').innerHTML = '<div class="items-grid">' + items.map(i => {
+    const d = cfg.display(i);
+    return `
+      <div class="item-card">
+        <div class="item-avatar">${window.esc((d.avatar || '?').toString().substring(0,2))}</div>
+        <div class="item-info">
+          <div class="item-title">${window.esc(d.title)}</div>
+          <div class="item-meta">${d.meta.map(m => `<span>${window.esc(m)}</span>`).join('')}</div>
+        </div>
+        ${d.status ? `<div class="item-status status-${window.esc(d.status)}">${window.esc(d.status)}</div>` : ''}
+        <div class="item-actions">
+          <button class="btn-action btn-edit" onclick="editItem('${i.id}')">ערוך</button>
+          ${(d.status === 'pending') ? `<button class="btn-action btn-approve" onclick="approveItem('${i.id}')">אשר</button>` : ''}
+          <button class="btn-action btn-delete" onclick="deleteItem('${i.id}')">מחק</button>
+        </div>
+      </div>
+    `;
+  }).join('') + '</div>';
+}
+
+function openAddModal() {
+  editingItem = null;
+  const cfg = TABS[currentTab];
+  document.getElementById('modal-title').textContent = `הוספת ${cfg.label}`;
+  renderForm({});
+  document.getElementById('modal-back').classList.add('show');
+}
+
+function editItem(id) {
+  const item = allItems.find(i => i.id === id);
+  if (!item) return;
+  editingItem = item;
+  const cfg = TABS[currentTab];
+  document.getElementById('modal-title').textContent = `עריכת ${cfg.label}`;
+  renderForm(item);
+  document.getElementById('modal-back').classList.add('show');
+}
+
+function renderForm(data) {
+  const cfg = TABS[currentTab];
+  const html = cfg.fields.map(f => {
+    const val = data[f.name] !== undefined && data[f.name] !== null ? data[f.name] : '';
+    if (f.type === 'textarea') {
+      return `<div class="form-row">
+        <label>${f.label}${f.required ? ' *' : ''}</label>
+        <textarea name="${f.name}" ${f.required ? 'required' : ''}>${window.esc(val)}</textarea>
+      </div>`;
+    }
+    if (f.type === 'select') {
+      return `<div class="form-row">
+        <label>${f.label}</label>
+        <select name="${f.name}">
+          <option value="">בחר...</option>
+          ${(f.options || []).map(o => `<option value="${window.esc(o)}" ${val === o ? 'selected' : ''}>${window.esc(o)}</option>`).join('')}
+        </select>
+      </div>`;
+    }
+    if (f.type === 'checkbox') {
+      return `<div class="form-row">
+        <label class="checkbox-label">
+          <input type="checkbox" name="${f.name}" ${val ? 'checked' : ''}>
+          ${f.label}
+        </label>
+      </div>`;
+    }
+    if (f.type === 'number') {
+      return `<div class="form-row">
+        <label>${f.label}</label>
+        <input type="number" name="${f.name}" value="${window.esc(val)}">
+      </div>`;
+    }
+    if (f.type === 'date') {
+      const dateVal = val ? val.toString().slice(0,10) : '';
+      return `<div class="form-row">
+        <label>${f.label}</label>
+        <input type="date" name="${f.name}" value="${window.esc(dateVal)}">
+      </div>`;
+    }
+    if (f.type === 'image') {
+      const bucket = f.bucket || 'business-logos';
+      return `<div class="form-row">
+        <label>${f.label}${f.required ? ' *' : ''}</label>
+        <div class="img-upload-wrap">
+          <input type="hidden" name="${f.name}" value="${window.esc(val)}">
+          <div class="img-preview" id="preview-${f.name}">
+            ${val ? `<img src="${window.esc(val)}" alt=""><button type="button" class="img-remove" onclick="removeImg('${f.name}')">×</button>` : `<div class="img-placeholder">לא נבחרה תמונה</div>`}
+          </div>
+          <label class="img-upload-btn" for="upload-${f.name}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            <span>${val ? 'החלף תמונה' : 'העלאת תמונה'}</span>
+          </label>
+          <input type="file" id="upload-${f.name}" accept="image/*" style="display:none" onchange="adminUploadImg('${f.name}','${bucket}',this)">
+          <div class="img-or">או</div>
+          <input type="url" placeholder="או הדבק כתובת URL של תמונה" value="${window.esc(val)}"
+            onchange="setImgUrl('${f.name}', this.value)" class="img-url-input">
+        </div>
+      </div>`;
+    }
+    if (f.type === 'images') {
+      // מערך של תמונות
+      const bucket = f.bucket || 'business-gallery';
+      let imgs = [];
+      try {
+        imgs = Array.isArray(val) ? val : (val ? JSON.parse(val) : []);
+      } catch { imgs = []; }
+      return `<div class="form-row">
+        <label>${f.label}${f.required ? ' *' : ''}</label>
+        <div class="img-gallery-wrap">
+          <input type="hidden" name="${f.name}" value='${window.esc(JSON.stringify(imgs))}'>
+          <div class="img-gallery" id="gallery-${f.name}">
+            ${imgs.map((url, i) => `
+              <div class="img-gallery-item">
+                <img src="${window.esc(url)}" alt="">
+                <button type="button" class="img-remove" onclick="removeGalleryImg('${f.name}', ${i})">×</button>
+              </div>
+            `).join('')}
+            <label class="img-gallery-add" for="upload-gal-${f.name}">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>הוסף תמונה</span>
+            </label>
+          </div>
+          <input type="file" id="upload-gal-${f.name}" accept="image/*" multiple style="display:none" onchange="addGalleryImg('${f.name}','${bucket}',this)">
+        </div>
+      </div>`;
+    }
+    return `<div class="form-row">
+      <label>${f.label}${f.required ? ' *' : ''}</label>
+      <input type="text" name="${f.name}" value="${window.esc(val)}" ${f.required ? 'required' : ''}>
+    </div>`;
+  }).join('');
+  document.getElementById('modal-body').innerHTML = html;
+}
+
+async function saveItem() {
+  const cfg = TABS[currentTab];
+  const data = {};
+  cfg.fields.forEach(f => {
+    const el = document.querySelector(`#modal-body [name="${f.name}"]`);
+    if (!el) return;
+    if (f.type === 'checkbox') data[f.name] = el.checked;
+    else if (f.type === 'number') data[f.name] = el.value ? parseFloat(el.value) : null;
+    else if (f.type === 'images') {
+      // מערך JSON
+      try {
+        data[f.name] = el.value ? JSON.parse(el.value) : [];
+      } catch {
+        data[f.name] = [];
+      }
+    }
+    else data[f.name] = el.value || null;
+  });
+
+  // ולידציה
+  for (const f of cfg.fields) {
+    if (f.required && (!data[f.name] || data[f.name] === '')) {
+      toast(`חובה: ${f.label}`, 'error');
+      return;
+    }
+  }
+
+  // הוסף author_id / owner_id למשתמש אם נדרש
+  if (!editingItem) {
+    if (cfg.table === 'businesses') data.owner_id = session.user.id;
+    if (['jobs','realestate_listings','forum_posts'].includes(cfg.table)) data.author_id = session.user.id;
+    if (cfg.table === 'deals') data.owner_id = session.user.id;
+
+    // ערכי ברירת מחדל (לדוגמה: type='coupon' לטאב הקופונים)
+    if (cfg.defaultValues) {
+      for (const [k, v] of Object.entries(cfg.defaultValues)) {
+        if (data[k] === undefined || data[k] === null || data[k] === '') {
+          data[k] = v;
+        }
+      }
+    }
+  }
+
+  try {
+    const btn = document.getElementById('save-btn');
+    btn.disabled = true; btn.textContent = 'שומר...';
+
+    let result;
+    if (editingItem) {
+      result = await sb.from(cfg.table).update(data).eq('id', editingItem.id);
+    } else {
+      result = await sb.from(cfg.table).insert(data);
+    }
+
+    if (result.error) throw result.error;
+    closeModal();
+    toast(editingItem ? 'נשמר!' : 'נוסף!', 'success');
+    await loadCounts();
+    await loadItems();
+  } catch (e) {
+    toast('שגיאה: ' + e.message, 'error');
+  } finally {
+    const btn = document.getElementById('save-btn');
+    btn.disabled = false; btn.textContent = 'שמור';
+  }
+}
+
+async function approveItem(id) {
+  if (!confirm('לאשר?')) return;
+  const cfg = TABS[currentTab];
+  try {
+    const updates = { status: 'approved' };
+    if (cfg.table === 'businesses') {
+      updates.is_approved = true;
+      updates.is_active = true;
+    }
+    if (['jobs', 'realestate_listings'].includes(cfg.table)) {
+      updates.is_active = true;
+    }
+    const { error } = await sb.from(cfg.table).update(updates).eq('id', id);
+    if (error) throw error;
+    toast('אושר!', 'success');
+    await loadItems();
+  } catch (e) {
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+async function deleteItem(id) {
+  if (!confirm('למחוק?')) return;
+  const cfg = TABS[currentTab];
+  try {
+    const { error } = await sb.from(cfg.table).delete().eq('id', id);
+    if (error) throw error;
+    toast('נמחק', 'success');
+    await loadCounts();
+    await loadItems();
+  } catch (e) {
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+function closeModal() {
+  document.getElementById('modal-back').classList.remove('show');
+  editingItem = null;
+}
+
+// Close modal on background click
+document.getElementById('modal-back').addEventListener('click', (e) => {
+  if (e.target.id === 'modal-back') closeModal();
+});
+
+// ESC closes modal
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') closeModal();
+});
+
+// ════════ פונקציות העלאת תמונות ════════
+async function adminUploadImg(field, bucket, input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    toast('הקובץ גדול מדי (מקסימום 5MB)', 'error');
+    return;
+  }
+
+  const preview = document.getElementById(`preview-${field}`);
+  preview.innerHTML = '<div class="img-placeholder">מעלה...</div>';
+
+  try {
+    const ext = file.name.split('.').pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+
+    const { error } = await sb.storage.from(bucket).upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    if (error) throw error;
+
+    const { data: { publicUrl } } = sb.storage.from(bucket).getPublicUrl(fileName);
+
+    document.querySelector(`#modal-body input[name="${field}"]`).value = publicUrl;
+    preview.innerHTML = `<img src="${publicUrl}" alt=""><button type="button" class="img-remove" onclick="removeImg('${field}')">×</button>`;
+    toast('הועלה בהצלחה!', 'success');
+  } catch (e) {
+    console.error('upload error:', e);
+    toast('שגיאה בהעלאה: ' + e.message, 'error');
+    preview.innerHTML = '<div class="img-placeholder">לא נבחרה תמונה</div>';
+  }
+}
+
+function setImgUrl(field, url) {
+  document.querySelector(`#modal-body input[name="${field}"]`).value = url;
+  const preview = document.getElementById(`preview-${field}`);
+  if (url) {
+    preview.innerHTML = `<img src="${url}" alt=""><button type="button" class="img-remove" onclick="removeImg('${field}')">×</button>`;
+  } else {
+    preview.innerHTML = '<div class="img-placeholder">לא נבחרה תמונה</div>';
+  }
+}
+
+function removeImg(field) {
+  document.querySelector(`#modal-body input[name="${field}"]`).value = '';
+  document.querySelector(`#modal-body .img-url-input[onchange*="${field}"]`).value = '';
+  document.getElementById(`preview-${field}`).innerHTML = '<div class="img-placeholder">לא נבחרה תמונה</div>';
+}
+
+async function addGalleryImg(field, bucket, input) {
+  const files = Array.from(input.files);
+  if (!files.length) return;
+
+  const hiddenInput = document.querySelector(`#modal-body input[name="${field}"]`);
+  let imgs = [];
+  try { imgs = JSON.parse(hiddenInput.value || '[]'); } catch {}
+
+  for (const file of files) {
+    if (file.size > 5 * 1024 * 1024) {
+      toast(`${file.name} גדול מדי`, 'error');
+      continue;
+    }
+    try {
+      const ext = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+      const { error } = await sb.storage.from(bucket).upload(fileName, file, { cacheControl: '3600', upsert: false });
+      if (error) throw error;
+      const { data: { publicUrl } } = sb.storage.from(bucket).getPublicUrl(fileName);
+      imgs.push(publicUrl);
+    } catch (e) {
+      console.error('gallery upload error:', e);
+      toast('שגיאה: ' + e.message, 'error');
+    }
+  }
+
+  hiddenInput.value = JSON.stringify(imgs);
+  rerenderGallery(field, imgs);
+  toast(`הועלו ${files.length} תמונות`, 'success');
+}
+
+function removeGalleryImg(field, idx) {
+  const hiddenInput = document.querySelector(`#modal-body input[name="${field}"]`);
+  let imgs = [];
+  try { imgs = JSON.parse(hiddenInput.value || '[]'); } catch {}
+  imgs.splice(idx, 1);
+  hiddenInput.value = JSON.stringify(imgs);
+  rerenderGallery(field, imgs);
+}
+
+function rerenderGallery(field, imgs) {
+  const gallery = document.getElementById(`gallery-${field}`);
+  gallery.innerHTML = imgs.map((url, i) => `
+    <div class="img-gallery-item">
+      <img src="${window.esc(url)}" alt="">
+      <button type="button" class="img-remove" onclick="removeGalleryImg('${field}', ${i})">×</button>
+    </div>
+  `).join('') + `
+    <label class="img-gallery-add" for="upload-gal-${field}">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      <span>הוסף תמונה</span>
+    </label>
+  `;
+}
+
+window.adminUploadImg = adminUploadImg;
+window.setImgUrl = setImgUrl;
+window.removeImg = removeImg;
+window.addGalleryImg = addGalleryImg;
+window.removeGalleryImg = removeGalleryImg;
+window.rerenderGallery = rerenderGallery;
+
+init();
+</script>
+</body>
+</html>

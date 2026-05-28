@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>ניהול מבצעי סופרמרקטים | אופקים שלי</title>
+<meta name="description" content="ניהול מבצעי סופרמרקטים באופקים שלי">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+.adm-bar{background:#7C2D2D;color:var(--cream);padding:24px 0}
+.adm-bar h1{font-family:var(--sans);font-size:24px;font-weight:900;color:var(--cream)}
+.adm-bar h1 em{font-style:italic;color:#FFB8B8}
+
+.dash-card{background:var(--paper);border:1px solid var(--line);padding:28px;margin-bottom:24px}
+.dash-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap;gap:12px}
+.dash-card-head h2{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-0.01em}
+
+.list-item{display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:14px;padding:16px 0;border-bottom:1px solid var(--line-soft);align-items:center}
+.list-item:last-child{border-bottom:none}
+.list-item-title{font-weight:700;color:var(--navy);font-size:14px;margin-bottom:4px}
+.list-item-meta{font-size:12px;color:var(--ink-mute)}
+.list-item-actions{display:flex;gap:6px;justify-content:flex-end}
+.mini-btn{padding:6px 12px;font-size:11px;font-weight:700;border-radius:2px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-family:var(--sans)}
+.mini-btn.danger{color:var(--red);border-color:rgba(192,57,43,0.3)}
+.mini-btn:hover{border-color:var(--navy);background:var(--cream-warm)}
+
+.login-card{max-width:480px;margin:60px auto;background:var(--paper);border:1px solid var(--line);padding:48px 40px;text-align:center}
+.login-card h2{font-family:var(--sans);font-size:28px;color:var(--navy);margin-bottom:14px}
+
+@media(max-width:720px){
+  .list-item{grid-template-columns:1fr;gap:6px}
+  .list-item-actions{justify-content:flex-start}
+}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<div id="login-view" class="container" style="display:none">
+  <div class="login-card">
+    <h2>אזור מנהל סופרמרקטים</h2>
+    <p style="color:var(--ink-soft);margin-bottom:28px">היכנסו עם Google.</p>
+    <button class="btn-filled" style="width:100%;padding:14px" onclick="loginGoogle()">כניסה</button>
+  </div>
+</div>
+
+<div id="dashboard-view" style="display:none">
+  <div class="adm-bar">
+    <div class="container" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:14px">
+      <h1>ניהול <em>מבצעי סופרמרקטים</em></h1>
+      <div style="display:flex;gap:10px">
+        <button class="btn-outline-light" onclick="logout()">יציאה</button>
+      </div>
+    </div>
+  </div>
+
+  <main class="page-main">
+    <div class="container">
+
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <h2>מבצע חדש</h2>
+        </div>
+        <div class="modal-err" id="err"></div>
+        <div style="background:rgba(26,122,74,0.07);border:1.5px solid rgba(26,122,74,0.25);color:var(--green);padding:12px 16px;font-size:13px;font-weight:600;margin-bottom:16px;display:none;border-radius:2px" id="ok">המבצע נוסף בהצלחה</div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+          <div class="field-group" style="margin:0">
+            <label>סופרמרקט</label>
+            <select id="d-supermarket">
+              <option value="">בחרו...</option>
+              <option value="rami_levy">רמי לוי</option>
+              <option value="shufersal">שופרסל</option>
+              <option value="yochananof">יוחננוף</option>
+              <option value="osher_ad">אושר עד</option>
+              <option value="hatzi_hinam">חצי חינם</option>
+              <option value="other">אחר</option>
+            </select>
+          </div>
+          <div class="field-group" style="margin:0">
+            <label>קטגוריה</label>
+            <select id="d-cat">
+              <option value="dairy">חלב ומוצריו</option>
+              <option value="meat">בשר</option>
+              <option value="produce">פירות וירקות</option>
+              <option value="bakery">מאפים</option>
+              <option value="frozen">קפואים</option>
+              <option value="snacks">חטיפים ומשקאות</option>
+              <option value="cleaning">ניקיון וטיפוח</option>
+              <option value="general">כללי</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>שם המוצר</label>
+          <input type="text" id="d-product" placeholder="למשל: גבינה לבנה תנובה 250 גרם">
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-bottom:14px">
+          <div class="field-group" style="margin:0">
+            <label>מחיר רגיל</label>
+            <input type="number" id="d-orig" step="0.01" placeholder="12.90">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label>מחיר מבצע</label>
+            <input type="number" id="d-sale" step="0.01" placeholder="9.90">
+          </div>
+          <div class="field-group" style="margin:0">
+            <label>תוקף עד</label>
+            <input type="date" id="d-until">
+          </div>
+        </div>
+
+        <button class="btn-filled" onclick="addDeal()" id="add-btn" style="padding:12px 32px">הוספת מבצע</button>
+      </div>
+
+      <div class="dash-card">
+        <div class="dash-card-head">
+          <h2>מבצעים פעילים</h2>
+          <button class="btn-outline" onclick="loadDeals()" style="font-size:12px">ריענון</button>
+        </div>
+        <div id="deals-list"><div class="loader">טוען...</div></div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  const SM_LABELS = {
+    rami_levy: 'רמי לוי', shufersal: 'שופרסל', yochananof: 'יוחננוף',
+    osher_ad: 'אושר עד', hatzi_hinam: 'חצי חינם', other: 'אחר'
+  };
+  const CAT_LABELS = {
+    dairy:'חלב ומוצריו', meat:'בשר', produce:'פירות וירקות', bakery:'מאפים',
+    frozen:'קפואים', snacks:'חטיפים', cleaning:'ניקיון', general:'כללי'
+  };
+  let sb, user = null;
+
+  async function loginGoogle() {
+    await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/supermarket-manage' }
+    });
+  }
+  async function logout() { await sb.auth.signOut(); window.location.reload(); }
+
+  async function addDeal() {
+    const errEl = $('err'), okEl = $('ok');
+    errEl.classList.remove('show'); okEl.style.display = 'none';
+    const sm = $('d-supermarket').value;
+    const product = $('d-product').value.trim();
+    const orig = $('d-orig').value, sale = $('d-sale').value;
+    function err(m) { errEl.textContent = m; errEl.classList.add('show'); return false; }
+    if (!sm) return err('בחרו סופרמרקט');
+    if (!product) return err('הזינו שם מוצר');
+    if (!orig || !sale) return err('הזינו מחירים');
+    const btn = $('add-btn');
+    btn.disabled = true; btn.textContent = 'שומר...';
+    try {
+      const discount = Math.round((1 - sale/orig) * 100);
+      const { error } = await sb.from('coupons').insert({
+        title: product,
+        description: `${SM_LABELS[sm]} · ${CAT_LABELS[$('d-cat').value]}`,
+        business_name: SM_LABELS[sm],
+        category: 'supermarket',
+        deal_source: 'supermarket',
+        original_price: parseFloat(orig),
+        discounted_price: parseFloat(sale),
+        discount_percent: discount,
+        valid_until: $('d-until').value || null,
+        is_active: true,
+        status: 'active'
+      });
+      if (error) throw error;
+      okEl.style.display = 'block';
+      $('d-product').value = ''; $('d-orig').value = ''; $('d-sale').value = '';
+      btn.disabled = false; btn.textContent = 'הוספת מבצע';
+      loadDeals();
+      setTimeout(() => okEl.style.display = 'none', 3000);
+    } catch(e) {
+      err('שגיאה: ' + e.message);
+      btn.disabled = false; btn.textContent = 'הוספת מבצע';
+    }
+  }
+
+  async function loadDeals() {
+    try {
+      const { data } = await sb.from('coupons').select('*')
+        .eq('deal_source', 'supermarket').eq('is_active', true)
+        .order('created_at', { ascending: false }).limit(50);
+      const area = $('deals-list');
+      if (!data || !data.length) {
+        area.innerHTML = '<div style="padding:20px;text-align:center;color:var(--ink-mute)">אין מבצעים פעילים.</div>';
+        return;
+      }
+      area.innerHTML = data.map(d => `
+        <div class="list-item">
+          <div>
+            <div class="list-item-title">${esc(d.title)}</div>
+            <div class="list-item-meta">${esc(d.business_name || '')}</div>
+          </div>
+          <div style="font-size:13px">
+            <span style="color:var(--ink-mute);text-decoration:line-through">${d.original_price} ₪</span>
+            <span style="color:var(--gold-dk);font-weight:700;margin-right:8px">${d.discounted_price} ₪</span>
+            <span style="background:var(--red);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;margin-right:6px">-${d.discount_percent}%</span>
+          </div>
+          <div style="font-size:12px;color:var(--ink-mute)">
+            ${d.valid_until ? 'תוקף ' + new Date(d.valid_until).toLocaleDateString('he-IL') : 'ללא תפוגה'}
+          </div>
+          <div class="list-item-actions">
+            <button class="mini-btn danger" onclick="delDeal('${d.id}')">מחיקה</button>
+          </div>
+        </div>`).join('');
+    } catch(e) {
+      $('deals-list').innerHTML = '<div style="color:var(--red);padding:20px">שגיאה: ' + esc(e.message) + '</div>';
+    }
+  }
+
+  async function delDeal(id) {
+    if (!confirm('למחוק את המבצע?')) return;
+    await sb.from('coupons').delete().eq('id', id);
+    loadDeals();
+  }
+
+  async function smInit() {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { $('login-view').style.display = ''; return; }
+    user = session.user;
+    const { data: prof } = await sb.from('profiles').select('role').eq('id', user.id).maybeSingle();
+    if (!prof || prof.role !== 'admin') {
+      $('login-view').style.display = '';
+      $('login-view').querySelector('h2').textContent = 'אין הרשאות';
+      $('login-view').querySelector('p').textContent = 'גישה למנהלי המערכת בלבד.';
+      $('login-view').querySelector('button').style.display = 'none';
+      return;
+    }
+    $('dashboard-view').style.display = '';
+    loadDeals();
+  }
+
+  window.loginGoogle = loginGoogle;
+  window.logout = logout;
+  window.addDeal = addDeal;
+  window.loadDeals = loadDeals;
+  window.delDeal = delDeal;
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) smInit(); else window.addEventListener('load', smInit, {once:true}); });
+  else { if(window.supabase) smInit(); else window.addEventListener('load', smInit, {once:true}); }
+</script>
+</body>
+</html>

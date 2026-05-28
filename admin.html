@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>פאנל ניהול | אופקים שלי</title>
+<meta name="description" content="פאנל ניהול MyOfaqim.co.il">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+/* ─── Coupon type buttons ─── */
+.cp-type-btn {
+  padding: 14px 6px;
+  background: #fff;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--ink-soft);
+  transition: all 0.2s;
+  line-height: 1.5;
+}
+.cp-type-btn:hover { border-color: var(--blue); color: var(--navy); }
+.cp-type-btn.active {
+  border-color: var(--orange);
+  background: var(--orange-soft);
+  color: var(--orange-dk);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+}
+
+.cp-row {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+  display: grid;
+  grid-template-columns: 60px 1fr auto;
+  gap: 14px;
+  align-items: center;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+.cp-row:hover { border-color: var(--blue); box-shadow: 0 4px 12px rgba(26,46,92,0.08); }
+.cp-row .cp-icon {
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, var(--orange-soft), var(--blue-soft));
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+}
+.cp-row .cp-info { min-width: 0; }
+.cp-row .cp-info .cp-store { font-size: 11px; color: var(--blue); font-weight: 800; margin-bottom: 2px; }
+.cp-row .cp-info .cp-title { font-size: 15px; font-weight: 800; color: var(--navy); margin-bottom: 4px; }
+.cp-row .cp-info .cp-meta { font-size: 11px; color: var(--ink-mute); display: flex; gap: 8px; flex-wrap: wrap; }
+.cp-row .cp-info .cp-prices { font-size: 13px; margin-top: 4px; }
+.cp-row .cp-info .cp-prices .now { color: var(--green); font-weight: 900; font-size: 16px; }
+.cp-row .cp-info .cp-prices .old { color: var(--ink-mute); text-decoration: line-through; margin-right: 6px; }
+.cp-row .cp-actions { display: flex; flex-direction: column; gap: 6px; align-items: stretch; }
+.cp-row .cp-badge { font-size: 9px; padding: 2px 6px; border-radius: 6px; font-weight: 900; text-align: center; }
+.cp-row .cp-badge.coupon { background: var(--orange-soft); color: var(--orange-dk); }
+.cp-row .cp-badge.sale { background: var(--blue-soft); color: var(--blue); }
+.cp-row .cp-badge.benefit { background: rgba(101,163,13,0.1); color: var(--green); }
+.cp-row .cp-badge.flash { background: rgba(220,38,38,0.1); color: #DC2626; }
+
+@media (max-width: 640px) {
+  .cp-row { grid-template-columns: 50px 1fr; }
+  .cp-row .cp-actions { grid-column: 1 / -1; flex-direction: row; }
+}
+.admin-bar {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-700) 100%);
+  color: #fff;
+  padding: 24px 0;
+  margin-bottom: 0;
+  position: relative;
+  overflow: hidden;
+}
+.admin-bar::before {
+  content: '';
+  position: absolute;
+  top: -40px; right: -40px;
+  width: 160px; height: 160px;
+  background: var(--orange);
+  border-radius: 50%;
+  opacity: 0.15;
+  filter: blur(40px);
+}
+.admin-bar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  position: relative;
+}
+.admin-bar h1 {
+  font-family: 'Heebo', sans-serif;
+  font-size: 26px;
+  font-weight: 900;
+  color: #fff;
+  letter-spacing: -0.02em;
+}
+.admin-bar h1 em {
+  font-style: normal;
+  color: var(--orange);
+  font-weight: 900;
+}
+.admin-bar .user {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.75);
+  direction: ltr;
+  font-weight: 600;
+}
+.btn-outline-light {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+.btn-outline-light:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: #fff;
+}
+
+/* ─── Tab Bar ─── */
+.tab-bar {
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  margin-bottom: 28px;
+  box-shadow: 0 2px 8px rgba(26, 46, 92, 0.04);
+}
+.tab-bar .container {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 12px 0 0;
+}
+.tab-bar .container::-webkit-scrollbar { display: none; }
+.tab {
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--ink-soft);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  border-bottom: 3px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
+  letter-spacing: -0.01em;
+}
+.tab:hover { color: var(--navy); }
+.tab.active {
+  color: var(--navy);
+  border-bottom-color: var(--orange);
+  font-weight: 900;
+}
+.tab .badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  background: var(--orange);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+  border-radius: 100px;
+  padding: 0 6px;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+/* ─── Stat Cards ─── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.stat-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.stat-card:hover {
+  border-color: var(--blue);
+  box-shadow: 0 12px 24px rgba(26, 46, 92, 0.08);
+  transform: translateY(-2px);
+}
+.stat-card .icon-wrap {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.stat-card.s-blue .icon-wrap { background: var(--blue-soft); color: var(--blue); }
+.stat-card.s-orange .icon-wrap { background: var(--orange-soft); color: var(--orange-dk); }
+.stat-card.s-green .icon-wrap { background: rgba(101, 163, 13, 0.1); color: var(--green); }
+.stat-card.s-navy .icon-wrap { background: rgba(26, 46, 92, 0.08); color: var(--navy); }
+.stat-card .num {
+  font-family: 'Heebo', sans-serif;
+  font-size: 32px;
+  font-weight: 900;
+  color: var(--navy);
+  line-height: 1;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.stat-card .lbl {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--ink-soft);
+  letter-spacing: 0.5px;
+}
+.stat-card.urgent {
+  background: linear-gradient(135deg, #FFF7ED 0%, #FFFFFF 100%);
+  border-color: var(--orange);
+}
+.stat-card.urgent .num { color: var(--orange-dk); }
+
+/* ─── Dash Card ─── */
+.dash-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+  margin-bottom: 20px;
+}
+.dash-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line);
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.dash-card-head h2 {
+  font-family: 'Heebo', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
+  color: var(--navy);
+  letter-spacing: -0.02em;
+}
+
+/* ─── Tables ─── */
+.adm-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.adm-table th {
+  text-align: right;
+  padding: 12px 10px;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-mute);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--line);
+}
+.adm-table td {
+  padding: 14px 10px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+  vertical-align: middle;
+}
+.adm-table tr:hover td { background: var(--cream); }
+.adm-table .name {
+  font-weight: 800;
+  color: var(--navy);
+}
+.adm-table .meta {
+  font-size: 11px;
+  color: var(--ink-mute);
+  margin-top: 2px;
+  font-weight: 600;
+}
+
+/* ─── Status Pills ─── */
+.status-pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  padding: 4px 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-radius: 100px;
+}
+.status-pending {
+  background: var(--orange-soft);
+  color: var(--orange-dk);
+}
+.status-approved {
+  background: rgba(101, 163, 13, 0.12);
+  color: var(--green);
+}
+.status-rejected {
+  background: rgba(220, 38, 38, 0.1);
+  color: #DC2626;
+}
+.status-confirmed {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+/* ─── Mini Buttons ─── */
+.mini-btn {
+  padding: 7px 14px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 8px;
+  border: 1.5px solid var(--line);
+  background: var(--paper);
+  cursor: pointer;
+  font-family: 'Heebo', sans-serif;
+  margin-left: 4px;
+  transition: all 0.15s;
+}
+.mini-btn.approve {
+  border-color: var(--green);
+  color: var(--green);
+}
+.mini-btn.approve:hover {
+  background: var(--green);
+  color: #fff;
+}
+.mini-btn.reject {
+  border-color: #DC2626;
+  color: #DC2626;
+}
+.mini-btn.reject:hover {
+  background: #DC2626;
+  color: #fff;
+}
+.mini-btn.view {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+.mini-btn.view:hover {
+  background: var(--blue);
+  color: #fff;
+}
+
+/* ─── Quick Actions ─── */
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+.quick-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+  color: inherit;
+}
+.quick-card:hover {
+  border-color: var(--blue);
+  background: var(--blue-soft);
+}
+.quick-card .icon {
+  width: 40px;
+  height: 40px;
+  background: var(--blue);
+  color: #fff;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.quick-card .text {
+  flex: 1;
+  min-width: 0;
+}
+.quick-card .title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--navy);
+  margin-bottom: 2px;
+}
+.quick-card .sub {
+  font-size: 11px;
+  color: var(--ink-mute);
+  font-weight: 600;
+}
+
+/* ─── Login Card ─── */
+.login-card {
+  max-width: 480px;
+  margin: 60px auto;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 48px 40px;
+  text-align: center;
+}
+.login-card h2 {
+  font-family: 'Heebo', sans-serif;
+  font-size: 28px;
+  color: var(--navy);
+  margin-bottom: 14px;
+  font-weight: 900;
+  letter-spacing: -0.02em;
+}
+.login-card p {
+  color: var(--ink-soft);
+  margin-bottom: 28px;
+}
+
+/* ─── Detail Row ─── */
+.detail-row {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px;
+}
+.detail-row:last-child { border-bottom: none; }
+.detail-row .lbl {
+  color: var(--ink-mute);
+  font-weight: 700;
+}
+.detail-row .val {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+/* ─── Empty State ─── */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-mute);
+}
+.empty-state .icon {
+  width: 64px;
+  height: 64px;
+  background: var(--blue-soft);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: var(--blue);
+}
+.empty-state h3 {
+  font-size: 18px;
+  color: var(--navy);
+  margin: 0 0 8px;
+  font-weight: 900;
+}
+.empty-state p {
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .adm-table { font-size: 12px; }
+  .adm-table th, .adm-table td { padding: 8px 6px; }
+  .detail-row { grid-template-columns: 1fr; gap: 4px; }
+}
+</style>
+</head>
+<body class="minimal-chrome">
+<div id="header-placeholder"></div>
+
+<!-- LOGIN -->
+<div id="login-view" class="container" style="display:none">
+  <div class="login-card">
+    <h2>פאנל ניהול</h2>
+    <p>גישה למורשים בלבד.</p>
+    <button class="btn-filled" style="width:100%;padding:14px" onclick="loginGoogle()">כניסה עם Google</button>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard-view" style="display:none">
+
+  <div class="admin-bar">
+    <div class="container">
+      <h1>פאנל <em>ניהול</em></h1>
+      <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+        <span class="user" id="user-email">—</span>
+        <button class="btn-outline-light" onclick="logout()">יציאה</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="container">
+      <button class="tab active" data-tab="overview" onclick="setTab('overview')">סקירה</button>
+      <button class="tab" data-tab="biz-signups" onclick="setTab('biz-signups')">בקשות עסקים</button>
+      <button class="tab" data-tab="pro-signups" onclick="setTab('pro-signups')">בקשות מקצוע</button>
+      <button class="tab" data-tab="newsletter" onclick="setTab('newsletter')">רשימת תפוצה</button>
+      <button class="tab" data-tab="coupons" onclick="setTab('coupons')">קופונים</button>
+      <button class="tab" data-tab="jobs" onclick="setTab('jobs')">משרות</button>
+      <button class="tab" data-tab="realestate" onclick="setTab('realestate')">נדל"ן</button>
+      <button class="tab" data-tab="forum" onclick="setTab('forum')">פורום</button>
+      <button class="tab" data-tab="news" onclick="setTab('news')">חדשות</button>
+    </div>
+  </div>
+
+  <main class="page-main" style="padding-top:0">
+    <div class="container">
+
+      <!-- 🔔 NOTIFICATIONS BANNER - מציג כמה ממתינים -->
+      <a href="/admin-notifications" id="notif-banner" style="display:none;background:linear-gradient(135deg,#DC2626 0%,#EA580C 100%);padding:18px 24px;border-radius:16px;margin-bottom:16px;color:#fff;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(220,38,38,0.25);text-decoration:none;animation:pulse-banner 2s infinite">
+        <div style="background:rgba(255,255,255,0.2);padding:12px;border-radius:12px;flex-shrink:0;position:relative">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+          <div id="notif-badge" style="position:absolute;top:-4px;left:-4px;background:#FEF3C7;color:#1A2E5C;width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:900;border:2px solid #DC2626">0</div>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:18px;font-weight:900;margin-bottom:4px">יש <span id="pending-num">0</span> פריטים שמחכים לאישור</div>
+          <div style="font-size:13px;opacity:0.95">לחץ כאן לעמוד ההתראות - אישור בקליק אחד</div>
+        </div>
+        <div style="background:#fff;color:#DC2626;padding:10px 22px;border-radius:10px;font-weight:900;font-size:14px;flex-shrink:0">פתח →</div>
+      </a>
+      <style>
+        @keyframes pulse-banner {
+          0%, 100% { box-shadow: 0 8px 24px rgba(220,38,38,0.25); }
+          50% { box-shadow: 0 8px 32px rgba(220,38,38,0.5); }
+        }
+      </style>
+
+      <!-- New Admin Tools Banner -->
+      <div style="background:linear-gradient(135deg,#1A2E5C 0%,#F59E0B 100%);padding:24px;border-radius:16px;margin-bottom:24px;color:#fff;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(26,46,92,0.15)">
+        <div style="background:rgba(255,255,255,0.15);padding:12px;border-radius:12px;flex-shrink:0">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:18px;font-weight:900;margin-bottom:4px">ניהול עסקים, בתי כנסת וקופונים</div>
+          <div style="font-size:13px;opacity:0.9">העלה עסקים מאומתים, צור קופונים, נהל בתי כנסת - עם תמונות, פרטי קשר, תפריט ועוד</div>
+        </div>
+        <a href="/admin-biz" style="background:#fff;color:#1A2E5C;padding:10px 22px;border-radius:10px;font-weight:900;text-decoration:none;font-size:14px;flex-shrink:0">פתח →</a>
+      </div>
+
+      <!-- Push Notifications Banner -->
+      <div style="background:linear-gradient(135deg,#7C3AED 0%,#DC2626 100%);padding:24px;border-radius:16px;margin-bottom:24px;color:#fff;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:0 8px 24px rgba(124,58,237,0.15)">
+        <div style="background:rgba(255,255,255,0.15);padding:12px;border-radius:12px;flex-shrink:0">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        </div>
+        <div style="flex:1;min-width:200px">
+          <div style="font-size:18px;font-weight:900;margin-bottom:4px">שליחת התראות Push לתושבים</div>
+          <div style="font-size:13px;opacity:0.9">שלח התראה דחיפה לכל מי שאישר קבלת עדכונים - מבצעים, חדשות, אירועים</div>
+        </div>
+        <a href="/push-admin" style="background:#fff;color:#7C3AED;padding:10px 22px;border-radius:10px;font-weight:900;text-decoration:none;font-size:14px;flex-shrink:0">פתח →</a>
+      </div>
+
+      <div id="tab-overview">
+        <div class="stats-grid">
+          <div class="stat-card s-blue" onclick="setTab('biz-signups')">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/>
+              </svg>
+            </div>
+            <div class="num" id="s-biz">—</div>
+            <div class="lbl">עסקים פעילים</div>
+          </div>
+
+          <div class="stat-card s-navy" onclick="setTab('pro-signups')">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+              </svg>
+            </div>
+            <div class="num" id="s-pro">—</div>
+            <div class="lbl">בעלי מקצוע</div>
+          </div>
+
+          <div class="stat-card s-blue" onclick="setTab('newsletter')">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+            </div>
+            <div class="num" id="s-residents">—</div>
+            <div class="lbl">תושבים נרשמו</div>
+          </div>
+
+          <div class="stat-card s-green" onclick="setTab('jobs')">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+            </div>
+            <div class="num" id="s-jobs">—</div>
+            <div class="lbl">משרות פעילות</div>
+          </div>
+
+          <div class="stat-card s-orange" onclick="setTab('realestate')">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+              </svg>
+            </div>
+            <div class="num" id="s-listings">—</div>
+            <div class="lbl">נכסי נדל"ן</div>
+          </div>
+
+          <div class="stat-card s-navy" onclick="setTab('forum')">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+            </div>
+            <div class="num" id="s-forum">—</div>
+            <div class="lbl">פוסטים פורום</div>
+          </div>
+
+          <div class="stat-card urgent" onclick="setTab('biz-signups')">
+            <div class="icon-wrap" style="background: var(--orange); color: #fff;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="num" id="s-pending">—</div>
+            <div class="lbl" style="color: var(--orange-dk); font-weight: 900;">ממתינים לאישור</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head"><h2>פעולות מהירות</h2></div>
+          <div class="quick-actions">
+            <a class="quick-card" onclick="setTab('biz-signups')">
+              <div class="icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="text">
+                <div class="title">בקשות עסקים</div>
+                <div class="sub">לאשר עסקים ממתינים</div>
+              </div>
+            </a>
+            <a class="quick-card" onclick="setTab('pro-signups')">
+              <div class="icon" style="background: var(--navy);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="20 6 9 17 4 12"/>
+                </svg>
+              </div>
+              <div class="text">
+                <div class="title">בקשות בעלי מקצוע</div>
+                <div class="sub">לאשר בעלי מקצוע</div>
+              </div>
+            </a>
+            <a class="quick-card" onclick="setTab('newsletter')">
+              <div class="icon" style="background: var(--orange);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+                </svg>
+              </div>
+              <div class="text">
+                <div class="title">רשימת תפוצה</div>
+                <div class="sub">תושבים שנרשמו</div>
+              </div>
+            </a>
+            <a class="quick-card" onclick="setTab('news')">
+              <div class="icon" style="background: var(--green);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/>
+                </svg>
+              </div>
+              <div class="text">
+                <div class="title">פרסום כתבה</div>
+                <div class="sub">חדשות והודעות</div>
+              </div>
+            </a>
+            <a href="/" target="_blank" class="quick-card">
+              <div class="icon" style="background: var(--blue);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/>
+                </svg>
+              </div>
+              <div class="text">
+                <div class="title">צפייה באתר</div>
+                <div class="sub">לפתוח בלשונית חדשה</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-biz-signups" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head"><h2>בקשות הרשמת עסקים</h2></div>
+          <div id="bs-list"><div class="loader">טוען...</div></div>
+        </div>
+      </div>
+
+      <div id="tab-pro-signups" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head"><h2>בקשות הרשמת בעלי מקצוע</h2></div>
+          <div id="ps-list"><div class="loader">טוען...</div></div>
+        </div>
+      </div>
+
+      <div id="tab-newsletter" style="display:none">
+        <div class="stats-grid" style="margin-bottom: 20px;">
+          <div class="stat-card s-blue">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/>
+              </svg>
+            </div>
+            <div class="num" id="nl-total">—</div>
+            <div class="lbl">סה"כ נרשמים</div>
+          </div>
+          <div class="stat-card s-green">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+            </div>
+            <div class="num" id="nl-confirmed">—</div>
+            <div class="lbl">מאושרים</div>
+          </div>
+          <div class="stat-card s-orange">
+            <div class="icon-wrap">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+              </svg>
+            </div>
+            <div class="num" id="nl-pending">—</div>
+            <div class="lbl">ממתינים לאישור</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>רשימת תפוצה - תושבים</h2>
+            <div style="display: flex; gap: 8px;">
+              <button class="mini-btn view" onclick="filterNewsletter('all')" id="nl-f-all">הכל</button>
+              <button class="mini-btn" onclick="filterNewsletter('resident')" id="nl-f-resident">תושבים</button>
+              <button class="mini-btn" onclick="filterNewsletter('business_owner')" id="nl-f-biz">בעלי עסק</button>
+              <button class="mini-btn" onclick="filterNewsletter('professional')" id="nl-f-pro">בעלי מקצוע</button>
+              <button class="mini-btn view" onclick="exportNewsletter()">ייצוא CSV</button>
+            </div>
+          </div>
+          <div id="nl-list"><div class="loader">טוען...</div></div>
+        </div>
+      </div>
+
+      <div id="tab-jobs" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head"><h2>משרות לאישור</h2></div>
+          <div id="jobs-list"><div class="loader">טוען...</div></div>
+        </div>
+      </div>
+
+      <!-- ═══ COUPONS TAB ═══ -->
+      <div id="tab-coupons" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>קופונים, מבצעים והטבות</h2>
+            <button class="btn-filled" onclick="openCouponEditor()" style="background: var(--orange); color: white;">+ קופון חדש</button>
+          </div>
+
+          <!-- סטטיסטיקות -->
+          <div class="stats-grid" style="margin-bottom: 24px;">
+            <div class="stat-card s-orange">
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 12V8H6a2 2 0 0 1-2-2c0-1.1.9-2 2-2h12v4"/><path d="M20 12v4H6a2 2 0 0 0-2 2c0 1.1.9 2 2 2h12v-4"/></svg>
+              </div>
+              <div class="num" id="cp-active">—</div>
+              <div class="lbl">קופונים פעילים</div>
+            </div>
+            <div class="stat-card s-blue">
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+              </div>
+              <div class="num" id="cp-uses">—</div>
+              <div class="lbl">מימושים</div>
+            </div>
+            <div class="stat-card s-green">
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67z"/></svg>
+              </div>
+              <div class="num" id="cp-hot">—</div>
+              <div class="lbl">קופונים חמים</div>
+            </div>
+            <div class="stat-card s-navy">
+              <div class="icon-wrap">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div class="num" id="cp-expired">—</div>
+              <div class="lbl">פג תוקף</div>
+            </div>
+          </div>
+
+          <!-- פילטרים -->
+          <div style="display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap">
+            <button class="mini-btn view" id="cp-f-all" onclick="filterCoupons('all')">הכל</button>
+            <button class="mini-btn" id="cp-f-active" onclick="filterCoupons('active')">פעילים</button>
+            <button class="mini-btn" id="cp-f-hot" onclick="filterCoupons('hot')">🔥 חמים</button>
+            <button class="mini-btn" id="cp-f-featured" onclick="filterCoupons('featured')">⭐ מומלצים</button>
+            <button class="mini-btn" id="cp-f-expired" onclick="filterCoupons('expired')">פג תוקף</button>
+          </div>
+
+          <div id="coupons-list"><div class="loader">טוען קופונים...</div></div>
+        </div>
+      </div>
+
+      <!-- מודאל יצירת/עריכת קופון -->
+      <div id="coupon-editor-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:100;align-items:center;justify-content:center;padding:16px">
+        <div style="background:#fff;width:100%;max-width:580px;border-radius:20px;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)">
+          <div style="padding:20px 24px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;z-index:2">
+            <h2 id="cp-editor-title" style="margin:0;font-size:20px;font-weight:900;color:var(--navy)">קופון חדש</h2>
+            <button onclick="closeCouponEditor()" style="background:none;border:none;cursor:pointer;width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--ink-mute)">✕</button>
+          </div>
+
+          <div style="padding:24px;display:flex;flex-direction:column;gap:16px">
+            <input type="hidden" id="cp-id">
+
+            <!-- סוג -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">סוג הפריט *</label>
+              <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px">
+                <button class="cp-type-btn" data-type="coupon" onclick="selectCouponType('coupon')">🎟️<br>קופון</button>
+                <button class="cp-type-btn" data-type="sale" onclick="selectCouponType('sale')">🏷️<br>מבצע</button>
+                <button class="cp-type-btn" data-type="benefit" onclick="selectCouponType('benefit')">🎁<br>הטבה</button>
+                <button class="cp-type-btn" data-type="flash" onclick="selectCouponType('flash')">⚡<br>פלאש</button>
+              </div>
+            </div>
+
+            <!-- עסק -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">עסק *</label>
+              <select id="cp-business" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;background:#fff">
+                <option value="">— בחר עסק קיים או הזן ידנית —</option>
+              </select>
+              <input id="cp-business-manual" type="text" placeholder="או הזן שם עסק ידנית (למשל: יוחננוף - אופקים)" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;margin-top:6px">
+            </div>
+
+            <!-- שם המוצר/שירות -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">שם המוצר/שירות *</label>
+              <input id="cp-title" type="text" placeholder="לדוגמה: בונומי ביסקוטים בטעם קקאו" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px">
+            </div>
+
+            <!-- תיאור + משקל -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">תיאור (משקל / כמות / מנה)</label>
+              <input id="cp-desc" type="text" placeholder="לדוגמה: 200 גרם / מנה משפחתית / סט שלם" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px">
+            </div>
+
+            <!-- אימוג'י -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">אייקון / אימוג'י</label>
+              <input id="cp-emoji" type="text" placeholder="🍪" maxlength="4" style="width:100px;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:24px;text-align:center">
+              <div style="font-size:11px;color:var(--ink-mute);margin-top:6px">מומלץ: 🍕 מסעדה · 🛒 סופר · 💄 קוסמטיקה · ✂️ ספרות · 🔧 שירותים · 🏠 לבית</div>
+            </div>
+
+            <!-- מחירים -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div>
+                <label style="display:block;font-size:12px;font-weight:800;color:var(--green);margin-bottom:6px;letter-spacing:0.5px">המחיר החדש (₪) *</label>
+                <input id="cp-price-new" type="number" step="0.01" placeholder="6.90" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px">
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-mute);margin-bottom:6px;letter-spacing:0.5px">המחיר הישן (₪) *</label>
+                <input id="cp-price-old" type="number" step="0.01" placeholder="9.90" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px">
+              </div>
+            </div>
+
+            <!-- קטגוריה + תוקף -->
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+              <div>
+                <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">קטגוריה</label>
+                <select id="cp-category" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px;background:#fff">
+                  <option value="supermarket">🛒 סופרים</option>
+                  <option value="restaurant">🍕 מסעדות</option>
+                  <option value="beauty">💇‍♀️ יופי</option>
+                  <option value="home">🏠 לבית</option>
+                  <option value="services">🔧 שירותים</option>
+                  <option value="shopping">🛍️ קניות</option>
+                </select>
+              </div>
+              <div>
+                <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">תוקף עד</label>
+                <input id="cp-until" type="date" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px">
+              </div>
+            </div>
+
+            <!-- מגבלת שימוש -->
+            <div>
+              <label style="display:block;font-size:12px;font-weight:800;color:var(--ink-soft);margin-bottom:6px;letter-spacing:0.5px">מגבלת מימושים (0 = ללא הגבלה)</label>
+              <input id="cp-limit" type="number" min="0" placeholder="0" style="width:100%;padding:12px;border:1.5px solid var(--line);border-radius:10px;font-family:inherit;font-size:14px">
+            </div>
+
+            <!-- דגלים מיוחדים -->
+            <div style="background:var(--cream);padding:14px;border-radius:12px">
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600;margin-bottom:8px">
+                <input id="cp-hot" type="checkbox" style="width:18px;height:18px;cursor:pointer">
+                🔥 סמן כקופון <strong>חם</strong> (יופיע בראש הדף ב"הכי חם עכשיו")
+              </label>
+              <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;font-weight:600">
+                <input id="cp-featured" type="checkbox" style="width:18px;height:18px;cursor:pointer">
+                ⭐ סמן כ<strong>מומלץ</strong> (יקבל בולטות מיוחדת)
+              </label>
+            </div>
+
+            <div id="cp-err" style="display:none;background:#FEE;color:#C00;padding:12px;border-radius:8px;font-size:13px"></div>
+
+            <div style="display:flex;gap:10px;margin-top:8px">
+              <button onclick="closeCouponEditor()" style="flex:1;padding:14px;background:#fff;border:2px solid var(--line);border-radius:12px;font-weight:800;color:var(--navy);cursor:pointer;font-family:inherit">ביטול</button>
+              <button id="cp-submit" onclick="saveCouponAdmin()" style="flex:2;padding:14px;background:linear-gradient(135deg,var(--orange),var(--orange-dk));color:#fff;border:none;border-radius:12px;font-weight:900;font-size:15px;cursor:pointer;font-family:inherit;box-shadow:0 8px 20px rgba(245,158,11,0.3)">שמירה</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="tab-realestate" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head"><h2>נכסי נדל"ן לאישור</h2></div>
+          <div id="re-list"><div class="loader">טוען...</div></div>
+        </div>
+      </div>
+
+      <div id="tab-forum" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head"><h2>פוסטים בפורום</h2></div>
+          <div id="forum-list"><div class="loader">טוען...</div></div>
+        </div>
+      </div>
+
+      <div id="tab-news" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head"><h2>כתבות וחדשות</h2><button class="btn-gold" onclick="openNewArticle()">+ כתבה חדשה</button></div>
+          <div id="news-list"><div class="loader">טוען...</div></div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- Article Modal -->
+<div class="modal-overlay" id="article-modal">
+  <div class="modal" style="max-width:720px">
+    <div class="modal-head">
+      <h2 id="article-modal-title">כתבה חדשה</h2>
+      <button class="modal-close" onclick="closeArticleModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-err" id="art-err"></div>
+      <input type="hidden" id="art-id">
+      <div class="field-group"><label>כותרת</label><input type="text" id="art-title"></div>
+      <div class="field-group"><label>תקציר</label><textarea id="art-excerpt" style="min-height:60px"></textarea></div>
+      <div class="field-group"><label>תוכן מלא (Markdown נתמך)</label><textarea id="art-content" style="min-height:200px"></textarea></div>
+      <div class="field-group"><label>תמונת קאבר (URL)</label><input type="url" id="art-cover" dir="ltr"></div>
+      <div class="field-group"><label>קטגוריה</label><select id="art-cat"><option value="news">חדשות</option><option value="announcement">הודעה</option><option value="event">אירוע</option><option value="community">קהילה</option></select></div>
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeArticleModal()">ביטול</button>
+        <button class="modal-submit" id="art-submit" onclick="saveArticle()">פרסום</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  let sb, user = null, isAdmin = false;
+
+  async function loginGoogle() {
+    await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/admin' }
+    });
+  }
+  async function logout() { await sb.auth.signOut(); window.location.reload(); }
+
+  function setTab(t) {
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+    ['overview','biz-signups','pro-signups','newsletter','coupons','jobs','realestate','forum','news'].forEach(x =>
+      $('tab-' + x).style.display = x === t ? '' : 'none'
+    );
+    if (t === 'biz-signups') loadBizSignups();
+    if (t === 'pro-signups') loadProSignups();
+    if (t === 'newsletter') loadNewsletter();
+    if (t === 'coupons') loadCouponsAdmin();
+    if (t === 'jobs') loadPendingJobs();
+    if (t === 'realestate') loadPendingRE();
+    if (t === 'forum') loadForumPosts();
+    if (t === 'news') loadArticles();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ── NEWSLETTER ──
+  let allSubscribers = [];
+  let nlFilter = 'all';
+
+  async function loadNewsletter() {
+    try {
+      const { data } = await sb.from('newsletter_subscribers')
+        .select('*')
+        .order('created_at', { ascending: false })
+        .limit(500);
+
+      allSubscribers = data || [];
+
+      // עדכון סטטיסטיקות
+      $('nl-total').textContent = fmt(allSubscribers.length);
+      $('nl-confirmed').textContent = fmt(allSubscribers.filter(s => s.status === 'confirmed').length);
+      $('nl-pending').textContent = fmt(allSubscribers.filter(s => s.status === 'pending' || !s.status).length);
+
+      renderNewsletter();
+    } catch(e) {
+      console.error('[loadNewsletter]', e);
+      $('nl-list').innerHTML = `
+        <div class="empty-state">
+          <div class="icon" style="background: rgba(220, 38, 38, 0.1); color: #DC2626;">!</div>
+          <h3>לא ניתן לטעון את הרשימה</h3>
+          <p>${esc(e.message)}</p>
+        </div>`;
+    }
+  }
+
+  function filterNewsletter(filter) {
+    nlFilter = filter;
+    document.querySelectorAll('[id^="nl-f-"]').forEach(btn => {
+      btn.classList.remove('view');
+    });
+    const activeBtn = $('nl-f-' + (filter === 'business_owner' ? 'biz' : filter === 'professional' ? 'pro' : filter));
+    if (activeBtn) activeBtn.classList.add('view');
+    renderNewsletter();
+  }
+
+  function renderNewsletter() {
+    let filtered = allSubscribers;
+    if (nlFilter !== 'all') {
+      filtered = allSubscribers.filter(s => (s.subscriber_type || 'resident') === nlFilter);
+    }
+
+    if (!filtered.length) {
+      $('nl-list').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/>
+            </svg>
+          </div>
+          <h3>אין נרשמים</h3>
+          <p>${nlFilter === 'all' ? 'עוד לא נרשם אף אחד לרשימה.' : 'לא נמצאו נרשמים מסוג זה.'}</p>
+        </div>`;
+      return;
+    }
+
+    const TYPE_LABELS = {
+      resident: { name: 'תושב', color: 'var(--blue)' },
+      business_owner: { name: 'בעל עסק', color: 'var(--orange-dk)' },
+      professional: { name: 'בעל מקצוע', color: 'var(--green)' },
+    };
+
+    $('nl-list').innerHTML = '<table class="adm-table"><thead><tr><th>שם</th><th>אימייל / טלפון</th><th>סוג</th><th>פרטים נוספים</th><th>תאריך</th><th>סטטוס</th></tr></thead><tbody>' +
+      filtered.map(s => {
+        const type = TYPE_LABELS[s.subscriber_type || 'resident'];
+        const dateStr = s.created_at ? new Date(s.created_at).toLocaleDateString('he-IL') : '—';
+        const extra = s.subscriber_type === 'business_owner' && s.business_name
+          ? `${esc(s.business_name)} ${s.business_category ? '· ' + esc(s.business_category) : ''}`
+          : s.subscriber_type === 'professional' && s.trade
+          ? esc(s.trade)
+          : '—';
+        return `
+          <tr>
+            <td><div class="name">${esc(s.first_name || s.name || '—')}</div></td>
+            <td>
+              <div dir="ltr">${esc(s.email)}</div>
+              ${s.phone ? `<div class="meta" dir="ltr">${esc(s.phone)}</div>` : ''}
+            </td>
+            <td>
+              <span style="display: inline-block; padding: 3px 10px; border-radius: 100px; font-size: 11px; font-weight: 800; background: ${type.color}15; color: ${type.color};">
+                ${type.name}
+              </span>
+            </td>
+            <td class="meta">${extra}</td>
+            <td class="meta">${dateStr}</td>
+            <td><span class="status-pill status-${s.status || 'pending'}">${statusLabel(s.status || 'pending')}</span></td>
+          </tr>`;
+      }).join('') + '</tbody></table>';
+  }
+
+  function exportNewsletter() {
+    let filtered = allSubscribers;
+    if (nlFilter !== 'all') {
+      filtered = allSubscribers.filter(s => (s.subscriber_type || 'resident') === nlFilter);
+    }
+    if (!filtered.length) { alert('אין מה לייצא'); return; }
+
+    const headers = ['שם', 'אימייל', 'טלפון', 'סוג', 'שם עסק', 'מקצוע', 'סטטוס', 'תאריך'];
+    const rows = filtered.map(s => [
+      s.first_name || s.name || '',
+      s.email || '',
+      s.phone || '',
+      s.subscriber_type || 'resident',
+      s.business_name || '',
+      s.trade || '',
+      s.status || 'pending',
+      s.created_at ? new Date(s.created_at).toLocaleDateString('he-IL') : ''
+    ]);
+
+    let csv = '\uFEFF' + headers.join(',') + '\n' +
+      rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(',')).join('\n');
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `newsletter-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function loadStats() {
+    try {
+      const queries = await Promise.all([
+        sb.from('businesses').select('*', { count: 'exact', head: true }).eq('is_active', true),
+        sb.from('professionals').select('*', { count: 'exact', head: true }).eq('is_active', true),
+        sb.from('jobs').select('*', { count: 'exact', head: true }).eq('is_active', true).eq('status','active'),
+        sb.from('realestate_listings').select('*', { count: 'exact', head: true }).eq('is_active', true).eq('status','active'),
+        sb.from('forum_posts').select('*', { count: 'exact', head: true }).eq('is_active', true),
+        sb.from('business_signups').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        sb.from('professional_signups').select('*', { count: 'exact', head: true }).eq('status', 'pending'),
+        sb.from('newsletter_subscribers').select('*', { count: 'exact', head: true }),
+      ]);
+
+      const [biz, pro, jobs, list, forum, bsPending, psPending, residents] = queries.map(q => q.count || 0);
+
+      $('s-biz').textContent = fmt(biz);
+      $('s-pro').textContent = fmt(pro);
+      $('s-jobs').textContent = fmt(jobs);
+      $('s-listings').textContent = fmt(list);
+      $('s-forum').textContent = fmt(forum);
+      $('s-pending').textContent = fmt(bsPending + psPending);
+      $('s-residents').textContent = fmt(residents);
+
+      // ── עדכון בנר ההתראות העליון ──
+      try {
+        const pendingBiz = await sb.from('businesses')
+          .select('id', { count: 'exact', head: true })
+          .eq('is_verified', false)
+          .neq('status', 'rejected');
+        const pendingJobs = await sb.from('jobs')
+          .select('id', { count: 'exact', head: true })
+          .eq('status', 'pending');
+        const pendingRE = await sb.from('realestate_listings')
+          .select('id', { count: 'exact', head: true })
+          .eq('status', 'pending');
+
+        const total = (pendingBiz.count || 0) + (pendingJobs.count || 0) + (pendingRE.count || 0);
+        const banner = $('notif-banner');
+        if (banner) {
+          if (total > 0) {
+            banner.style.display = 'flex';
+            $('pending-num').textContent = total;
+            $('notif-badge').textContent = total;
+          } else {
+            banner.style.display = 'none';
+          }
+        }
+      } catch (e) { console.warn('notif-banner', e); }
+    } catch(e) { console.warn('[loadStats]', e); }
+  }
+
+  // ── BIZ SIGNUPS ──
+  async function loadBizSignups() {
+    try {
+      const { data } = await sb.from('business_signups').select('*').order('created_at', { ascending: false }).limit(50);
+      const area = $('bs-list');
+      if (!data || !data.length) {
+        area.innerHTML = `
+          <div class="empty-state">
+            <div class="icon">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 9l1-5h16l1 5"/><path d="M3 9v11a1 1 0 0 0 1 1h16a1 1 0 0 0 1-1V9"/><path d="M3 9h18"/>
+              </svg>
+            </div>
+            <h3>אין בקשות הרשמת עסקים</h3>
+            <p>כל הבקשות החדשות יופיעו כאן</p>
+          </div>`;
+        return;
+      }
+      area.innerHTML = '<table class="adm-table"><thead><tr><th>שם עסק / קטגוריה</th><th>איש קשר</th><th>טלפון / אימייל</th><th>מסלול</th><th>תאריך</th><th>סטטוס</th><th></th></tr></thead><tbody>' +
+        data.map(b => {
+          const dateStr = b.created_at ? new Date(b.created_at).toLocaleDateString('he-IL') : '—';
+          return `
+          <tr>
+            <td>
+              <div class="name">${esc(b.business_name)}</div>
+              <div class="meta">${esc(b.category || 'ללא קטגוריה')} ${b.address ? ' · ' + esc(b.address) : ''}</div>
+            </td>
+            <td>
+              <div class="name" style="font-size: 13px;">${esc(b.contact_name || '—')}</div>
+              ${b.description ? `<div class="meta" style="max-width: 200px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${esc(b.description.slice(0, 60))}${b.description.length > 60 ? '…' : ''}</div>` : ''}
+            </td>
+            <td>
+              <div dir="ltr" style="font-weight: 700;">${esc(b.phone || '—')}</div>
+              <div class="meta" dir="ltr">${esc(b.email || '')}</div>
+            </td>
+            <td><strong style="color: var(--blue);">${esc((b.selected_plan || b.plan_tier || 'free').toUpperCase())}</strong></td>
+            <td class="meta">${dateStr}</td>
+            <td><span class="status-pill status-${b.status}">${statusLabel(b.status)}</span></td>
+            <td style="text-align:left;white-space:nowrap">
+              ${b.status === 'pending' ? `
+                <button class="mini-btn approve" onclick="approveBiz('${b.id}')">אישור</button>
+                <button class="mini-btn reject" onclick="rejectSignup('business_signups','${b.id}')">דחייה</button>
+              ` : `
+                <button class="mini-btn view" onclick="viewBizDetails('${b.id}')">פרטים</button>
+              `}
+            </td>
+          </tr>`;
+        }).join('') + '</tbody></table>';
+    } catch(e) { $('bs-list').innerHTML = '<div style="color: #DC2626; padding: 20px;">' + esc(e.message) + '</div>'; }
+  }
+
+  function statusLabel(s) {
+    const labels = { pending: 'ממתין', approved: 'אושר', rejected: 'נדחה', confirmed: 'מאושר' };
+    return labels[s] || s;
+  }
+
+  async function viewBizDetails(id) {
+    const { data } = await sb.from('business_signups').select('*').eq('id', id).single();
+    if (!data) return;
+    alert(`פרטי העסק:
+שם: ${data.business_name}
+איש קשר: ${data.contact_name || '—'}
+טלפון: ${data.phone || '—'}
+אימייל: ${data.email || '—'}
+WhatsApp: ${data.whatsapp || '—'}
+כתובת: ${data.address || '—'}
+אתר: ${data.website_url || '—'}
+תיאור: ${data.description || '—'}
+מסלול: ${(data.selected_plan || data.plan_tier || 'free').toUpperCase()}
+סטטוס: ${data.status}`);
+  }
+
+  async function approveBiz(id) {
+    if (!confirm('לאשר את בקשת ההרשמה?\n\nזה ייצור עסק פעיל באלפון וישלח SMS+מייל לבעל העסק.')) return;
+    try {
+      const { data: signup, error: fetchErr } = await sb.from('business_signups').select('*').eq('id', id).single();
+      if (fetchErr) throw fetchErr;
+      if (!signup) { alert('לא נמצאה בקשה'); return; }
+
+      // יוצרים slug ייחודי
+      const baseSlug = (signup.business_name || 'business').toLowerCase()
+        .replace(/['"`]/g, '').replace(/[^\w\u0590-\u05FF]+/g, '-')
+        .replace(/^-+|-+$/g, '').slice(0, 60);
+      const finalSlug = baseSlug + '-' + Math.random().toString(36).slice(2, 8);
+
+      // רק שדות שבטוח קיימים בכל גרסה של הטבלה
+      const newBusiness = {
+        business_name: signup.business_name || 'עסק חדש',
+        slug: finalSlug,
+        description: signup.description || null,
+        phone: signup.phone || null,
+        whatsapp: signup.whatsapp || null,
+        address: signup.address || null,
+        email: signup.email || null,
+        status: 'active',
+        is_verified: true,
+      };
+
+      // מנסים להוסיף שדות אופציונליים שעשויים לא להיות בכל הטבלאות
+      if (signup.category) newBusiness.category = signup.category;
+      if (signup.website_url) newBusiness.website_url = signup.website_url;
+      if (signup.selected_plan || signup.plan_tier) {
+        newBusiness.plan_tier = signup.selected_plan || signup.plan_tier;
+      }
+
+      const { error: bizErr } = await sb.from('businesses').insert(newBusiness);
+      if (bizErr) throw bizErr;
+
+      await sb.from('business_signups').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
+
+      // ─── שליחת SMS + מייל לבעל העסק ──────────────────────────
+      try {
+        const notifyRes = await fetch('/.netlify/functions/business-approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: signup.email,
+            phone: signup.phone,
+            first_name: signup.first_name || signup.contact_name || '',
+            business_name: signup.business_name,
+            business_slug: finalSlug,
+            plan_tier: signup.selected_plan || signup.plan_tier || 'free',
+          }),
+        });
+        const notifyData = await notifyRes.json().catch(() => ({}));
+        if (notifyData.ok) {
+          let msg = 'העסק אושר!';
+          if (notifyData.sms_sent) msg += '\n✓ SMS נשלח';
+          if (notifyData.email_sent) msg += '\n✓ מייל נשלח';
+          alert(msg);
+        } else {
+          alert('העסק אושר. שליחת ההתראה נכשלה - בדוק במייל ידנית.');
+        }
+      } catch (notifyErr) {
+        console.warn('Notify failed:', notifyErr);
+        alert('העסק אושר. (שליחת SMS+מייל נכשלה - בדוק לוגים)');
+      }
+
+      loadBizSignups();
+      loadStats();
+    } catch(e) {
+      console.error('approveBiz error:', e);
+      alert('שגיאה: ' + (e.message || e.toString()));
+    }
+  }
+
+  async function rejectSignup(table, id) {
+    if (!confirm('לדחות את הבקשה?')) return;
+    await sb.from(table).update({ status: 'rejected' }).eq('id', id);
+    if (table === 'business_signups') loadBizSignups();
+    else loadProSignups();
+  }
+
+  // ── PRO SIGNUPS ──
+  async function loadProSignups() {
+    try {
+      const { data } = await sb.from('professional_signups').select('*').order('created_at', { ascending: false }).limit(50);
+      const area = $('ps-list');
+      if (!data || !data.length) { area.innerHTML = '<div style="padding:20px;color:var(--ink-mute);text-align:center">אין בקשות.</div>'; return; }
+      area.innerHTML = '<table class="adm-table"><thead><tr><th>שם</th><th>מקצוע</th><th>טלפון</th><th>תוכנית</th><th>סטטוס</th><th></th></tr></thead><tbody>' +
+        data.map(p => `
+          <tr>
+            <td><div class="name">${esc(p.full_name)}</div><div class="meta">${esc(p.email || '')}</div></td>
+            <td>${esc(p.trade || '')}</td>
+            <td dir="ltr">${esc(p.phone || '')}</td>
+            <td><strong>${esc((p.selected_plan || p.plan_tier || '').toUpperCase())}</strong></td>
+            <td><span class="status-pill status-${p.status}">${esc(p.status)}</span></td>
+            <td style="text-align:left;white-space:nowrap">
+              ${p.status === 'pending' ? `
+                <button class="mini-btn approve" onclick="approvePro('${p.id}')">אישור</button>
+                <button class="mini-btn reject" onclick="rejectSignup('professional_signups','${p.id}')">דחייה</button>
+              ` : ''}
+            </td>
+          </tr>`).join('') + '</tbody></table>';
+    } catch(e) { $('ps-list').innerHTML = '<div style="color:var(--red);padding:20px">' + esc(e.message) + '</div>'; }
+  }
+
+  async function approvePro(id) {
+    if (!confirm('לאשר את ההרשמה?\n\nזה ייצור פרופיל בעל מקצוע פעיל וישלח SMS+מייל.')) return;
+    try {
+      const { data: signup } = await sb.from('professional_signups').select('*').eq('id', id).single();
+      if (!signup) return;
+      const { error } = await sb.from('professionals').insert({
+        full_name: signup.full_name,
+        trade: signup.trade,
+        bio: signup.bio,
+        years_of_experience: signup.years_of_experience,
+        phone: signup.phone,
+        email: signup.email,
+        service_areas: signup.service_areas || ['אופקים'],
+        plan_tier: signup.selected_plan || signup.plan_tier || 'free',
+        status: 'active',
+        is_active: true,
+        is_verified: true
+      });
+      if (error) throw error;
+      await sb.from('professional_signups').update({ status: 'approved', approved_at: new Date().toISOString() }).eq('id', id);
+
+      // ─── שליחת SMS + מייל לבעל המקצוע ─────────────────────────
+      try {
+        const notifyRes = await fetch('/.netlify/functions/professional-approve', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: signup.email,
+            phone: signup.phone,
+            full_name: signup.full_name,
+            trade: signup.trade,
+            plan_tier: signup.selected_plan || signup.plan_tier || 'free',
+          }),
+        });
+        const notifyData = await notifyRes.json().catch(() => ({}));
+        if (notifyData.ok) {
+          let msg = 'בעל המקצוע אושר!';
+          if (notifyData.sms_sent) msg += '\n✓ SMS נשלח';
+          if (notifyData.email_sent) msg += '\n✓ מייל נשלח';
+          alert(msg);
+        } else {
+          alert('בעל המקצוע אושר. שליחת ההתראה נכשלה - בדוק במייל ידנית.');
+        }
+      } catch (notifyErr) {
+        console.warn('Notify failed:', notifyErr);
+        alert('בעל המקצוע אושר. (שליחת SMS+מייל נכשלה - בדוק לוגים)');
+      }
+
+      loadProSignups();
+      loadStats();
+    } catch(e) { alert('שגיאה: ' + e.message); }
+  }
+
+  // ── JOBS ──
+  async function loadPendingJobs() {
+    try {
+      const { data } = await sb.from('jobs').select('*').eq('status','pending').order('created_at', { ascending: false }).limit(50);
+      const area = $('jobs-list');
+      if (!data || !data.length) { area.innerHTML = '<div style="padding:20px;color:var(--ink-mute);text-align:center">אין משרות ממתינות.</div>'; return; }
+      area.innerHTML = '<table class="adm-table"><thead><tr><th>כותרת</th><th>סוג</th><th>טלפון</th><th></th></tr></thead><tbody>' +
+        data.map(j => `
+          <tr>
+            <td><div class="name">${esc(j.title)}</div><div class="meta">${esc(j.contact_name || '')}</div></td>
+            <td>${j.kind === 'wanted' ? 'דרוש עובד' : 'מחפש עבודה'}</td>
+            <td dir="ltr">${esc(j.contact_phone || '')}</td>
+            <td style="text-align:left">
+              <button class="mini-btn approve" onclick="approveItem('jobs','${j.id}')">אישור</button>
+              <button class="mini-btn reject" onclick="rejectItem('jobs','${j.id}')">דחייה</button>
+            </td>
+          </tr>`).join('') + '</tbody></table>';
+    } catch(e) { $('jobs-list').innerHTML = '<div style="color:var(--red);padding:20px">' + esc(e.message) + '</div>'; }
+  }
+
+  async function loadPendingRE() {
+    try {
+      const { data } = await sb.from('realestate_listings').select('*').eq('status','pending').order('created_at', { ascending: false }).limit(50);
+      const area = $('re-list');
+      if (!data || !data.length) { area.innerHTML = '<div style="padding:20px;color:var(--ink-mute);text-align:center">אין נכסים ממתינים.</div>'; return; }
+      area.innerHTML = '<table class="adm-table"><thead><tr><th>כותרת</th><th>סוג</th><th>שכונה</th><th>טלפון</th><th></th></tr></thead><tbody>' +
+        data.map(l => `
+          <tr>
+            <td><div class="name">${esc(l.title)}</div><div class="meta">${esc(l.contact_name || '')}</div></td>
+            <td>${l.deal_type === 'sale' ? 'למכירה' : l.deal_type === 'rent' ? 'להשכרה' : 'פרויקט'}</td>
+            <td>${esc(l.neighborhood || '')}</td>
+            <td dir="ltr">${esc(l.contact_phone || '')}</td>
+            <td style="text-align:left">
+              <button class="mini-btn approve" onclick="approveItem('realestate_listings','${l.id}')">אישור</button>
+              <button class="mini-btn reject" onclick="rejectItem('realestate_listings','${l.id}')">דחייה</button>
+            </td>
+          </tr>`).join('') + '</tbody></table>';
+    } catch(e) { $('re-list').innerHTML = '<div style="color:var(--red);padding:20px">' + esc(e.message) + '</div>'; }
+  }
+
+  async function approveItem(table, id) {
+    await sb.from(table).update({ status: 'active' }).eq('id', id);
+    if (table === 'jobs') loadPendingJobs();
+    else loadPendingRE();
+    loadStats();
+  }
+  async function rejectItem(table, id) {
+    if (!confirm('לדחות?')) return;
+    await sb.from(table).update({ status: 'rejected', is_active: false }).eq('id', id);
+    if (table === 'jobs') loadPendingJobs();
+    else loadPendingRE();
+  }
+
+  async function loadForumPosts() {
+    try {
+      const { data } = await sb.from('forum_posts').select('*').order('created_at', { ascending: false }).limit(30);
+      const area = $('forum-list');
+      if (!data || !data.length) { area.innerHTML = '<div style="padding:20px;color:var(--ink-mute);text-align:center">אין פוסטים.</div>'; return; }
+      area.innerHTML = '<table class="adm-table"><thead><tr><th>כותרת</th><th>מחבר</th><th>תגובות</th><th>סטטוס</th><th></th></tr></thead><tbody>' +
+        data.map(p => `
+          <tr>
+            <td><div class="name">${esc(p.title)}</div></td>
+            <td>${esc(p.display_name || '')}</td>
+            <td>${p.replies_count || 0}</td>
+            <td>${p.is_active ? '<span class="status-pill status-approved">פעיל</span>' : '<span class="status-pill status-rejected">מוסתר</span>'}</td>
+            <td style="text-align:left">
+              <button class="mini-btn ${p.is_active?'reject':'approve'}" onclick="togglePost('${p.id}', ${!p.is_active})">${p.is_active ? 'הסתר' : 'הצג'}</button>
+            </td>
+          </tr>`).join('') + '</tbody></table>';
+    } catch(e) { $('forum-list').innerHTML = '<div style="color:var(--red);padding:20px">' + esc(e.message) + '</div>'; }
+  }
+  async function togglePost(id, active) {
+    await sb.from('forum_posts').update({ is_active: active }).eq('id', id);
+    loadForumPosts();
+  }
+
+  // ── NEWS ──
+  async function loadArticles() {
+    try {
+      const { data } = await sb.from('news_articles').select('*').order('published_at', { ascending: false }).limit(50);
+      const area = $('news-list');
+      if (!data || !data.length) { area.innerHTML = '<div style="padding:20px;color:var(--ink-mute);text-align:center">עדיין לא פורסמו כתבות.</div>'; return; }
+      area.innerHTML = '<table class="adm-table"><thead><tr><th>כותרת</th><th>קטגוריה</th><th>תאריך</th><th></th></tr></thead><tbody>' +
+        data.map(a => `
+          <tr>
+            <td><div class="name">${esc(a.title)}</div></td>
+            <td>${esc(a.category || '')}</td>
+            <td>${a.published_at ? new Date(a.published_at).toLocaleDateString('he-IL') : ''}</td>
+            <td style="text-align:left">
+              <button class="mini-btn" onclick="editArticle('${a.id}')">עריכה</button>
+              <a href="/article?id=${a.slug || a.id}" target="_blank" class="mini-btn">צפייה</a>
+            </td>
+          </tr>`).join('') + '</tbody></table>';
+    } catch(e) { $('news-list').innerHTML = '<div style="color:var(--ink-mute);padding:20px;text-align:center">טבלת news_articles לא קיימת עדיין.</div>'; }
+  }
+
+  function openNewArticle() {
+    $('art-id').value = '';
+    $('art-title').value = ''; $('art-excerpt').value = ''; $('art-content').value = '';
+    $('art-cover').value = ''; $('art-cat').value = 'news';
+    $('article-modal-title').textContent = 'כתבה חדשה';
+    $('article-modal').classList.add('active');
+  }
+  async function editArticle(id) {
+    const { data } = await sb.from('news_articles').select('*').eq('id', id).single();
+    if (!data) return;
+    $('art-id').value = id;
+    $('art-title').value = data.title || '';
+    $('art-excerpt').value = data.excerpt || '';
+    $('art-content').value = data.content || '';
+    $('art-cover').value = data.cover_image_url || '';
+    $('art-cat').value = data.category || 'news';
+    $('article-modal-title').textContent = 'עריכת כתבה';
+    $('article-modal').classList.add('active');
+  }
+  function closeArticleModal() { $('article-modal').classList.remove('active'); }
+
+  async function saveArticle() {
+    const errEl = $('art-err');
+    errEl.classList.remove('show');
+    const title = $('art-title').value.trim();
+    if (!title) { errEl.textContent = 'נא להזין כותרת'; errEl.classList.add('show'); return; }
+    const slug = title.toLowerCase().replace(/['"]/g,'').replace(/[^\w\u0590-\u05FF]+/g,'-').replace(/^-+|-+$/g,'').slice(0,80) + '-' + Math.random().toString(36).slice(2,6);
+    const payload = {
+      title, slug,
+      excerpt: $('art-excerpt').value.trim() || null,
+      content: $('art-content').value.trim() || null,
+      cover_image_url: $('art-cover').value.trim() || null,
+      category: $('art-cat').value,
+      is_published: true,
+      published_at: new Date().toISOString()
+    };
+    try {
+      const id = $('art-id').value;
+      if (id) await sb.from('news_articles').update(payload).eq('id', id);
+      else await sb.from('news_articles').insert(payload);
+      closeArticleModal();
+      loadArticles();
+    } catch(e) {
+      errEl.textContent = 'שגיאה: ' + e.message;
+      errEl.classList.add('show');
+    }
+  }
+
+  async function adminInit() {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) { $('login-view').style.display = ''; return; }
+    user = session.user;
+    $('user-email').textContent = user.email || '';
+
+    // Check admin
+    const { data: prof } = await sb.from('profiles').select('role').eq('id', user.id).maybeSingle();
+    if (!prof || prof.role !== 'admin') {
+      $('login-view').style.display = '';
+      $('login-view').querySelector('h2').textContent = 'אין הרשאות';
+      $('login-view').querySelector('p').textContent = 'המשתמש שלכם אינו מורשה לגשת לפאנל הניהול.';
+      $('login-view').querySelector('button').style.display = 'none';
+      return;
+    }
+    isAdmin = true;
+    $('dashboard-view').style.display = '';
+    loadStats();
+  }
+
+  // ════════════════ COUPONS ADMIN ════════════════
+  let allCoupons = [];
+  let businessesList = [];
+  let couponFilter = 'all';
+  let selectedCouponType = 'coupon';
+
+  async function loadCouponsAdmin() {
+    try {
+      // טען עסקים לדרופדאון
+      const { data: businesses } = await sb.from('businesses').select('id,name').order('name');
+      businessesList = businesses || [];
+      const sel = $('cp-business');
+      sel.innerHTML = '<option value="">— בחר עסק קיים או הזן ידנית למטה —</option>' +
+        businessesList.map(b => `<option value="${b.id}">${esc(b.name)}</option>`).join('');
+
+      // טען קופונים
+      const { data, error } = await sb.from('coupons').select('*').order('created_at', { ascending: false }).limit(200);
+      if (error) throw error;
+
+      allCoupons = data || [];
+
+      // סטטיסטיקות
+      const now = new Date();
+      const active = allCoupons.filter(c => c.is_active && c.status === 'active' && (!c.valid_until || new Date(c.valid_until) > now));
+      const expired = allCoupons.filter(c => c.valid_until && new Date(c.valid_until) < now);
+      const hot = allCoupons.filter(c => c.is_hot);
+      const totalUses = allCoupons.reduce((s, c) => s + (c.uses_count || 0), 0);
+
+      $('cp-active').textContent = fmt(active.length);
+      $('cp-expired').textContent = fmt(expired.length);
+      $('cp-hot').textContent = fmt(hot.length);
+      $('cp-uses').textContent = fmt(totalUses);
+
+      renderCoupons();
+    } catch(e) {
+      console.error('[coupons]', e);
+      $('coupons-list').innerHTML = `<div class="empty-state"><h3>שגיאה</h3><p>${esc(e.message)}</p></div>`;
+    }
+  }
+
+  function filterCoupons(f) {
+    couponFilter = f;
+    document.querySelectorAll('[id^="cp-f-"]').forEach(b => b.classList.remove('view'));
+    $('cp-f-' + f).classList.add('view');
+    renderCoupons();
+  }
+
+  function renderCoupons() {
+    const now = new Date();
+    let list = allCoupons;
+    if (couponFilter === 'active') list = list.filter(c => c.is_active && c.status === 'active' && (!c.valid_until || new Date(c.valid_until) > now));
+    if (couponFilter === 'hot') list = list.filter(c => c.is_hot);
+    if (couponFilter === 'featured') list = list.filter(c => c.is_featured);
+    if (couponFilter === 'expired') list = list.filter(c => c.valid_until && new Date(c.valid_until) < now);
+
+    if (!list.length) {
+      $('coupons-list').innerHTML = `
+        <div class="empty-state">
+          <div class="icon">🎟️</div>
+          <h3>אין קופונים</h3>
+          <p>${couponFilter === 'all' ? 'לחץ על "+ קופון חדש" להוספה ראשונה' : 'אין קופונים במסנן זה'}</p>
+        </div>`;
+      return;
+    }
+
+    const TYPE_LABELS = {
+      coupon: { name: 'קופון', class: 'coupon' },
+      sale: { name: 'מבצע', class: 'sale' },
+      benefit: { name: 'הטבה', class: 'benefit' },
+      flash: { name: 'פלאש', class: 'flash' },
+    };
+
+    $('coupons-list').innerHTML = list.map(c => {
+      const type = TYPE_LABELS[c.deal_type || 'coupon'] || TYPE_LABELS.coupon;
+      const isExpired = c.valid_until && new Date(c.valid_until) < now;
+      const pct = (c.original_price && c.discounted_price)
+        ? Math.round(((c.original_price - c.discounted_price) / c.original_price) * 100)
+        : c.discount_percent || 0;
+
+      return `
+        <div class="cp-row" style="${isExpired ? 'opacity:0.6' : ''}">
+          <div class="cp-icon">${c.image_url || c.icon_emoji || '🎟️'}</div>
+          <div class="cp-info">
+            <div class="cp-store">${esc(c.business_name || c.business_id || 'ללא עסק')}</div>
+            <div class="cp-title">${esc(c.title)}</div>
+            ${c.description ? `<div class="cp-meta"><span>${esc(c.description)}</span></div>` : ''}
+            <div class="cp-prices">
+              ${c.discounted_price ? `<span class="now">${c.discounted_price}₪</span>` : ''}
+              ${c.original_price ? `<span class="old">${c.original_price}₪</span>` : ''}
+              ${pct > 0 ? `<span style="color:var(--orange-dk);font-weight:900;margin-right:8px">-${pct}%</span>` : ''}
+            </div>
+            <div class="cp-meta" style="margin-top:6px">
+              ${c.valid_until ? `<span>📅 עד ${new Date(c.valid_until).toLocaleDateString('he-IL')}</span>` : ''}
+              ${c.uses_count ? `<span>🔥 ${c.uses_count} מימושים</span>` : ''}
+              ${c.usage_limit > 0 ? `<span>· מתוך ${c.usage_limit}</span>` : ''}
+            </div>
+          </div>
+          <div class="cp-actions">
+            <span class="cp-badge ${type.class}">${type.name}</span>
+            ${c.is_hot ? '<span class="cp-badge" style="background:var(--orange);color:#fff">🔥 חם</span>' : ''}
+            ${c.is_featured ? '<span class="cp-badge" style="background:var(--blue);color:#fff">⭐ מומלץ</span>' : ''}
+            ${isExpired ? '<span class="cp-badge" style="background:#666;color:#fff">פג תוקף</span>' : ''}
+            <button class="mini-btn" onclick="editCouponAdmin('${c.id}')">עריכה</button>
+            <button class="mini-btn reject" onclick="deleteCouponAdmin('${c.id}')">מחק</button>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  function selectCouponType(type) {
+    selectedCouponType = type;
+    document.querySelectorAll('.cp-type-btn').forEach(b =>
+      b.classList.toggle('active', b.dataset.type === type)
+    );
+  }
+
+  function openCouponEditor() {
+    $('cp-id').value = '';
+    $('cp-title').value = '';
+    $('cp-desc').value = '';
+    $('cp-emoji').value = '🎟️';
+    $('cp-price-new').value = '';
+    $('cp-price-old').value = '';
+    $('cp-until').value = '';
+    $('cp-limit').value = '0';
+    $('cp-business').value = '';
+    $('cp-business-manual').value = '';
+    $('cp-category').value = 'supermarket';
+    $('cp-hot').checked = false;
+    $('cp-featured').checked = false;
+    $('cp-err').style.display = 'none';
+    $('cp-editor-title').textContent = 'קופון חדש';
+    selectCouponType('coupon');
+    $('coupon-editor-modal').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+  }
+
+  async function editCouponAdmin(id) {
+    try {
+      const { data, error } = await sb.from('coupons').select('*').eq('id', id).single();
+      if (error) throw error;
+      $('cp-id').value = id;
+      $('cp-title').value = data.title || '';
+      $('cp-desc').value = data.description || '';
+      $('cp-emoji').value = data.image_url || data.icon_emoji || '🎟️';
+      $('cp-price-new').value = data.discounted_price || '';
+      $('cp-price-old').value = data.original_price || '';
+      $('cp-until').value = data.valid_until ? data.valid_until.slice(0, 10) : '';
+      $('cp-limit').value = data.usage_limit || 0;
+      $('cp-business').value = data.business_id || '';
+      $('cp-business-manual').value = data.business_id ? '' : (data.business_name || '');
+      $('cp-category').value = data.category || 'supermarket';
+      $('cp-hot').checked = !!data.is_hot;
+      $('cp-featured').checked = !!data.is_featured;
+      selectCouponType(data.deal_type || 'coupon');
+      $('cp-editor-title').textContent = 'עריכת קופון';
+      $('coupon-editor-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    } catch(e) { alert(e.message); }
+  }
+
+  function closeCouponEditor() {
+    $('coupon-editor-modal').style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
+  async function saveCouponAdmin() {
+    const errEl = $('cp-err');
+    errEl.style.display = 'none';
+
+    const title = $('cp-title').value.trim();
+    const businessId = $('cp-business').value || null;
+    const businessManual = $('cp-business-manual').value.trim();
+    const priceNew = parseFloat($('cp-price-new').value);
+    const priceOld = parseFloat($('cp-price-old').value);
+
+    if (!title) {
+      errEl.textContent = 'נא להזין שם מוצר/שירות';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (!businessId && !businessManual) {
+      errEl.textContent = 'נא לבחור עסק קיים או להזין שם ידנית';
+      errEl.style.display = 'block';
+      return;
+    }
+    if (isNaN(priceNew) || isNaN(priceOld) || priceOld <= priceNew) {
+      errEl.textContent = 'מחירים לא תקינים (המחיר הישן חייב להיות גבוה מהחדש)';
+      errEl.style.display = 'block';
+      return;
+    }
+
+    const businessName = businessId
+      ? (businessesList.find(b => b.id === businessId)?.name || '')
+      : businessManual;
+
+    const pct = Math.round(((priceOld - priceNew) / priceOld) * 100);
+
+    const payload = {
+      business_id: businessId,
+      business_name: businessName,
+      title,
+      description: $('cp-desc').value.trim() || null,
+      image_url: $('cp-emoji').value.trim() || '🎟️',
+      original_price: priceOld,
+      discounted_price: priceNew,
+      discount_percent: pct,
+      category: $('cp-category').value,
+      deal_type: selectedCouponType,
+      valid_until: $('cp-until').value || null,
+      usage_limit: parseInt($('cp-limit').value || '0'),
+      is_active: true,
+      is_hot: $('cp-hot').checked,
+      is_featured: $('cp-featured').checked,
+      status: 'active'
+    };
+
+    const btn = $('cp-submit');
+    btn.disabled = true;
+    btn.textContent = 'שומר...';
+
+    try {
+      const id = $('cp-id').value;
+      let res;
+      if (id) {
+        res = await sb.from('coupons').update(payload).eq('id', id);
+      } else {
+        res = await sb.from('coupons').insert(payload);
+      }
+      if (res.error) throw res.error;
+      closeCouponEditor();
+      loadCouponsAdmin();
+    } catch(e) {
+      errEl.textContent = 'שגיאה: ' + e.message;
+      errEl.style.display = 'block';
+    } finally {
+      btn.disabled = false;
+      btn.textContent = 'שמירה';
+    }
+  }
+
+  async function deleteCouponAdmin(id) {
+    if (!confirm('למחוק את הקופון? פעולה זו לא ניתנת לשחזור.')) return;
+    try {
+      await sb.from('coupons').delete().eq('id', id);
+      loadCouponsAdmin();
+    } catch(e) { alert(e.message); }
+  }
+
+  window.loadCouponsAdmin = loadCouponsAdmin;
+  window.filterCoupons = filterCoupons;
+  window.selectCouponType = selectCouponType;
+  window.openCouponEditor = openCouponEditor;
+  window.closeCouponEditor = closeCouponEditor;
+  window.editCouponAdmin = editCouponAdmin;
+  window.saveCouponAdmin = saveCouponAdmin;
+  window.deleteCouponAdmin = deleteCouponAdmin;
+
+  window.loginGoogle = loginGoogle;
+  window.logout = logout;
+  window.setTab = setTab;
+  window.approveBiz = approveBiz;
+  window.approvePro = approvePro;
+  window.rejectSignup = rejectSignup;
+  window.approveItem = approveItem;
+  window.rejectItem = rejectItem;
+  window.togglePost = togglePost;
+  window.openNewArticle = openNewArticle;
+  window.closeArticleModal = closeArticleModal;
+  window.saveArticle = saveArticle;
+  window.editArticle = editArticle;
+  window.viewBizDetails = viewBizDetails;
+  window.filterNewsletter = filterNewsletter;
+  window.exportNewsletter = exportNewsletter;
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) adminInit(); else window.addEventListener('load', adminInit, {once:true}); });
+  else { if(window.supabase) adminInit(); else window.addEventListener('load', adminInit, {once:true}); }
+</script>
+</body>
+</html>

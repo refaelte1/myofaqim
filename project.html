@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>אופקים שלי — סטטוס הפרויקט</title>
+<meta name="description" content="סטטוס פיתוח של אופקים שלי, רשימת מודולים פעילים, ומפת הדרכים שלנו.">
+<link rel="canonical" href="https://myofaqim.co.il/project">
+<meta name="robots" content="noindex">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+.status-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px;margin-bottom:48px}
+.status-card{background:var(--paper);border:1px solid var(--line);padding:24px 26px;display:flex;flex-direction:column;gap:8px}
+.status-card.live{border-right:3px solid var(--green)}
+.status-card.beta{border-right:3px solid var(--gold)}
+.status-card.planned{border-right:3px solid var(--ink-mute);opacity:0.85}
+.status-label{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;display:inline-block;padding:4px 10px;border-radius:2px;align-self:flex-start}
+.status-label.live{background:rgba(26,122,74,0.1);color:var(--green)}
+.status-label.beta{background:rgba(200,169,94,0.15);color:var(--gold-dk)}
+.status-label.planned{background:var(--cream-warm);color:var(--ink-mute)}
+.status-card h3{font-family:var(--sans);font-size:20px;font-weight:700;color:var(--navy);letter-spacing:-0.01em}
+.status-card p{font-size:13px;color:var(--ink-soft);line-height:1.65}
+.status-card a{font-size:12px;color:var(--gold-dk);font-weight:700;letter-spacing:0.5px;margin-top:auto;padding-top:10px;border-top:1px solid var(--line-soft);text-transform:uppercase}
+
+.roadmap-item{display:flex;gap:20px;padding:20px 0;border-bottom:1px solid var(--line-soft)}
+.roadmap-item:last-child{border-bottom:none}
+.roadmap-quarter{font-family:var(--sans);font-size:16px;font-weight:900;color:var(--gold-dk);letter-spacing:-0.01em;min-width:80px;flex-shrink:0}
+.roadmap-content h4{font-family:var(--sans);font-size:17px;color:var(--navy);font-weight:700;margin-bottom:6px}
+.roadmap-content p{font-size:13px;color:var(--ink-soft);line-height:1.7}
+
+.stack-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:40px}
+.stack-item{background:var(--paper);border:1px solid var(--line);padding:18px 16px;text-align:center}
+.stack-item .name{font-family:var(--sans);font-weight:700;color:var(--navy);font-size:15px}
+.stack-item .role{font-size:11px;color:var(--ink-mute);letter-spacing:0.5px;margin-top:4px}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <span>סטטוס פרויקט</span></div>
+    <h1>סטטוס <em>הפרויקט</em></h1>
+    <p>מה כבר עובד, מה בפיתוח, ומה בתכנון. שקיפות מלאה לתושבים ולמשתפי הפעולה.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <section style="margin-bottom:60px">
+      <div class="section-head" style="margin-bottom:32px;text-align:right">
+        <h2 style="font-family:var(--sans);font-size:28px;color:var(--navy);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px">מודולים <em style="font-style:italic;color:var(--gold-dk)">פעילים</em></h2>
+        <p style="color:var(--ink-soft);font-size:15px">כל מה שניתן להשתמש בו כבר עכשיו.</p>
+      </div>
+
+      <div class="status-grid">
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>אלפון עסקים</h3>
+          <p>אינדקס מלא עם חיפוש, סינון לפי קטגוריות, ודפי עסק מפורטים עם JSON-LD.</p>
+          <a href="/businesses">לאלפון ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>בעלי מקצוע</h3>
+          <p>אינדקס בעלי מקצוע מקומיים, כולל זמינות בזמן אמת ומערכת לידים ישירה.</p>
+          <a href="/professionals">לאינדקס ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>זמני תפילה</h3>
+          <p>14 זמני תפילה יומיים מחושבים לעיר אופקים, כולל זמני שבת ופרשת השבוע.</p>
+          <a href="/zmanim">לזמנים ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>קופונים ומבצעים</h3>
+          <p>מערכת קופונים דינמית עם מבצעי השבוע, סופרמרקטים וחנויות. מעקב ניצולים.</p>
+          <a href="/deals">למבצעים ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>פורום תושבים</h3>
+          <p>דיונים בקטגוריות (כללי, המלצות, עזרה הדדית, יד שנייה ועוד).</p>
+          <a href="/forum">לפורום ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>נדל"ן</h3>
+          <p>זירה מלאה לדירות למכירה, להשכרה ופרויקטים חדשים. תמיכה במתווכים וקבלנים.</p>
+          <a href="/realestate">לזירה ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>לוח דרושים</h3>
+          <p>משרות פנויות בעיר וחיפושי עבודה. בדיקת זכאות אוטומטית למעסיקים.</p>
+          <a href="/jobs">ללוח ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>אזור עסקים</h3>
+          <p>דשבורד לבעלי עסקים — ניהול פרטים, יצירת קופונים, מעקב סטטיסטיקות ולידים.</p>
+          <a href="/biz">לדשבורד ←</a>
+        </div>
+
+        <div class="status-card live">
+          <span class="status-label live">פעיל</span>
+          <h3>חדשות העיר</h3>
+          <p>מערכת חדשות עם כתבות מקצועיות, תמיכה ב-Markdown, ושיתופים ברשתות.</p>
+          <a href="/news">לחדשות ←</a>
+        </div>
+
+        <div class="status-card beta">
+          <span class="status-label beta">בטא</span>
+          <h3>שירותי קהילה</h3>
+          <p>אלפון של שירותי העירייה, קופות חולים, בנקים וחירום. תוכן בהשלמה.</p>
+          <a href="/public-services">לאלפון ←</a>
+        </div>
+
+        <div class="status-card beta">
+          <span class="status-label beta">בטא</span>
+          <h3>אירועי קהילה</h3>
+          <p>לוח אירועים מתחדש לכל מה שקורה בעיר. ההזנה ידנית בשלב זה.</p>
+          <a href="/community-events">ללוח ←</a>
+        </div>
+
+        <div class="status-card beta">
+          <span class="status-label beta">בטא</span>
+          <h3>קבוצות וואטסאפ</h3>
+          <p>אינדקס קבוצות וואטסאפ פתוחות לתושבי העיר. נבנה תוך כדי תנועה.</p>
+          <a href="/whatsapp-groups">לאינדקס ←</a>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom:60px">
+      <div class="section-head" style="margin-bottom:32px;text-align:right">
+        <h2 style="font-family:var(--sans);font-size:28px;color:var(--navy);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px">בתכנון <em style="font-style:italic;color:var(--gold-dk)">בקרוב</em></h2>
+        <p style="color:var(--ink-soft);font-size:15px">המודולים הבאים בתכנון.</p>
+      </div>
+
+      <div class="status-grid">
+        <div class="status-card planned">
+          <span class="status-label planned">בתכנון</span>
+          <h3>אינדקס בתי כנסת</h3>
+          <p>פירוט מלא של בתי הכנסת בעיר — נוסחים, זמני תפילה, מנהגים ופרטי קשר.</p>
+        </div>
+
+        <div class="status-card planned">
+          <span class="status-label planned">בתכנון</span>
+          <h3>מערכת תשלומים</h3>
+          <p>חיוב אוטומטי למסלולים בתשלום עם Cardcom / Tranzila.</p>
+        </div>
+
+        <div class="status-card planned">
+          <span class="status-label planned">בתכנון</span>
+          <h3>אפליקציית PWA</h3>
+          <p>התקנה למסך הבית, התראות Push למבצעים, ושימוש במצב Offline.</p>
+        </div>
+
+        <div class="status-card planned">
+          <span class="status-label planned">בתכנון</span>
+          <h3>דירוגים מהלקוחות</h3>
+          <p>מערכת דירוגים וביקורות לעסקים ובעלי מקצוע, עם מערכת אישור.</p>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom:60px">
+      <div class="section-head" style="margin-bottom:24px;text-align:right">
+        <h2 style="font-family:var(--sans);font-size:28px;color:var(--navy);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px">מפת <em style="font-style:italic;color:var(--gold-dk)">דרכים</em></h2>
+        <p style="color:var(--ink-soft);font-size:15px">היעדים הקרובים שלנו.</p>
+      </div>
+
+      <div class="dash-card" style="background:var(--paper);border:1px solid var(--line);padding:32px 36px">
+        <div class="roadmap-item">
+          <div class="roadmap-quarter">Q2 2026</div>
+          <div class="roadmap-content">
+            <h4>השקה רשמית</h4>
+            <p>הוספת תוכן ראשוני — בתי כנסת, מקוואות, שירותי דת, אירועים. גיוס 50 העסקים הראשונים.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-quarter">Q3 2026</div>
+          <div class="roadmap-content">
+            <h4>מערכת תשלומים</h4>
+            <p>הטמעת חיוב אוטומטי, ניהול חבילות וחידושים. השקת מסע פרסום מקומי.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-quarter">Q4 2026</div>
+          <div class="roadmap-content">
+            <h4>אפליקציית PWA</h4>
+            <p>גרסת אפליקציה למסך הבית עם התראות Push למבצעים ולעדכונים חשובים.</p>
+          </div>
+        </div>
+        <div class="roadmap-item">
+          <div class="roadmap-quarter">2027</div>
+          <div class="roadmap-content">
+            <h4>הרחבה לערים שכנות</h4>
+            <p>הרחבת המודל לערים נוספות בנגב — נתיבות, אזור ועוד.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="margin-bottom:60px">
+      <div class="section-head" style="margin-bottom:24px;text-align:right">
+        <h2 style="font-family:var(--sans);font-size:28px;color:var(--navy);font-weight:900;letter-spacing:-0.02em;margin-bottom:8px">סטאק <em style="font-style:italic;color:var(--gold-dk)">טכנולוגי</em></h2>
+        <p style="color:var(--ink-soft);font-size:15px">הכלים שמפעילים את האתר.</p>
+      </div>
+
+      <div class="stack-grid">
+        <div class="stack-item"><div class="name">Netlify</div><div class="role">אירוח ופריסה</div></div>
+        <div class="stack-item"><div class="name">Supabase</div><div class="role">DB + Auth</div></div>
+        <div class="stack-item"><div class="name">Make.com</div><div class="role">אוטומציות</div></div>
+        <div class="stack-item"><div class="name">Resend</div><div class="role">שליחת אימייל</div></div>
+        <div class="stack-item"><div class="name">PostgreSQL</div><div class="role">בסיס נתונים</div></div>
+        <div class="stack-item"><div class="name">JavaScript</div><div class="role">לוגיקה</div></div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+</body>
+</html>

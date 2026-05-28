@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-QKGZ7EHLP4',{anonymize_ip:true});</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>משחקים על אופקים | אופקים שלי</title>
+<meta name="description" content="משחקי טריוויה, תפזורת, זהה את המקום וחידות על העיר אופקים. שחק, נצח ועלה ללוח התוצאות השבועי!">
+<meta property="og:title" content="משחקים על אופקים - שחקו ונצחו!">
+<meta property="og:description" content="טריוויה, חידות ותפזורות על אופקים. לוח תוצאות שבועי וקופונים לזוכים.">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+<link rel="canonical" href="https://myofaqim.co.il/games">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: #0F1E3D; min-height: 100vh; color: #fff; }
+
+  /* ── HERO ── */
+  .games-hero {
+    background: linear-gradient(135deg, #1A2E5C 0%, #243B6E 50%, #2563EB 100%);
+    color: #fff; padding: 36px 20px 80px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .games-hero::before {
+    content: ''; position: absolute; top: -150px; left: 50%;
+    transform: translateX(-50%); width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(245,158,11,0.22) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .games-hero::after {
+    content: ''; position: absolute; bottom: -50px; right: -50px;
+    width: 250px; height: 250px;
+    background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 70%);
+  }
+  .games-hero-inner {
+    max-width: 720px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .games-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    padding: 6px 16px; border-radius: 100px;
+    font-size: 11px; font-weight: 800; letter-spacing: 2px;
+    color: #F59E0B; margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+  .games-hero h1 {
+    font-size: clamp(28px, 6vw, 40px); font-weight: 900;
+    margin: 0 0 8px; letter-spacing: -0.02em;
+    background: linear-gradient(135deg, #fff 0%, #F59E0B 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .games-hero p { opacity: 0.9; font-size: 15px; margin: 0 0 20px; line-height: 1.6; }
+  .games-stats {
+    display: inline-flex; gap: 24px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 12px 24px; border-radius: 100px;
+    margin-top: 6px; flex-wrap: wrap; justify-content: center;
+  }
+  .games-stats .item { font-size: 13px; font-weight: 700; color: rgba(255,255,255,0.95); }
+  .games-stats .item strong { color: #F59E0B; font-weight: 900; font-size: 16px; margin-left: 4px; }
+
+  /* ── CONTAINER ── */
+  .games-wrap { max-width: 1000px; margin: -50px auto 80px; padding: 0 16px; position: relative; z-index: 2; }
+
+  /* ── GAME CARDS GRID ── */
+  .games-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 16px; margin-bottom: 30px;
+  }
+  .game-card {
+    background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 100%);
+    border-radius: 20px; padding: 24px;
+    cursor: pointer; transition: all 0.3s;
+    position: relative; overflow: hidden;
+    border: 1.5px solid rgba(245,158,11,0.2);
+    color: #fff;
+    text-decoration: none;
+    display: flex; flex-direction: column; gap: 12px;
+    min-height: 200px;
+  }
+  .game-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 40px rgba(0,0,0,0.4);
+    border-color: rgba(245,158,11,0.5);
+  }
+  .game-card.locked {
+    background: linear-gradient(135deg, #374151 0%, #4B5563 100%);
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  .game-card.locked:hover { transform: none; box-shadow: none; }
+  .game-card::before {
+    content: ''; position: absolute;
+    top: -60px; right: -60px; width: 180px; height: 180px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+  }
+  .game-card-icon {
+    width: 56px; height: 56px; border-radius: 16px;
+    background: rgba(245,158,11,0.2); color: #F59E0B;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; position: relative;
+  }
+  .game-card.locked .game-card-icon {
+    background: rgba(148,163,184,0.2); color: #94A3B8;
+  }
+  .game-card-title {
+    font-size: 19px; font-weight: 900; margin: 0; line-height: 1.2;
+    position: relative;
+  }
+  .game-card-desc {
+    font-size: 13px; opacity: 0.85; line-height: 1.5;
+    flex: 1; position: relative;
+  }
+  .game-card-foot {
+    display: flex; gap: 8px; align-items: center;
+    font-size: 11px; font-weight: 700; position: relative;
+  }
+  .play-tag {
+    background: #F59E0B; color: #1A2E5C;
+    padding: 4px 12px; border-radius: 100px;
+    font-weight: 900; letter-spacing: 0.5px;
+  }
+  .lock-tag {
+    background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.7);
+    padding: 4px 12px; border-radius: 100px;
+    font-weight: 700;
+  }
+  .difficulty-dots { display: inline-flex; gap: 3px; }
+  .difficulty-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+  }
+  .difficulty-dots span.active { background: #F59E0B; }
+
+  /* ── LEADERBOARD ── */
+  .leaderboard-section {
+    background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, rgba(37,99,235,0.05) 100%);
+    border: 1px solid rgba(245,158,11,0.2);
+    border-radius: 22px; padding: 24px;
+    margin-bottom: 20px;
+  }
+  .lb-head {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; margin-bottom: 16px; flex-wrap: wrap;
+  }
+  .lb-head h2 {
+    font-size: 18px; font-weight: 900; margin: 0;
+    display: flex; align-items: center; gap: 10px;
+    color: #fff;
+  }
+  .lb-head h2 .crown {
+    width: 32px; height: 32px; border-radius: 10px;
+    background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+    color: #1A2E5C;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .lb-period {
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.3);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 800; color: #F59E0B;
+    letter-spacing: 0.5px;
+  }
+  .lb-list { display: flex; flex-direction: column; gap: 6px; }
+  .lb-row {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px; padding: 10px 16px;
+    display: flex; align-items: center; gap: 12px;
+    color: #fff;
+  }
+  .lb-row.top1 {
+    background: linear-gradient(135deg, rgba(245,158,11,0.2) 0%, rgba(217,119,6,0.1) 100%);
+    border-color: rgba(245,158,11,0.4);
+  }
+  .lb-row.top2 { background: rgba(192,192,192,0.1); border-color: rgba(192,192,192,0.2); }
+  .lb-row.top3 { background: rgba(205,127,50,0.1); border-color: rgba(205,127,50,0.2); }
+  .lb-rank {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.7);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 13px;
+    flex-shrink: 0;
+  }
+  .lb-row.top1 .lb-rank { background: #F59E0B; color: #1A2E5C; }
+  .lb-row.top2 .lb-rank { background: #C0C0C0; color: #1A2E5C; }
+  .lb-row.top3 .lb-rank { background: #CD7F32; color: #fff; }
+  .lb-name { flex: 1; font-size: 14px; font-weight: 700; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lb-game { font-size: 11px; color: rgba(255,255,255,0.55); }
+  .lb-score {
+    background: rgba(245,158,11,0.15); color: #F59E0B;
+    padding: 4px 12px; border-radius: 100px;
+    font-weight: 900; font-size: 13px;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .lb-empty { padding: 30px; text-align: center; color: rgba(255,255,255,0.5); font-size: 13px; }
+
+  /* ── PRIZES SECTION ── */
+  .prize-banner {
+    background: linear-gradient(135deg, rgba(220,38,38,0.15) 0%, rgba(245,158,11,0.1) 100%);
+    border: 1px solid rgba(245,158,11,0.3);
+    border-radius: 16px; padding: 18px 22px;
+    margin-bottom: 16px;
+    display: flex; align-items: center; gap: 14px;
+    color: #fff;
+  }
+  .prize-banner .icon {
+    width: 44px; height: 44px; border-radius: 12px;
+    background: linear-gradient(135deg, #DC2626 0%, #F59E0B 100%);
+    color: #fff; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .prize-banner .text { flex: 1; }
+  .prize-banner .title { font-size: 15px; font-weight: 900; margin-bottom: 3px; }
+  .prize-banner .sub { font-size: 12px; opacity: 0.8; line-height: 1.4; }
+
+  @media (max-width: 480px) {
+    .games-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+    .game-card { padding: 18px; min-height: 180px; }
+    .game-card-title { font-size: 15px; }
+    .game-card-desc { font-size: 11px; }
+    .game-card-icon { width: 44px; height: 44px; }
+    .games-hero { padding: 28px 16px 70px; }
+    .leaderboard-section { padding: 18px; }
+    .games-stats { gap: 14px; padding: 10px 18px; }
+    .games-stats .item { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="games-hero">
+    <div class="games-hero-inner">
+      <div class="games-eyebrow">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        משחקים על העיר
+      </div>
+      <h1>שחק. נצח. תכיר את אופקים.</h1>
+      <p>טריוויה, חידות ותפזורות על העיר שלנו. עלה ללוח השבועי וקבל קופונים אמיתיים.</p>
+      <div class="games-stats">
+        <div class="item">משחקים<strong id="stat-games">3</strong></div>
+        <div class="item">שחקנים<strong id="stat-players">—</strong></div>
+        <div class="item">השבוע<strong id="stat-week">—</strong></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="games-wrap">
+
+    <!-- Prize Banner -->
+    <div class="prize-banner">
+      <div class="icon">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+        </svg>
+      </div>
+      <div class="text">
+        <div class="title">פרסים שבועיים לזוכים!</div>
+        <div class="sub">3 הראשונים בלוח השבועי מקבלים קופונים מעסקים מקומיים. תוצאות מתאפסות כל יום ראשון.</div>
+      </div>
+    </div>
+
+    <!-- Games Grid -->
+    <div class="games-grid">
+
+      <a href="/games-trivia" class="game-card">
+        <div class="game-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+        <h3 class="game-card-title">טריוויה אופקים</h3>
+        <p class="game-card-desc">20 שאלות על תולדות העיר, גאוגרפיה, אישים ואירועים</p>
+        <div class="game-card-foot">
+          <span class="play-tag">שחק עכשיו</span>
+          <span class="difficulty-dots"><span class="active"></span><span class="active"></span><span></span></span>
+        </div>
+      </a>
+
+      <a href="/games-wordsearch" class="game-card">
+        <div class="game-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <line x1="9" y1="3" x2="9" y2="21"/>
+            <line x1="15" y1="3" x2="15" y2="21"/>
+            <line x1="3" y1="9" x2="21" y2="9"/>
+            <line x1="3" y1="15" x2="21" y2="15"/>
+          </svg>
+        </div>
+        <h3 class="game-card-title">תפזורת מילים</h3>
+        <p class="game-card-desc">מצא 10 מקומות באופקים בלוח אותיות 12×12</p>
+        <div class="game-card-foot">
+          <span class="play-tag">שחק עכשיו</span>
+          <span class="difficulty-dots"><span class="active"></span><span class="active"></span><span></span></span>
+        </div>
+      </a>
+
+      <a href="/games-identify" class="game-card">
+        <div class="game-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+            <circle cx="12" cy="10" r="3"/>
+          </svg>
+        </div>
+        <h3 class="game-card-title">זהה את המקום</h3>
+        <p class="game-card-desc">תמונה מהעיר ו-4 אפשרויות - איזה מקום זה?</p>
+        <div class="game-card-foot">
+          <span class="play-tag">שחק עכשיו</span>
+          <span class="difficulty-dots"><span class="active"></span><span class="active"></span><span class="active"></span></span>
+        </div>
+      </a>
+
+      <div class="game-card locked">
+        <div class="game-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <path d="M12 8v4"/>
+            <path d="M12 16h.01"/>
+          </svg>
+        </div>
+        <h3 class="game-card-title">מצא את ההבדלים</h3>
+        <p class="game-card-desc">2 תמונות, מצא 5 הבדלים בכמה שיותר מהר</p>
+        <div class="game-card-foot">
+          <span class="lock-tag">בקרוב</span>
+        </div>
+      </div>
+
+      <div class="game-card locked">
+        <div class="game-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="7"/>
+            <rect x="14" y="3" width="7" height="7"/>
+            <rect x="14" y="14" width="7" height="7"/>
+            <rect x="3" y="14" width="7" height="7"/>
+          </svg>
+        </div>
+        <h3 class="game-card-title">פאזל תמונה</h3>
+        <p class="game-card-desc">חבר את הפאזל של תמונה מאופקים</p>
+        <div class="game-card-foot">
+          <span class="lock-tag">בקרוב</span>
+        </div>
+      </div>
+
+      <div class="game-card locked">
+        <div class="game-card-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2 L15.09 8.26 L22 9.27 L17 14.14 L18.18 21.02 L12 17.77 L5.82 21.02 L7 14.14 L2 9.27 L8.91 8.26 Z"/>
+          </svg>
+        </div>
+        <h3 class="game-card-title">חידון יומי</h3>
+        <p class="game-card-desc">שאלה חדשה כל יום, 7 ימים רצוף = פרס</p>
+        <div class="game-card-foot">
+          <span class="lock-tag">בקרוב</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Weekly Leaderboard -->
+    <div class="leaderboard-section">
+      <div class="lb-head">
+        <h2>
+          <div class="crown">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 4l3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14"/>
+            </svg>
+          </div>
+          טופ 10 השבוע
+        </h2>
+        <span class="lb-period">7 הימים האחרונים</span>
+      </div>
+      <div class="lb-list" id="leaderboard">
+        <div class="lb-empty">טוען...</div>
+      </div>
+    </div>
+
+  </div>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+let sb = null;
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+const GAME_LABELS = {
+  trivia: 'טריוויה',
+  wordsearch: 'תפזורת',
+  identify_place: 'זהה מקום',
+  differences: 'הבדלים',
+  puzzle: 'פאזל'
+};
+
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  try {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    await Promise.all([loadLeaderboard(), loadStats()]);
+  } catch (e) {
+    console.error('Games hub error:', e);
+    $('leaderboard').innerHTML = '<div class="lb-empty">לא ניתן לטעון את לוח התוצאות</div>';
+  }
+}
+
+async function loadStats() {
+  try {
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    // סה"כ שחקנים ייחודיים
+    const { data: allScores } = await sb.from('game_scores').select('user_id, created_at');
+    if (allScores) {
+      const uniqueUsers = new Set(allScores.filter(s => s.user_id).map(s => s.user_id));
+      $('stat-players').textContent = uniqueUsers.size;
+      const weekly = allScores.filter(s => s.created_at >= weekAgo);
+      $('stat-week').textContent = weekly.length;
+    }
+  } catch (e) {
+    console.warn('Stats:', e);
+  }
+}
+
+async function loadLeaderboard() {
+  try {
+    const weekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    const { data, error } = await sb.from('game_scores')
+      .select('*')
+      .gte('created_at', weekAgo)
+      .order('score', { ascending: false })
+      .limit(10);
+
+    if (error) throw error;
+
+    if (!data || data.length === 0) {
+      $('leaderboard').innerHTML = `
+        <div class="lb-empty">
+          עוד לא היו משחקים השבוע.<br>
+          <strong style="color:#F59E0B">תהיה הראשון!</strong>
+        </div>`;
+      return;
+    }
+
+    $('leaderboard').innerHTML = data.map((row, idx) => {
+      const rank = idx + 1;
+      const topClass = rank === 1 ? 'top1' : rank === 2 ? 'top2' : rank === 3 ? 'top3' : '';
+      const name = row.user_name || 'אורח';
+      const game = GAME_LABELS[row.game_type] || row.game_type;
+      return `
+        <div class="lb-row ${topClass}">
+          <div class="lb-rank">${rank}</div>
+          <div class="lb-name">
+            ${esc(name)}
+            <div class="lb-game">${esc(game)}${row.difficulty ? ' · ' + esc(row.difficulty) : ''}</div>
+          </div>
+          <div class="lb-score">${row.score}${row.max_score ? '/' + row.max_score : ''}</div>
+        </div>`;
+    }).join('');
+  } catch (e) {
+    console.error('Leaderboard:', e);
+    $('leaderboard').innerHTML = '<div class="lb-empty">שגיאה בטעינה</div>';
+  }
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>

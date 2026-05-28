@@ -1,0 +1,1425 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>ניהול עסקים | אדמין | אופקים שלי</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, var(--cream) 0%, #FFFFFF 100%); }
+
+  .admin-wrap { max-width: 1080px; margin: 30px auto; padding: 0 16px; }
+  .admin-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff; padding: 24px 28px; border-radius: 20px;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap;
+  }
+  .admin-hero h1 { font-size: 22px; font-weight: 900; margin: 0; flex: 1; min-width: 200px; }
+  .admin-tabs { display: flex; gap: 6px; background: rgba(255,255,255,0.1); padding: 4px; border-radius: 100px; }
+  .admin-tab {
+    background: transparent; border: none; color: rgba(255,255,255,0.7);
+    padding: 8px 16px; border-radius: 100px; cursor: pointer;
+    font-family: inherit; font-weight: 800; font-size: 13px;
+  }
+  .admin-tab.active { background: var(--orange); color: var(--navy); }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    background: #fff; border-radius: 16px; padding: 14px 18px;
+    margin-bottom: 18px; display: flex; gap: 12px; align-items: center;
+    box-shadow: 0 2px 8px rgba(26,46,92,0.06); flex-wrap: wrap;
+  }
+  .toolbar input {
+    flex: 1; min-width: 200px;
+    padding: 10px 14px; border: 1.5px solid var(--line);
+    border-radius: 10px; font-family: inherit; font-size: 14px;
+  }
+  .toolbar input:focus { outline: none; border-color: var(--blue); }
+  .toolbar select {
+    padding: 10px 14px; border: 1.5px solid var(--line);
+    border-radius: 10px; font-family: inherit; font-size: 14px; background: #fff;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+    color: var(--navy); border: none;
+    padding: 10px 22px; border-radius: 10px;
+    font-family: inherit; font-weight: 900; font-size: 14px;
+    cursor: pointer; display: flex; align-items: center; gap: 6px;
+  }
+  .btn-primary:hover { transform: translateY(-1px); }
+
+  /* ── Stats ── */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 18px; }
+  .stat-box {
+    background: #fff; border-radius: 12px; padding: 14px 18px;
+    box-shadow: 0 2px 8px rgba(26,46,92,0.06);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .stat-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .stat-icon.total { background: rgba(37,99,235,0.1); color: var(--blue); }
+  .stat-icon.verified { background: rgba(101,163,13,0.1); color: var(--green); }
+  .stat-icon.pending { background: rgba(245,158,11,0.1); color: var(--orange-dk); }
+  .stat-icon.featured { background: rgba(124,58,237,0.1); color: #7C3AED; }
+  .stat-num { font-size: 22px; font-weight: 900; color: var(--navy); line-height: 1; font-variant-numeric: tabular-nums; }
+  .stat-lbl { font-size: 11px; color: var(--ink-soft); font-weight: 700; margin-top: 3px; }
+
+  /* ── Business List ── */
+  .biz-list { display: grid; gap: 10px; }
+  .biz-row {
+    background: #fff; border-radius: 14px; padding: 14px 18px;
+    display: flex; gap: 14px; align-items: center;
+    box-shadow: 0 2px 8px rgba(26,46,92,0.06); border: 1px solid var(--line);
+    transition: all 0.15s;
+  }
+  .biz-row:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(26,46,92,0.1); }
+  .biz-thumb {
+    width: 52px; height: 52px; border-radius: 12px;
+    background: linear-gradient(135deg, var(--navy), var(--blue));
+    color: var(--orange); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; font-weight: 900; overflow: hidden;
+  }
+  .biz-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .biz-info { flex: 1; min-width: 0; }
+  .biz-name {
+    font-size: 15px; font-weight: 900; color: var(--navy);
+    margin: 0 0 4px;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .biz-meta { font-size: 12px; color: var(--ink-soft); display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    padding: 2px 8px; border-radius: 6px;
+    font-size: 10px; font-weight: 800; letter-spacing: 0.5px;
+  }
+  .badge.verified { background: rgba(101,163,13,0.1); color: var(--green); }
+  .badge.featured { background: rgba(245,158,11,0.1); color: var(--orange-dk); }
+  .badge.pending { background: rgba(94,94,94,0.1); color: var(--ink-soft); }
+  .badge.inactive { background: rgba(220,38,38,0.1); color: #DC2626; }
+
+  .biz-actions { display: flex; gap: 6px; flex-shrink: 0; }
+  .icon-btn {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--cream); border: 1px solid var(--line);
+    color: var(--navy); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .icon-btn:hover { border-color: var(--blue); color: var(--blue); }
+  .icon-btn.danger:hover { border-color: #DC2626; color: #DC2626; }
+
+  /* ── EDITOR MODAL ── */
+  .editor-overlay {
+    position: fixed; inset: 0; background: rgba(15,30,61,0.7);
+    backdrop-filter: blur(6px); z-index: 999;
+    display: none; align-items: center; justify-content: center; padding: 16px;
+    overflow-y: auto;
+  }
+  .editor-overlay.active { display: flex; }
+  .editor-card {
+    background: #fff; border-radius: 20px;
+    width: 100%; max-width: 760px; max-height: 92vh;
+    overflow-y: auto; padding: 0;
+    position: relative;
+  }
+  .editor-head {
+    position: sticky; top: 0; z-index: 5;
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff; padding: 18px 24px;
+    border-radius: 20px 20px 0 0;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .editor-head h2 { font-size: 18px; font-weight: 900; margin: 0; flex: 1; }
+  .editor-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    background: rgba(255,255,255,0.1); border: none;
+    color: #fff; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Tab Navigation in Editor ── */
+  .editor-tabs {
+    background: #fff; padding: 0 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 4px; overflow-x: auto;
+    position: sticky; top: 65px; z-index: 4;
+  }
+  .editor-tabs::-webkit-scrollbar { display: none; }
+  .editor-tab {
+    background: transparent; border: none; cursor: pointer;
+    padding: 14px 14px 12px; border-bottom: 3px solid transparent;
+    font-family: inherit; font-weight: 700; font-size: 13px;
+    color: var(--ink-soft); white-space: nowrap;
+  }
+  .editor-tab.active { color: var(--navy); border-bottom-color: var(--orange); }
+
+  .editor-body { padding: 24px; }
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  /* ── Form Fields ── */
+  .field-group { margin-bottom: 14px; }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .field-group label {
+    display: block; font-size: 12px; font-weight: 800;
+    color: var(--navy); margin-bottom: 6px;
+    letter-spacing: 0.5px;
+  }
+  .field-group small { display: block; font-size: 11px; color: var(--ink-mute); margin-top: 4px; }
+  .field-group input, .field-group select, .field-group textarea {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--line);
+    border-radius: 10px;
+    font-family: inherit; font-size: 14px;
+    background: #fff;
+  }
+  .field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+    outline: none; border-color: var(--blue);
+  }
+  .field-group textarea { min-height: 80px; resize: vertical; }
+  .field-group input[type="checkbox"] { width: auto; margin-left: 6px; }
+  .checkbox-row {
+    display: flex; align-items: center; gap: 6px;
+    padding: 8px 12px; background: var(--cream); border-radius: 8px;
+    font-size: 13px; font-weight: 700; color: var(--navy);
+    cursor: pointer;
+  }
+  .checkbox-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 8px; }
+
+  /* ── Image Upload ── */
+  .image-upload {
+    border: 2px dashed var(--line); border-radius: 12px;
+    padding: 20px; text-align: center; cursor: pointer;
+    transition: all 0.15s; background: var(--cream);
+  }
+  .image-upload:hover { border-color: var(--blue); }
+  .image-upload.has-image { padding: 8px; }
+  .image-upload img {
+    max-width: 100%; max-height: 160px;
+    border-radius: 8px; display: block; margin: 0 auto;
+  }
+  .image-upload input { display: none; }
+  .image-upload .upload-text {
+    color: var(--ink-soft); font-size: 13px;
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+  }
+  .image-upload .upload-text svg { color: var(--ink-mute); }
+  .image-preview-row { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 8px; }
+  .image-preview {
+    position: relative; width: 80px; height: 80px;
+    border-radius: 8px; overflow: hidden;
+  }
+  .image-preview img { width: 100%; height: 100%; object-fit: cover; }
+  .image-preview .remove {
+    position: absolute; top: 4px; left: 4px;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(0,0,0,0.6); color: #fff;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  /* ── Schedule Grid ── */
+  .schedule-table {
+    background: var(--cream); border-radius: 10px;
+    padding: 12px; display: grid; gap: 8px;
+    grid-template-columns: 100px 1fr 1fr 1fr;
+    align-items: center;
+  }
+  .schedule-table .head {
+    font-size: 11px; font-weight: 800; color: var(--ink-soft);
+    text-align: center; letter-spacing: 0.5px;
+  }
+  .schedule-table input {
+    padding: 6px 8px; font-size: 12px;
+    text-align: center;
+  }
+  .schedule-table .day-label {
+    font-weight: 800; color: var(--navy); font-size: 12px;
+    text-align: center;
+  }
+
+  /* ── Coupon List Inside Editor ── */
+  .coupon-list { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+  .coupon-item {
+    background: var(--cream); border-radius: 10px;
+    padding: 10px 14px; display: flex; gap: 12px; align-items: center;
+  }
+  .coupon-item-info { flex: 1; min-width: 0; }
+  .coupon-item-title { font-size: 13px; font-weight: 900; color: var(--navy); }
+  .coupon-item-meta { font-size: 11px; color: var(--ink-soft); margin-top: 2px; }
+  .coupon-item-actions { display: flex; gap: 4px; }
+  .add-row-btn {
+    background: var(--cream); border: 2px dashed var(--line);
+    padding: 12px; border-radius: 10px;
+    color: var(--navy); cursor: pointer; width: 100%;
+    font-family: inherit; font-weight: 800; font-size: 13px;
+    margin-top: 10px;
+  }
+  .add-row-btn:hover { border-color: var(--blue); color: var(--blue); }
+
+  /* ── Menu Items ── */
+  .menu-item-row {
+    display: grid; grid-template-columns: 2fr 1fr 1fr auto;
+    gap: 8px; margin-bottom: 8px; align-items: center;
+  }
+  .menu-item-row input { padding: 8px 10px; font-size: 13px; }
+
+  /* ── Editor Footer ── */
+  .editor-footer {
+    position: sticky; bottom: 0; z-index: 5;
+    background: #fff; border-top: 1px solid var(--line);
+    padding: 16px 24px;
+    display: flex; gap: 10px; justify-content: flex-end;
+  }
+  .btn-save {
+    background: var(--green); color: #fff; border: none;
+    padding: 12px 28px; border-radius: 10px;
+    font-family: inherit; font-weight: 900; font-size: 14px;
+    cursor: pointer;
+  }
+  .btn-cancel {
+    background: var(--cream); color: var(--navy); border: 1px solid var(--line);
+    padding: 12px 22px; border-radius: 10px;
+    font-family: inherit; font-weight: 700; cursor: pointer;
+  }
+
+  /* ── States ── */
+  .access-denied, .state-msg {
+    background: #fff; border-radius: 16px;
+    padding: 60px 24px; text-align: center;
+    box-shadow: 0 2px 8px rgba(26,46,92,0.06);
+  }
+  .access-denied h2 { color: #DC2626; font-size: 20px; margin: 0 0 8px; }
+  .access-denied p { color: var(--ink-soft); margin: 0 0 14px; }
+  .empty-icon {
+    width: 64px; height: 64px; margin: 0 auto 14px;
+    background: var(--cream); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--ink-mute);
+  }
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--navy); color: #fff;
+    padding: 12px 24px; border-radius: 100px;
+    font-weight: 700; font-size: 14px;
+    z-index: 99998; transition: transform .3s;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.error { background: #DC2626; }
+  .toast.success { background: var(--green); }
+
+  @media (max-width: 600px) {
+    .field-row, .field-row.three { grid-template-columns: 1fr; }
+    .schedule-table { grid-template-columns: 80px 1fr 1fr 1fr; gap: 4px; padding: 8px; }
+    .schedule-table input { font-size: 11px; padding: 4px 6px; }
+    .menu-item-row { grid-template-columns: 1fr; }
+    .editor-tabs { padding: 0 12px; }
+    .editor-body { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main class="admin-wrap">
+
+  <div id="loading-state" class="state-msg" style="margin-top:60px"><p>טוען...</p></div>
+
+  <div id="access-denied" class="access-denied" style="display:none">
+    <h2>גישה אסורה</h2>
+    <p>דף זה למנהל בלבד</p>
+    <a href="/" style="color:var(--blue);font-weight:700">חזרה לדף הבית</a>
+  </div>
+
+  <div id="content" style="display:none">
+
+    <div class="admin-hero">
+      <h1>ניהול עסקים ובתי כנסת</h1>
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-view="businesses" onclick="switchAdminView('businesses')">עסקים</button>
+        <button class="admin-tab" data-view="synagogues" onclick="switchAdminView('synagogues')">בתי כנסת</button>
+        <button class="admin-tab" data-view="coupons" onclick="switchAdminView('coupons')">קופונים</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row"></div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <input type="text" id="search-input" placeholder="חיפוש לפי שם, קטגוריה, כתובת..." oninput="applyFilters()">
+      <select id="filter-status" onchange="applyFilters()">
+        <option value="all">כל הסטטוסים</option>
+        <option value="verified">מאומתים</option>
+        <option value="pending">ממתינים</option>
+        <option value="featured">מומלצים</option>
+        <option value="inactive">לא פעילים</option>
+      </select>
+      <button class="btn-primary" onclick="openNewItem()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        חדש
+      </button>
+    </div>
+
+    <!-- List -->
+    <div id="list-area"><div class="state-msg"><p>טוען...</p></div></div>
+
+  </div>
+
+</main>
+
+<!-- ═══════════ EDITOR MODAL ═══════════ -->
+<div class="editor-overlay" id="editor-overlay" onclick="if(event.target.id==='editor-overlay')closeEditor()">
+  <div class="editor-card">
+    <div class="editor-head">
+      <h2 id="editor-title">עסק חדש</h2>
+      <button class="editor-close" onclick="closeEditor()" aria-label="סגור">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <!-- Editor Tabs -->
+    <div class="editor-tabs" id="editor-tabs"></div>
+
+    <div class="editor-body" id="editor-body"></div>
+
+    <div class="editor-footer">
+      <button class="btn-cancel" onclick="closeEditor()">בטל</button>
+      <button class="btn-save" onclick="saveItem()">שמור</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// משתמש ב-window.SB_URL ו-window.SB_KEY מ-site.js
+const ADMIN_EMAIL = 'refael@tedgi.co.il';
+
+let sb = null;
+let currentUser = null;
+let currentView = 'businesses'; // businesses / synagogues / coupons
+let allItems = [];
+let allBusinesses = []; // לקופונים
+let editingItem = null;
+let currentEditorTab = 'main';
+let isNewItem = false;
+
+const BIZ_CATEGORIES = [
+  ['restaurant', 'מסעדה'], ['cafe', 'בית קפה'], ['bakery', 'מאפיה'],
+  ['supermarket', 'סופרמרקט'], ['butcher', 'אטליז'], ['fish', 'דגים'],
+  ['grocery', 'מכולת'], ['fashion', 'אופנה'], ['shoes', 'נעליים'],
+  ['kids', 'ילדים'], ['gifts', 'מתנות'], ['electronics', 'אלקטרוניקה'],
+  ['cosmetics', 'קוסמטיקה'], ['barber', 'מספרה'], ['gym', 'חדר כושר'],
+  ['health', 'בריאות'], ['pharmacy', 'בית מרקחת'], ['judaica', 'יודאיקה'],
+  ['flowers', 'פרחים'], ['books', 'ספרים'], ['toys', 'צעצועים'],
+  ['homeware', 'כלי בית'], ['cleaning', 'ניקיון'], ['pets', 'חיות'],
+  ['legal', 'עורכי דין'], ['accountant', 'רואי חשבון'], ['realestate', 'נדל"ן'],
+  ['insurance', 'ביטוח'], ['education', 'חינוך'], ['other', 'אחר']
+];
+
+const NUSACHIM = [
+  ['sefard', 'ספרד'], ['ashkenaz', 'אשכנז'],
+  ['edot-hamizrach', 'עדות המזרח'], ['teiman', 'תימן'],
+  ['achid', 'אחיד'], ['chassidim', 'חסידי']
+];
+
+const DAYS_HE = [
+  ['sun', 'ראשון'], ['mon', 'שני'], ['tue', 'שלישי'],
+  ['wed', 'רביעי'], ['thu', 'חמישי'], ['fri', 'שישי'], ['sat', 'שבת']
+];
+
+// פונקציית esc מ-site.js (window.esc)
+// פונקציית $ מ-site.js (window.$)
+function toast(msg, type = '') {
+  const t = $('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+function slugify(text) {
+  return String(text || '').toLowerCase()
+    .replace(/[\u0590-\u05FF]/g, c => c) // keep hebrew
+    .replace(/\s+/g, '-')
+    .replace(/[^a-z0-9א-ת\u0590-\u05FF\-]/g, '')
+    .slice(0, 50);
+}
+
+// ═══════════ INIT ═══════════
+async function init() {
+  console.log('[admin-biz] init() called, supabase loaded?', !!window.supabase);
+  if (!window.supabase) {
+    if (!window._adminbiz_attempts) window._adminbiz_attempts = 0;
+    window._adminbiz_attempts++;
+    if (window._adminbiz_attempts === 1) console.log('[admin-biz] waiting for supabase-js...');
+    if (window._adminbiz_attempts > 50) {
+      console.error('[admin-biz] supabase-js failed to load after 10 seconds');
+      $('loading-state').innerHTML = '<p style="color:#DC2626">שגיאה: ספריית Supabase לא נטענה. אנא רענן (Ctrl+Shift+R) או בדוק את החיבור.</p><button onclick="location.reload()" style="margin-top:10px;background:#1A2E5C;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:inherit;font-weight:700;cursor:pointer">רענן</button>';
+      return;
+    }
+    setTimeout(init, 200);
+    return;
+  }
+
+  console.log('[admin-biz] supabase loaded, creating client');
+
+  try {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    console.log('[admin-biz] getting session...');
+    const { data: { session }, error: sessErr } = await sb.auth.getSession();
+    console.log('[admin-biz] session:', session ? session.user.email : 'NO SESSION');
+
+    if (sessErr) throw sessErr;
+
+    if (!session) {
+      $('loading-state').style.display = 'none';
+      $('access-denied').style.display = '';
+      $('access-denied').innerHTML = '<h2>נדרשת התחברות</h2><p>יש להתחבר תחילה כדי לגשת לדף זה</p><a href="/" style="color:#2563EB;font-weight:700">חזרה לדף הבית</a>';
+      return;
+    }
+
+    if ((session.user.email || '').toLowerCase() !== ADMIN_EMAIL) {
+      $('loading-state').style.display = 'none';
+      $('access-denied').style.display = '';
+      return;
+    }
+
+    console.log('[admin-biz] admin verified, loading items');
+    currentUser = session.user;
+    $('loading-state').style.display = 'none';
+    $('content').style.display = '';
+    await loadItems();
+    console.log('[admin-biz] all loaded successfully');
+  } catch (e) {
+    console.error('[admin-biz] Init error:', e);
+    $('loading-state').innerHTML = `<p style="color:#DC2626">שגיאה: ${e.message}</p><button onclick="location.reload()" style="margin-top:10px;background:#1A2E5C;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:inherit;font-weight:700;cursor:pointer">רענן</button>`;
+  }
+}
+
+function switchAdminView(view) {
+  currentView = view;
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.view === view));
+  loadItems();
+}
+
+async function loadItems() {
+  $('list-area').innerHTML = '<div class="state-msg"><p>טוען...</p></div>';
+  try {
+    let table = currentView;
+    const { data, error } = await sb.from(table).select('*').order('created_at', { ascending: false });
+    if (error) throw error;
+    allItems = data || [];
+
+    // אם קופונים - גם תטען עסקים לתצוגת שם
+    if (currentView === 'coupons') {
+      const bizRes = await sb.from('businesses').select('id,business_name,name,logo_url');
+      allBusinesses = bizRes.data || [];
+    }
+
+    renderStats();
+    applyFilters();
+  } catch (e) {
+    $('list-area').innerHTML = `<div class="state-msg"><p style="color:#DC2626">${esc(e.message)}</p></div>`;
+  }
+}
+
+function renderStats() {
+  let stats;
+  if (currentView === 'businesses') {
+    stats = [
+      { icon: 'total', num: allItems.length, lbl: 'סה"כ עסקים', svg: '<path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/>' },
+      { icon: 'verified', num: allItems.filter(i => i.is_verified).length, lbl: 'מאומתים', svg: '<polyline points="20 6 9 17 4 12"/>' },
+      { icon: 'pending', num: allItems.filter(i => !i.is_verified && i.is_active !== false).length, lbl: 'ממתינים', svg: '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>' },
+      { icon: 'featured', num: allItems.filter(i => i.is_featured).length, lbl: 'מומלצים', svg: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' }
+    ];
+  } else if (currentView === 'synagogues') {
+    stats = [
+      { icon: 'total', num: allItems.length, lbl: 'סה"כ בתי כנסת', svg: '<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>' },
+      { icon: 'verified', num: allItems.filter(i => i.is_verified).length, lbl: 'מאומתים', svg: '<polyline points="20 6 9 17 4 12"/>' },
+      { icon: 'pending', num: allItems.filter(i => !i.is_active).length, lbl: 'לא פעילים', svg: '<circle cx="12" cy="12" r="10"/>' }
+    ];
+  } else {
+    stats = [
+      { icon: 'total', num: allItems.length, lbl: 'סה"כ קופונים', svg: '<path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/>' },
+      { icon: 'verified', num: allItems.filter(i => i.is_active).length, lbl: 'פעילים', svg: '<polyline points="20 6 9 17 4 12"/>' },
+      { icon: 'featured', num: allItems.filter(i => i.is_featured).length, lbl: 'מומלצים', svg: '<polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>' }
+    ];
+  }
+  $('stats-row').innerHTML = stats.map(s => `
+    <div class="stat-box">
+      <div class="stat-icon ${s.icon}">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">${s.svg}</svg>
+      </div>
+      <div>
+        <div class="stat-num">${s.num}</div>
+        <div class="stat-lbl">${s.lbl}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function applyFilters() {
+  const q = $('search-input').value.trim().toLowerCase();
+  const status = $('filter-status').value;
+
+  let items = allItems.slice();
+  if (q) {
+    items = items.filter(i => {
+      const fields = [i.business_name, i.name, i.title, i.address, i.category, i.short_description, i.description, i.rabbi_name];
+      return fields.some(f => f && String(f).toLowerCase().includes(q));
+    });
+  }
+  if (status === 'verified') items = items.filter(i => i.is_verified);
+  else if (status === 'pending') items = items.filter(i => !i.is_verified);
+  else if (status === 'featured') items = items.filter(i => i.is_featured);
+  else if (status === 'inactive') items = items.filter(i => i.is_active === false);
+
+  renderList(items);
+}
+
+function renderList(items) {
+  if (items.length === 0) {
+    $('list-area').innerHTML = `
+      <div class="state-msg">
+        <div class="empty-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        </div>
+        <h3>לא נמצאו תוצאות</h3>
+      </div>`;
+    return;
+  }
+
+  $('list-area').innerHTML = '<div class="biz-list">' + items.map(renderRow).join('') + '</div>';
+}
+
+function renderRow(item) {
+  if (currentView === 'businesses') {
+    const initial = (item.business_name || item.name || '?').charAt(0);
+    const img = item.logo_url ? `<img src="${esc(item.logo_url)}" alt="">` : esc(initial);
+    const badges = [];
+    if (item.is_verified) badges.push('<span class="badge verified">מאומת</span>');
+    else badges.push('<span class="badge pending">ממתין</span>');
+    if (item.is_featured) badges.push('<span class="badge featured">מומלץ</span>');
+    if (item.is_active === false) badges.push('<span class="badge inactive">לא פעיל</span>');
+
+    return `
+      <div class="biz-row">
+        <div class="biz-thumb">${img}</div>
+        <div class="biz-info">
+          <div class="biz-name">${esc(item.business_name || item.name || 'ללא שם')}</div>
+          <div class="biz-meta">
+            ${badges.join(' ')}
+            ${item.category ? `<span>${esc(item.category)}</span>` : ''}
+            ${item.phone ? `<span dir="ltr">${esc(item.phone)}</span>` : ''}
+          </div>
+        </div>
+        <div class="biz-actions">
+          <button class="icon-btn" onclick="openEditor('${item.id}')" title="ערוך">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="icon-btn danger" onclick="deleteItem('${item.id}')" title="מחק">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>`;
+  } else if (currentView === 'synagogues') {
+    const initial = (item.name || '?').charAt(0);
+    const img = item.image_url ? `<img src="${esc(item.image_url)}" alt="">` : esc(initial);
+    return `
+      <div class="biz-row">
+        <div class="biz-thumb">${img}</div>
+        <div class="biz-info">
+          <div class="biz-name">${esc(item.name)}</div>
+          <div class="biz-meta">
+            ${item.is_verified ? '<span class="badge verified">מאומת</span>' : '<span class="badge pending">ממתין</span>'}
+            ${item.nusach_label ? `<span>${esc(item.nusach_label)}</span>` : ''}
+            ${item.address ? `<span>${esc(item.address)}</span>` : ''}
+          </div>
+        </div>
+        <div class="biz-actions">
+          <button class="icon-btn" onclick="openEditor('${item.id}')" title="ערוך">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+          </button>
+          <button class="icon-btn danger" onclick="deleteItem('${item.id}')" title="מחק">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg>
+          </button>
+        </div>
+      </div>`;
+  } else {
+    // coupons
+    const biz = allBusinesses.find(b => b.id === item.business_id);
+    const bizName = biz ? (biz.business_name || biz.name) : 'ללא עסק';
+    return `
+      <div class="biz-row">
+        <div class="biz-thumb" style="background:linear-gradient(135deg,#DC2626,#EF4444);color:#fff">%</div>
+        <div class="biz-info">
+          <div class="biz-name">${esc(item.title)}</div>
+          <div class="biz-meta">
+            ${item.is_active ? '<span class="badge verified">פעיל</span>' : '<span class="badge inactive">לא פעיל</span>'}
+            <span>${esc(bizName)}</span>
+            ${item.expires_at ? `<span>תוקף: ${new Date(item.expires_at).toLocaleDateString('he-IL')}</span>` : ''}
+          </div>
+        </div>
+        <div class="biz-actions">
+          <button class="icon-btn" onclick="openEditor('${item.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></button>
+          <button class="icon-btn danger" onclick="deleteItem('${item.id}')"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L5 6"/></svg></button>
+        </div>
+      </div>`;
+  }
+}
+
+function openNewItem() {
+  isNewItem = true;
+  editingItem = currentView === 'businesses'
+    ? { is_active: true, is_verified: false }
+    : currentView === 'synagogues'
+    ? { is_active: true }
+    : { is_active: true };
+  openEditorContent();
+}
+
+async function openEditor(id) {
+  isNewItem = false;
+  editingItem = allItems.find(i => i.id === id);
+  if (!editingItem) return;
+  openEditorContent();
+}
+
+function openEditorContent() {
+  $('editor-title').textContent = isNewItem
+    ? (currentView === 'businesses' ? 'עסק חדש' : currentView === 'synagogues' ? 'בית כנסת חדש' : 'קופון חדש')
+    : (editingItem.business_name || editingItem.name || editingItem.title || 'עריכה');
+
+  // לקופונים - צריך לטעון רשימת עסקים
+  if (currentView === 'coupons' && (!allBusinesses || allBusinesses.length === 0)) {
+    sb.from('businesses').select('id,business_name,name').then(r => {
+      allBusinesses = r.data || [];
+      renderEditorTabs();
+    });
+  } else {
+    renderEditorTabs();
+  }
+
+  $('editor-overlay').classList.add('active');
+}
+
+function renderEditorTabs() {
+  let tabs;
+  if (currentView === 'businesses') {
+    tabs = [
+      { id: 'main', name: 'פרטים בסיסיים' },
+      { id: 'images', name: 'תמונות' },
+      { id: 'contact', name: 'יצירת קשר' },
+      { id: 'hours', name: 'שעות פתיחה' },
+      { id: 'features', name: 'מאפיינים' },
+      { id: 'menu', name: 'תפריט' },
+      { id: 'status', name: 'סטטוס וניהול' }
+    ];
+  } else if (currentView === 'synagogues') {
+    tabs = [
+      { id: 'main', name: 'פרטים' },
+      { id: 'schedule', name: 'זמני תפילה' },
+      { id: 'features', name: 'מאפיינים' },
+      { id: 'status', name: 'סטטוס' }
+    ];
+  } else {
+    tabs = [{ id: 'main', name: 'פרטי הקופון' }];
+  }
+
+  $('editor-tabs').innerHTML = tabs.map((t, i) => `
+    <button class="editor-tab ${i === 0 ? 'active' : ''}" onclick="switchEditorTab('${t.id}')">${t.name}</button>
+  `).join('');
+  currentEditorTab = tabs[0].id;
+  renderEditorBody();
+}
+
+function switchEditorTab(tab) {
+  currentEditorTab = tab;
+  document.querySelectorAll('.editor-tab').forEach(t => {
+    const idx = Array.from(t.parentNode.children).indexOf(t);
+    const allTabs = document.querySelectorAll('.editor-tab');
+    t.classList.toggle('active', t.textContent === document.querySelectorAll('.editor-tab')[idx].textContent && idx === Array.from(allTabs).findIndex(x => x.textContent === t.textContent));
+  });
+  // Simpler:
+  document.querySelectorAll('.editor-tab').forEach((t, i) => {
+    t.classList.remove('active');
+  });
+  event.target.classList.add('active');
+  renderEditorBody();
+}
+
+function renderEditorBody() {
+  if (currentView === 'businesses') renderBizEditor();
+  else if (currentView === 'synagogues') renderShulEditor();
+  else renderCouponEditor();
+}
+
+function renderBizEditor() {
+  const i = editingItem;
+  let html = '';
+
+  if (currentEditorTab === 'main') {
+    html = `
+      <div class="field-group">
+        <label>שם העסק *</label>
+        <input type="text" id="f-business_name" value="${esc(i.business_name || i.name || '')}" placeholder="לדוגמה: פיצה שמש אופקים">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>קטגוריה *</label>
+          <select id="f-category">
+            <option value="">בחר קטגוריה</option>
+            ${BIZ_CATEGORIES.map(([v,l]) => `<option value="${v}" ${i.category === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-group">
+          <label>תת קטגוריה</label>
+          <input type="text" id="f-sub_category" value="${esc(i.sub_category || '')}" placeholder="לדוגמה: פיצה איטלקית">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>תיאור קצר (יופיע ברשימת העסקים)</label>
+        <input type="text" id="f-short_description" maxlength="120" value="${esc(i.short_description || '')}" placeholder="עד 120 תווים">
+      </div>
+      <div class="field-group">
+        <label>תיאור מלא (יופיע בכרטיס העסק)</label>
+        <textarea id="f-description" rows="4" placeholder="תיאור מפורט של העסק, ההיסטוריה, המומחיות וכו'">${esc(i.description || '')}</textarea>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>טווח מחירים</label>
+          <select id="f-price_range">
+            <option value="">לא צוין</option>
+            <option value="$" ${i.price_range === '$' ? 'selected' : ''}>$ - זול</option>
+            <option value="$$" ${i.price_range === '$$' ? 'selected' : ''}>$$ - בינוני</option>
+            <option value="$$$" ${i.price_range === '$$$' ? 'selected' : ''}>$$$ - יקר</option>
+            <option value="$$$$" ${i.price_range === '$$$$' ? 'selected' : ''}>$$$$ - יוקרתי</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>תגיות (מופרדות בפסיק)</label>
+          <input type="text" id="f-tags" value="${esc((i.tags || []).join(', '))}" placeholder="חלבי, כשר, מנגל...">
+        </div>
+      </div>
+    `;
+  } else if (currentEditorTab === 'images') {
+    html = `
+      <div class="field-group">
+        <label>לוגו (יוצג כתמונה עגולה קטנה)</label>
+        <label class="image-upload ${i.logo_url ? 'has-image' : ''}" for="up-logo">
+          ${i.logo_url ? `<img src="${esc(i.logo_url)}">` : `
+            <div class="upload-text">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              <div>לחץ או גרור תמונה</div>
+              <small>מומלץ ריבועי - מקסימום 2MB</small>
+            </div>`}
+          <input type="file" id="up-logo" accept="image/*" onchange="uploadImage('logo_url','business-logos',this)">
+        </label>
+      </div>
+      <div class="field-group">
+        <label>תמונת קאבר (רחבה - תופיע בראש כרטיס העסק)</label>
+        <label class="image-upload ${i.cover_image_url ? 'has-image' : ''}" for="up-cover">
+          ${i.cover_image_url ? `<img src="${esc(i.cover_image_url)}">` : `
+            <div class="upload-text">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div>לחץ או גרור תמונה</div>
+              <small>מומלץ פנורמי 16:9 - מקסימום 5MB</small>
+            </div>`}
+          <input type="file" id="up-cover" accept="image/*" onchange="uploadImage('cover_image_url','business-covers',this)">
+        </label>
+      </div>
+      <div class="field-group">
+        <label>גלריית תמונות נוספות</label>
+        <label class="image-upload" for="up-gallery">
+          <div class="upload-text">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div>הוסף תמונה לגלריה</div>
+          </div>
+          <input type="file" id="up-gallery" accept="image/*" onchange="uploadGalleryImage(this)">
+        </label>
+        <div class="image-preview-row" id="gallery-preview">
+          ${(i.gallery_urls || []).map((url, idx) => `
+            <div class="image-preview">
+              <img src="${esc(url)}">
+              <button class="remove" onclick="removeGalleryImage(${idx})">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>`).join('')}
+        </div>
+      </div>
+    `;
+  } else if (currentEditorTab === 'contact') {
+    html = `
+      <div class="field-group">
+        <label>כתובת מלאה *</label>
+        <input type="text" id="f-address" value="${esc(i.address || '')}" placeholder="רחוב הרצל 45, אופקים">
+      </div>
+      <div class="field-row three">
+        <div class="field-group">
+          <label>עיר</label>
+          <input type="text" id="f-city" value="${esc(i.city || 'אופקים')}">
+        </div>
+        <div class="field-group">
+          <label>קו רוחב (lat)</label>
+          <input type="number" step="0.0000001" id="f-lat" value="${i.lat || ''}" placeholder="31.3115">
+        </div>
+        <div class="field-group">
+          <label>קו אורך (lng)</label>
+          <input type="number" step="0.0000001" id="f-lng" value="${i.lng || ''}" placeholder="34.6220">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>טלפון ראשי *</label>
+          <input type="tel" id="f-phone" value="${esc(i.phone || '')}" placeholder="08-9999999" dir="ltr">
+        </div>
+        <div class="field-group">
+          <label>טלפון משני</label>
+          <input type="tel" id="f-phone_secondary" value="${esc(i.phone_secondary || '')}" placeholder="054-1234567" dir="ltr">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>WhatsApp</label>
+          <input type="tel" id="f-whatsapp" value="${esc(i.whatsapp || '')}" placeholder="0541234567" dir="ltr">
+        </div>
+        <div class="field-group">
+          <label>אימייל</label>
+          <input type="email" id="f-email" value="${esc(i.email || '')}" placeholder="info@example.com" dir="ltr">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>אתר אינטרנט</label>
+        <input type="url" id="f-website" value="${esc(i.website || '')}" placeholder="https://example.com" dir="ltr">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>פייסבוק</label>
+          <input type="url" id="f-facebook_url" value="${esc(i.facebook_url || '')}" placeholder="https://facebook.com/..." dir="ltr">
+        </div>
+        <div class="field-group">
+          <label>אינסטגרם</label>
+          <input type="url" id="f-instagram_url" value="${esc(i.instagram_url || '')}" placeholder="https://instagram.com/..." dir="ltr">
+        </div>
+      </div>
+    `;
+  } else if (currentEditorTab === 'hours') {
+    const hours = i.opening_hours || {};
+    html = `
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px">הכנס שעות בפורמט HH:MM-HH:MM (לדוגמה 09:00-22:00). השאר ריק אם סגור.</p>
+      <div class="schedule-table">
+        <div class="head">יום</div>
+        <div class="head">פתיחה</div>
+        <div class="head">סגירה</div>
+        <div class="head">הפסקה</div>
+        ${DAYS_HE.map(([key, label]) => {
+          const d = hours[key] || {};
+          return `
+            <div class="day-label">${label}</div>
+            <input type="time" id="h-${key}-open" value="${esc(d.open || '')}" placeholder="09:00">
+            <input type="time" id="h-${key}-close" value="${esc(d.close || '')}" placeholder="22:00">
+            <input type="text" id="h-${key}-break" value="${esc(d.break || '')}" placeholder="13-16">
+          `;
+        }).join('')}
+      </div>
+    `;
+  } else if (currentEditorTab === 'features') {
+    html = `
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px">סמן את התכונות הרלוונטיות לעסק</p>
+      <div class="checkbox-grid">
+        <label class="checkbox-row"><input type="checkbox" id="f-has_parking" ${i.has_parking ? 'checked' : ''}> חניה זמינה</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-has_accessibility" ${i.has_accessibility ? 'checked' : ''}> נגיש לנכים</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-has_delivery" ${i.has_delivery ? 'checked' : ''}> משלוחים</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-has_takeaway" ${i.has_takeaway ? 'checked' : ''}> טייק אווי</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-accepts_credit" ${i.accepts_credit ? 'checked' : ''}> אשראי</label>
+      </div>
+      <div class="field-row" style="margin-top:14px">
+        <div class="field-group">
+          <label>כשרות (אישור)</label>
+          <input type="text" id="f-kosher_certificate" value="${esc(i.kosher_certificate || '')}" placeholder="בד&quot;ץ העדה החרדית">
+        </div>
+        <div class="field-group">
+          <label>רשות מאשרת</label>
+          <input type="text" id="f-kosher_authority" value="${esc(i.kosher_authority || '')}" placeholder="הרבנות המקומית">
+        </div>
+      </div>
+    `;
+  } else if (currentEditorTab === 'menu') {
+    const items = i.menu_items || [];
+    html = `
+      <div class="field-group">
+        <label>קישור לתפריט מלא (PDF/URL)</label>
+        <input type="url" id="f-menu_url" value="${esc(i.menu_url || '')}" placeholder="https://...">
+      </div>
+      <h4 style="margin:14px 0 8px;font-size:13px;font-weight:800;color:var(--navy)">פריטי תפריט מומלצים</h4>
+      <div id="menu-items-area">
+        ${items.map((m, idx) => menuItemRow(m, idx)).join('')}
+      </div>
+      <button class="add-row-btn" onclick="addMenuItem()">+ הוסף פריט תפריט</button>
+    `;
+  } else if (currentEditorTab === 'status') {
+    html = `
+      <div class="checkbox-grid">
+        <label class="checkbox-row"><input type="checkbox" id="f-is_active" ${i.is_active !== false ? 'checked' : ''}> פעיל באתר</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-is_verified" ${i.is_verified ? 'checked' : ''}> מאומת</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-is_featured" ${i.is_featured ? 'checked' : ''}> מומלץ (Featured)</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-is_enterprise" ${i.is_enterprise ? 'checked' : ''}> Enterprise</label>
+      </div>
+      <div class="field-row" style="margin-top:14px">
+        <div class="field-group">
+          <label>תוכנית</label>
+          <select id="f-plan">
+            <option value="free" ${i.plan === 'free' ? 'selected' : ''}>חינם</option>
+            <option value="basic" ${i.plan === 'basic' ? 'selected' : ''}>בסיסי</option>
+            <option value="pro" ${i.plan === 'pro' ? 'selected' : ''}>מקצועי</option>
+            <option value="enterprise" ${i.plan === 'enterprise' ? 'selected' : ''}>Enterprise</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>תוקף תוכנית</label>
+          <input type="date" id="f-plan_expires_at" value="${i.plan_expires_at ? i.plan_expires_at.slice(0,10) : ''}">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>הערות פנימיות (לא יוצגו באתר)</label>
+        <textarea id="f-admin_notes" rows="3">${esc(i.admin_notes || '')}</textarea>
+      </div>
+    `;
+  }
+
+  $('editor-body').innerHTML = html;
+}
+
+function menuItemRow(m, idx) {
+  return `
+    <div class="menu-item-row" data-idx="${idx}">
+      <input type="text" placeholder="שם הפריט" value="${esc(m.name || '')}">
+      <input type="text" placeholder="מחיר" value="${esc(m.price || '')}">
+      <input type="text" placeholder="תיאור (אופציונלי)" value="${esc(m.description || '')}">
+      <button class="icon-btn danger" onclick="this.parentNode.remove()" title="הסר">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>`;
+}
+
+function addMenuItem() {
+  const area = $('menu-items-area');
+  const div = document.createElement('div');
+  div.innerHTML = menuItemRow({}, area.children.length);
+  area.appendChild(div.firstElementChild);
+}
+
+function renderShulEditor() {
+  const i = editingItem;
+  if (currentEditorTab === 'main') {
+    $('editor-body').innerHTML = `
+      <div class="field-group">
+        <label>שם בית הכנסת *</label>
+        <input type="text" id="f-name" value="${esc(i.name || '')}" placeholder="בית הכנסת המרכזי">
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>נוסח *</label>
+          <select id="f-nusach">
+            <option value="">בחר נוסח</option>
+            ${NUSACHIM.map(([v,l]) => `<option value="${v}" ${i.nusach === v ? 'selected' : ''}>${esc(l)}</option>`).join('')}
+          </select>
+        </div>
+        <div class="field-group">
+          <label>תיאור נוסח (פירוט)</label>
+          <input type="text" id="f-nusach_label" value="${esc(i.nusach_label || '')}" placeholder="ספרד חסידי / מרוקאי וכו'">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>שם הרב</label>
+          <input type="text" id="f-rabbi_name" value="${esc(i.rabbi_name || '')}" placeholder="הרב שמואל כהן">
+        </div>
+        <div class="field-group">
+          <label>טלפון הרב</label>
+          <input type="tel" id="f-rabbi_phone" value="${esc(i.rabbi_phone || '')}" dir="ltr">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <label>טלפון יצירת קשר</label>
+          <input type="tel" id="f-contact_phone" value="${esc(i.contact_phone || '')}" dir="ltr">
+        </div>
+        <div class="field-group">
+          <label>אימייל</label>
+          <input type="email" id="f-email" value="${esc(i.email || '')}" dir="ltr">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>כתובת מלאה *</label>
+        <input type="text" id="f-address" value="${esc(i.address || '')}" placeholder="רחוב הרצל 12, אופקים">
+      </div>
+      <div class="field-row three">
+        <div class="field-group">
+          <label>שכונה</label>
+          <input type="text" id="f-neighborhood" value="${esc(i.neighborhood || '')}">
+        </div>
+        <div class="field-group">
+          <label>lat</label>
+          <input type="number" step="0.0000001" id="f-lat" value="${i.lat || ''}" placeholder="31.3115">
+        </div>
+        <div class="field-group">
+          <label>lng</label>
+          <input type="number" step="0.0000001" id="f-lng" value="${i.lng || ''}" placeholder="34.6220">
+        </div>
+      </div>
+      <div class="field-group">
+        <label>תיאור</label>
+        <textarea id="f-description" rows="3">${esc(i.description || '')}</textarea>
+      </div>
+      <div class="field-group">
+        <label>תמונה</label>
+        <label class="image-upload ${i.image_url ? 'has-image' : ''}" for="up-shul-img">
+          ${i.image_url ? `<img src="${esc(i.image_url)}">` : `
+            <div class="upload-text">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div>לחץ או גרור תמונה</div>
+            </div>`}
+          <input type="file" id="up-shul-img" accept="image/*" onchange="uploadImage('image_url','synagogue-images',this)">
+        </label>
+      </div>
+    `;
+  } else if (currentEditorTab === 'schedule') {
+    $('editor-body').innerHTML = `
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:14px">זמני התפילה לכל יום</p>
+      <h4 style="margin:14px 0 8px;font-size:13px;font-weight:800;color:var(--navy)">ימי חול</h4>
+      <div class="field-row three">
+        <div class="field-group"><label>שחרית</label><input type="text" id="f-schedule_weekday_shacharit" value="${esc(i.schedule_weekday_shacharit || '')}" placeholder="06:00, 07:30"></div>
+        <div class="field-group"><label>מנחה</label><input type="text" id="f-schedule_weekday_mincha" value="${esc(i.schedule_weekday_mincha || '')}" placeholder="13:30, 18:45"></div>
+        <div class="field-group"><label>ערבית</label><input type="text" id="f-schedule_weekday_arvit" value="${esc(i.schedule_weekday_arvit || '')}" placeholder="19:30, 21:00"></div>
+      </div>
+      <h4 style="margin:14px 0 8px;font-size:13px;font-weight:800;color:var(--navy)">ערב שבת (שישי)</h4>
+      <div class="field-row three">
+        <div class="field-group"><label>שחרית</label><input type="text" id="f-schedule_friday_shacharit" value="${esc(i.schedule_friday_shacharit || '')}"></div>
+        <div class="field-group"><label>מנחה</label><input type="text" id="f-schedule_friday_mincha" value="${esc(i.schedule_friday_mincha || '')}"></div>
+        <div class="field-group"><label>ערבית</label><input type="text" id="f-schedule_friday_arvit" value="${esc(i.schedule_friday_arvit || '')}"></div>
+      </div>
+      <h4 style="margin:14px 0 8px;font-size:13px;font-weight:800;color:var(--navy)">שבת</h4>
+      <div class="field-row three">
+        <div class="field-group"><label>שחרית</label><input type="text" id="f-schedule_shabbat_shacharit" value="${esc(i.schedule_shabbat_shacharit || '')}"></div>
+        <div class="field-group"><label>מנחה</label><input type="text" id="f-schedule_shabbat_mincha" value="${esc(i.schedule_shabbat_mincha || '')}"></div>
+        <div class="field-group"><label>ערבית</label><input type="text" id="f-schedule_shabbat_arvit" value="${esc(i.schedule_shabbat_arvit || '')}"></div>
+      </div>
+    `;
+  } else if (currentEditorTab === 'features') {
+    $('editor-body').innerHTML = `
+      <div class="checkbox-grid">
+        <label class="checkbox-row"><input type="checkbox" id="f-has_parking" ${i.has_parking ? 'checked' : ''}> חניה</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-has_accessibility" ${i.has_accessibility ? 'checked' : ''}> נגיש לנכים</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-has_women_section" ${i.has_women_section ? 'checked' : ''}> עזרת נשים</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-has_aircon" ${i.has_aircon ? 'checked' : ''}> מיזוג</label>
+      </div>
+      <div class="field-group" style="margin-top:14px">
+        <label>מספר מניינים ביום</label>
+        <input type="number" id="f-has_minyan_count" value="${i.has_minyan_count || ''}" placeholder="3">
+      </div>
+    `;
+  } else if (currentEditorTab === 'status') {
+    $('editor-body').innerHTML = `
+      <div class="checkbox-grid">
+        <label class="checkbox-row"><input type="checkbox" id="f-is_active" ${i.is_active !== false ? 'checked' : ''}> פעיל באתר</label>
+        <label class="checkbox-row"><input type="checkbox" id="f-is_verified" ${i.is_verified ? 'checked' : ''}> מאומת</label>
+      </div>
+      <div class="field-group" style="margin-top:14px">
+        <label>סדר הצגה (נמוך = ראשון)</label>
+        <input type="number" id="f-display_order" value="${i.display_order || 0}">
+      </div>
+    `;
+  }
+}
+
+function renderCouponEditor() {
+  const i = editingItem;
+  $('editor-body').innerHTML = `
+    <div class="field-group">
+      <label>שייך לעסק *</label>
+      <select id="f-business_id">
+        <option value="">בחר עסק</option>
+        ${allBusinesses.map(b => `<option value="${b.id}" ${i.business_id === b.id ? 'selected' : ''}>${esc(b.business_name || b.name)}</option>`).join('')}
+      </select>
+    </div>
+    <div class="field-group">
+      <label>כותרת הקופון *</label>
+      <input type="text" id="f-title" value="${esc(i.title || '')}" placeholder="לדוגמה: 30% הנחה על כל המבחר">
+    </div>
+    <div class="field-group">
+      <label>תיאור</label>
+      <textarea id="f-description" rows="3">${esc(i.description || '')}</textarea>
+    </div>
+    <div class="field-row three">
+      <div class="field-group">
+        <label>סוג הנחה</label>
+        <select id="f-discount_type">
+          <option value="percent" ${i.discount_type === 'percent' ? 'selected' : ''}>אחוז</option>
+          <option value="amount" ${i.discount_type === 'amount' ? 'selected' : ''}>סכום בשקלים</option>
+          <option value="buy_get" ${i.discount_type === 'buy_get' ? 'selected' : ''}>קנה וקבל</option>
+          <option value="free_item" ${i.discount_type === 'free_item' ? 'selected' : ''}>פריט חינם</option>
+          <option value="other" ${i.discount_type === 'other' ? 'selected' : ''}>אחר</option>
+        </select>
+      </div>
+      <div class="field-group">
+        <label>ערך הנחה</label>
+        <input type="number" step="0.01" id="f-discount_value" value="${i.discount_value || ''}" placeholder="30">
+      </div>
+      <div class="field-group">
+        <label>מחיר סופי (אם רלוונטי)</label>
+        <input type="number" step="0.01" id="f-final_price" value="${i.final_price || ''}" placeholder="49.90">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>קוד קופון</label>
+        <input type="text" id="f-coupon_code" value="${esc(i.coupon_code || '')}" placeholder="SUMMER30" dir="ltr">
+      </div>
+      <div class="field-group">
+        <label>מספר מימושים מקסימלי</label>
+        <input type="number" id="f-max_redemptions" value="${i.max_redemptions || ''}" placeholder="100">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field-group">
+        <label>תאריך התחלה</label>
+        <input type="date" id="f-starts_at" value="${i.starts_at ? i.starts_at.slice(0,10) : new Date().toISOString().slice(0,10)}">
+      </div>
+      <div class="field-group">
+        <label>תאריך תפוגה</label>
+        <input type="date" id="f-expires_at" value="${i.expires_at ? i.expires_at.slice(0,10) : ''}">
+      </div>
+    </div>
+    <div class="field-group">
+      <label>תנאים</label>
+      <textarea id="f-terms" rows="2" placeholder="לדוגמה: לקוח חדש בלבד, לא בשילוב מבצעים אחרים">${esc(i.terms || '')}</textarea>
+    </div>
+    <div class="field-group">
+      <label>תמונה (אופציונלי)</label>
+      <label class="image-upload ${i.image_url ? 'has-image' : ''}" for="up-coupon-img">
+        ${i.image_url ? `<img src="${esc(i.image_url)}">` : `
+          <div class="upload-text">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            <div>לחץ או גרור תמונה</div>
+          </div>`}
+        <input type="file" id="up-coupon-img" accept="image/*" onchange="uploadImage('image_url','coupon-images',this)">
+      </label>
+    </div>
+    <div class="checkbox-grid" style="margin-top:14px">
+      <label class="checkbox-row"><input type="checkbox" id="f-is_active" ${i.is_active !== false ? 'checked' : ''}> פעיל</label>
+      <label class="checkbox-row"><input type="checkbox" id="f-is_featured" ${i.is_featured ? 'checked' : ''}> מומלץ</label>
+    </div>
+  `;
+}
+
+// ═══════════ Save ═══════════
+function collectFields() {
+  const out = {};
+  document.querySelectorAll('[id^="f-"]').forEach(el => {
+    const key = el.id.replace('f-', '');
+    if (el.type === 'checkbox') out[key] = el.checked;
+    else if (el.type === 'number') out[key] = el.value ? parseFloat(el.value) : null;
+    else if (el.type === 'date') out[key] = el.value || null;
+    else out[key] = el.value || null;
+  });
+
+  // tags
+  if (out.tags && typeof out.tags === 'string') {
+    out.tags = out.tags.split(',').map(t => t.trim()).filter(Boolean);
+  }
+  return out;
+}
+
+function collectScheduleHours() {
+  const hours = {};
+  DAYS_HE.forEach(([key]) => {
+    const open = $(`h-${key}-open`);
+    const close = $(`h-${key}-close`);
+    const breakI = $(`h-${key}-break`);
+    if (open && open.value && close && close.value) {
+      hours[key] = { open: open.value, close: close.value };
+      if (breakI && breakI.value) hours[key].break = breakI.value;
+    }
+  });
+  return hours;
+}
+
+function collectMenuItems() {
+  const items = [];
+  document.querySelectorAll('#menu-items-area .menu-item-row').forEach(row => {
+    const inputs = row.querySelectorAll('input');
+    if (inputs[0].value.trim()) {
+      items.push({
+        name: inputs[0].value.trim(),
+        price: inputs[1].value.trim(),
+        description: inputs[2].value.trim()
+      });
+    }
+  });
+  return items;
+}
+
+async function saveItem() {
+  try {
+    let data = {};
+    // נשמרים נתונים מכל הטאבים שכבר נטענו - לכן צריך להחזיק editingItem עדכני
+    Object.assign(editingItem, collectFields());
+
+    // שעות פתיחה
+    if (currentView === 'businesses') {
+      // אם בטאב שעות עכשיו - אסוף
+      if (currentEditorTab === 'hours') {
+        editingItem.opening_hours = collectScheduleHours();
+      }
+      if (currentEditorTab === 'menu') {
+        editingItem.menu_items = collectMenuItems();
+      }
+    }
+
+    data = { ...editingItem };
+
+    // ניקוי - הסר שדות אוטומטיים
+    delete data.created_at;
+    delete data.updated_at;
+
+    // הוסף slug אם חסר
+    if (currentView === 'businesses' && !data.slug && (data.business_name || data.name)) {
+      data.slug = slugify(data.business_name || data.name) + '-' + Date.now().toString(36).slice(-4);
+    }
+
+    const table = currentView;
+
+    if (isNewItem) {
+      delete data.id;
+      // owner - אם זה עסק חדש
+      if (currentView === 'businesses' && !data.owner_id) {
+        data.owner_id = currentUser.id;
+      }
+      const { data: created, error } = await sb.from(table).insert(data).select().single();
+      if (error) throw error;
+      toast('נשמר בהצלחה', 'success');
+    } else {
+      const { error } = await sb.from(table).update(data).eq('id', data.id);
+      if (error) throw error;
+      toast('עודכן בהצלחה', 'success');
+    }
+
+    closeEditor();
+    await loadItems();
+  } catch (e) {
+    console.error('Save error', e);
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+// ═══════════ Delete ═══════════
+async function deleteItem(id) {
+  if (!confirm('האם למחוק לצמיתות?')) return;
+  try {
+    const { error } = await sb.from(currentView).delete().eq('id', id);
+    if (error) throw error;
+    toast('נמחק', 'success');
+    await loadItems();
+  } catch (e) {
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+function closeEditor() {
+  $('editor-overlay').classList.remove('active');
+  editingItem = null;
+}
+
+// ═══════════ Image Upload ═══════════
+async function uploadImage(field, bucket, inputEl) {
+  const file = inputEl.files[0];
+  if (!file) return;
+
+  if (file.size > 5 * 1024 * 1024) {
+    toast('התמונה גדולה מדי (מקסימום 5MB)', 'error');
+    return;
+  }
+
+  try {
+    toast('מעלה תמונה...');
+    const ext = file.name.split('.').pop().toLowerCase();
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+
+    const { data, error } = await sb.storage.from(bucket).upload(fileName, file, {
+      cacheControl: '3600',
+      upsert: false
+    });
+    if (error) throw error;
+
+    const { data: { publicUrl } } = sb.storage.from(bucket).getPublicUrl(fileName);
+    editingItem[field] = publicUrl;
+    toast('תמונה הועלתה', 'success');
+    renderEditorBody();
+  } catch (e) {
+    toast('שגיאת העלאה: ' + e.message, 'error');
+  }
+}
+
+async function uploadGalleryImage(inputEl) {
+  const file = inputEl.files[0];
+  if (!file) return;
+  try {
+    toast('מעלה תמונה...');
+    const ext = file.name.split('.').pop().toLowerCase();
+    const fileName = `gallery-${Date.now()}-${Math.random().toString(36).slice(2,8)}.${ext}`;
+    const { error } = await sb.storage.from('business-gallery').upload(fileName, file);
+    if (error) throw error;
+    const { data: { publicUrl } } = sb.storage.from('business-gallery').getPublicUrl(fileName);
+    if (!editingItem.gallery_urls) editingItem.gallery_urls = [];
+    editingItem.gallery_urls.push(publicUrl);
+    toast('תמונה נוספה', 'success');
+    renderEditorBody();
+  } catch (e) {
+    toast('שגיאה: ' + e.message, 'error');
+  }
+}
+
+function removeGalleryImage(idx) {
+  if (!editingItem.gallery_urls) return;
+  editingItem.gallery_urls.splice(idx, 1);
+  renderEditorBody();
+}
+
+// expose
+window.switchAdminView = switchAdminView;
+window.applyFilters = applyFilters;
+window.openNewItem = openNewItem;
+window.openEditor = openEditor;
+window.closeEditor = closeEditor;
+window.switchEditorTab = switchEditorTab;
+window.deleteItem = deleteItem;
+window.saveItem = saveItem;
+window.uploadImage = uploadImage;
+window.uploadGalleryImage = uploadGalleryImage;
+window.removeGalleryImage = removeGalleryImage;
+window.addMenuItem = addMenuItem;
+
+// התחל מיד - init() עצמו מטפל בהמתנה ל-supabase
+console.log('[admin-biz] script loaded, starting init');
+init();
+</script>
+</body>
+</html>

@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>דשבורד עסקי | אופקים שלי</title>
+<meta name="description" content="דשבורד אנליטיקה לבעלי עסקים - צפיות, חיוגים, מימושי קופונים וסטטיסטיקות.">
+<meta name="robots" content="noindex,nofollow">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, var(--cream) 0%, #FFFFFF 100%); }
+
+  .dash-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #243B6E 60%, var(--blue) 100%);
+    color: #fff;
+    padding: 36px 24px 56px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dash-hero::before {
+    content: ''; position: absolute; top: -100px; right: -80px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(245,158,11,0.15) 0%, transparent 70%);
+  }
+  .dash-hero-inner {
+    max-width: 1080px; margin: 0 auto;
+    position: relative; z-index: 1;
+  }
+  .dash-eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 14px; border-radius: 100px;
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 2px; color: var(--orange);
+    margin-bottom: 12px; text-transform: uppercase;
+  }
+  .dash-hero h1 {
+    font-size: clamp(24px, 4vw, 32px);
+    font-weight: 900; margin: 0 0 6px;
+    letter-spacing: -0.02em;
+  }
+  .dash-hero .biz-name {
+    font-size: 16px; opacity: 0.88;
+    display: flex; align-items: center; gap: 10px;
+    flex-wrap: wrap;
+  }
+  .biz-select {
+    margin-top: 14px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+  }
+  .biz-select option { background: var(--navy); color: #fff; }
+
+  .range-selector {
+    display: inline-flex;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 100px;
+    padding: 4px;
+    margin-top: 14px;
+    gap: 2px;
+  }
+  .range-btn {
+    background: transparent; border: none;
+    color: rgba(255,255,255,0.6);
+    padding: 6px 16px; border-radius: 100px;
+    font-family: inherit; font-weight: 700; font-size: 12px;
+    cursor: pointer; transition: all 0.15s;
+  }
+  .range-btn.active { background: var(--orange); color: var(--navy); }
+
+  /* ── KPI Cards ── */
+  .kpi-grid {
+    max-width: 1080px; margin: -32px auto 24px;
+    padding: 0 16px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+    position: relative; z-index: 2;
+  }
+  .kpi-card {
+    background: #fff;
+    border-radius: 14px;
+    padding: 16px 18px;
+    box-shadow: 0 8px 24px rgba(26,46,92,0.08);
+    border: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .kpi-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .kpi-card.views .kpi-icon { background: linear-gradient(135deg, var(--blue), #3B82F6); color: #fff; }
+  .kpi-card.phone .kpi-icon { background: linear-gradient(135deg, var(--green), #84CC16); color: #fff; }
+  .kpi-card.nav .kpi-icon { background: linear-gradient(135deg, var(--orange), var(--orange-dk)); color: #fff; }
+  .kpi-card.coupon .kpi-icon { background: linear-gradient(135deg, #DC2626, #EF4444); color: #fff; }
+  .kpi-card.whatsapp .kpi-icon { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; }
+  .kpi-card.coupon-view .kpi-icon { background: linear-gradient(135deg, #7C3AED, #A78BFA); color: #fff; }
+
+  .kpi-content { flex: 1; min-width: 0; }
+  .kpi-num {
+    font-size: 26px; font-weight: 900;
+    color: var(--navy); line-height: 1;
+    font-variant-numeric: tabular-nums;
+  }
+  .kpi-label {
+    font-size: 12px; color: var(--ink-soft);
+    font-weight: 700; margin-top: 4px;
+  }
+
+  /* ── Chart ── */
+  .chart-section {
+    max-width: 1080px; margin: 0 auto 24px;
+    padding: 0 16px;
+  }
+  .chart-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 4px 16px rgba(26,46,92,0.06);
+    border: 1px solid var(--line);
+  }
+  .chart-title {
+    font-size: 16px; font-weight: 900;
+    color: var(--navy); margin: 0 0 4px;
+  }
+  .chart-subtitle {
+    font-size: 13px; color: var(--ink-soft);
+    margin: 0 0 18px;
+  }
+  #chart-canvas { width: 100%; height: 200px; display: block; }
+
+  /* ── State Messages ── */
+  .state-msg {
+    max-width: 720px; margin: 60px auto;
+    text-align: center; padding: 40px 24px;
+    background: #fff; border-radius: 16px;
+    border: 1px solid var(--line);
+  }
+  .state-msg-icon {
+    width: 60px; height: 60px;
+    background: var(--cream); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 14px; color: var(--ink-mute);
+  }
+  .state-msg h3 { font-size: 20px; font-weight: 900; color: var(--navy); margin: 0 0 8px; }
+  .state-msg p { color: var(--ink-soft); margin: 0 0 18px; }
+  .state-msg .btn-filled {
+    display: inline-block; padding: 12px 28px;
+    background: var(--orange); color: var(--navy);
+    border-radius: 10px; text-decoration: none; font-weight: 900;
+    border: none; cursor: pointer; font-family: inherit;
+  }
+
+  /* ── Insights Box ── */
+  .insights-section {
+    max-width: 1080px; margin: 0 auto 60px;
+    padding: 0 16px;
+  }
+  .insights-card {
+    background: linear-gradient(135deg, var(--orange-soft) 0%, #FFFFFF 100%);
+    border: 1.5px solid var(--orange);
+    border-radius: 16px;
+    padding: 18px 22px;
+    display: flex; gap: 14px;
+    align-items: flex-start;
+  }
+  .insights-icon {
+    width: 36px; height: 36px;
+    background: var(--orange); color: var(--navy);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .insights-content h4 {
+    font-size: 15px; font-weight: 900;
+    color: var(--navy); margin: 0 0 4px;
+  }
+  .insights-content p {
+    font-size: 13px; color: var(--ink-soft);
+    line-height: 1.6; margin: 0;
+  }
+
+  @media (max-width: 480px) {
+    .kpi-grid { grid-template-columns: 1fr 1fr; }
+    .kpi-num { font-size: 22px; }
+    .insights-card { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <div id="loading-state" class="state-msg" style="margin-top:60px">
+    <div class="state-msg-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite">
+        <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+      </svg>
+    </div>
+    <h3>טוען...</h3>
+  </div>
+
+  <div id="not-logged-in" class="state-msg" style="display:none">
+    <div class="state-msg-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+      </svg>
+    </div>
+    <h3>נדרשת התחברות</h3>
+    <p>כדי לצפות בדשבורד העסקי, אנא התחבר תחילה</p>
+    <button class="btn-filled" onclick="if(typeof mofOpenAuth==='function')mofOpenAuth()">התחברות / הרשמה</button>
+  </div>
+
+  <div id="no-business" class="state-msg" style="display:none">
+    <div class="state-msg-icon">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/>
+      </svg>
+    </div>
+    <h3>אין לך עסקים רשומים</h3>
+    <p>כדי לקבל גישה לדשבורד, אנא רשום קודם את העסק שלך</p>
+    <a href="/biz-signup" class="btn-filled">רישום עסק חדש</a>
+  </div>
+
+  <div id="dashboard-content" style="display:none">
+
+    <section class="dash-hero">
+      <div class="dash-hero-inner">
+        <div class="dash-eyebrow">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+          דשבורד עסקי
+        </div>
+        <h1>סטטיסטיקות העסק</h1>
+        <div class="biz-name" id="biz-name-row">
+          <span id="current-biz-name">—</span>
+        </div>
+        <select id="biz-selector" class="biz-select" style="display:none" onchange="changeBiz(this.value)"></select>
+        <div class="range-selector">
+          <button class="range-btn" data-days="7" onclick="changeRange(7)">7 ימים</button>
+          <button class="range-btn active" data-days="30" onclick="changeRange(30)">30 ימים</button>
+          <button class="range-btn" data-days="90" onclick="changeRange(90)">90 ימים</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card views">
+        <div class="kpi-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-num" id="kpi-views">0</div>
+          <div class="kpi-label">צפיות בכרטיס</div>
+        </div>
+      </div>
+
+      <div class="kpi-card phone">
+        <div class="kpi-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12.7 19.79 19.79 0 0 1 1.62 4.13 2 2 0 0 1 3.59 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-num" id="kpi-phone">0</div>
+          <div class="kpi-label">לחיצות חיוג</div>
+        </div>
+      </div>
+
+      <div class="kpi-card whatsapp">
+        <div class="kpi-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-num" id="kpi-whatsapp">0</div>
+          <div class="kpi-label">לחיצות WhatsApp</div>
+        </div>
+      </div>
+
+      <div class="kpi-card nav">
+        <div class="kpi-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-num" id="kpi-nav">0</div>
+          <div class="kpi-label">בקשות ניווט</div>
+        </div>
+      </div>
+
+      <div class="kpi-card coupon-view">
+        <div class="kpi-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-num" id="kpi-coupon-views">0</div>
+          <div class="kpi-label">צפיות בקופונים</div>
+        </div>
+      </div>
+
+      <div class="kpi-card coupon">
+        <div class="kpi-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-num" id="kpi-coupon-redeems">0</div>
+          <div class="kpi-label">קופונים שמומשו</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Chart -->
+    <section class="chart-section">
+      <div class="chart-card">
+        <h3 class="chart-title">מגמת צפיות</h3>
+        <p class="chart-subtitle" id="chart-subtitle">30 הימים האחרונים</p>
+        <canvas id="chart-canvas"></canvas>
+      </div>
+    </section>
+
+    <!-- Insights -->
+    <section class="insights-section">
+      <div class="insights-card" id="insights-card">
+        <div class="insights-icon">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+        </div>
+        <div class="insights-content">
+          <h4 id="insight-title">תובנה</h4>
+          <p id="insight-body">נמשיך לעקוב אחרי הנתונים שלך</p>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// משתמש ב-window.SB_URL ו-window.SB_KEY מ-site.js
+let sb = null;
+let currentUser = null;
+let currentBizId = null;
+let currentDays = 30;
+let myBusinesses = [];
+
+// פונקציית esc מ-site.js (window.esc)
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    showState('not-logged-in');
+    return;
+  }
+  currentUser = session.user;
+
+  // טען רשימת עסקים של המשתמש
+  // הערה: עמודה שמקשרת user→business משתנה (owner_id / user_id)
+  const isAdmin = (currentUser.email || '').toLowerCase() === 'refael@tedgi.co.il';
+  let query = sb.from('businesses').select('id,business_name,name,owner_id,status');
+
+  if (!isAdmin) {
+    query = query.eq('owner_id', currentUser.id);
+  } else {
+    query = query.limit(20).order('created_at', { ascending: false });
+  }
+
+  const { data, error } = await query;
+  if (error) {
+    console.warn('biz fetch error', error);
+    showState('no-business');
+    return;
+  }
+
+  myBusinesses = (data || []).filter(b => b.id);
+  if (myBusinesses.length === 0) {
+    showState('no-business');
+    return;
+  }
+
+  // עסק לפי URL או הראשון
+  const urlBizId = new URLSearchParams(location.search).get('biz');
+  currentBizId = urlBizId && myBusinesses.find(b => b.id === urlBizId)
+    ? urlBizId : myBusinesses[0].id;
+
+  // אם יש כמה עסקים - הצג בורר
+  if (myBusinesses.length > 1) {
+    const selector = document.getElementById('biz-selector');
+    selector.innerHTML = myBusinesses
+      .map(b => `<option value="${b.id}" ${b.id === currentBizId ? 'selected' : ''}>${esc(b.business_name || b.name || 'עסק')}</option>`)
+      .join('');
+    selector.style.display = '';
+  }
+
+  showState('dashboard-content');
+  await loadData();
+}
+
+function showState(stateId) {
+  ['loading-state', 'not-logged-in', 'no-business', 'dashboard-content'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = id === stateId ? '' : 'none';
+  });
+}
+
+async function loadData() {
+  const biz = myBusinesses.find(b => b.id === currentBizId);
+  document.getElementById('current-biz-name').textContent = biz?.business_name || biz?.name || 'עסק';
+  document.getElementById('chart-subtitle').textContent = `${currentDays} הימים האחרונים`;
+
+  try {
+    const { data, error } = await sb.rpc('get_business_analytics', {
+      p_business_id: currentBizId,
+      p_days: currentDays
+    });
+
+    if (error) throw error;
+    if (data && data.error) throw new Error(data.error);
+
+    const d = data || {};
+    document.getElementById('kpi-views').textContent = (d.total_views || 0).toLocaleString('he-IL');
+    document.getElementById('kpi-phone').textContent = (d.total_phone_clicks || 0).toLocaleString('he-IL');
+    document.getElementById('kpi-whatsapp').textContent = (d.total_whatsapp_clicks || 0).toLocaleString('he-IL');
+    document.getElementById('kpi-nav').textContent = (d.total_nav_clicks || 0).toLocaleString('he-IL');
+    document.getElementById('kpi-coupon-views').textContent = (d.total_coupon_views || 0).toLocaleString('he-IL');
+    document.getElementById('kpi-coupon-redeems').textContent = (d.total_coupon_redeems || 0).toLocaleString('he-IL');
+
+    drawChart(d.daily_views || []);
+    updateInsights(d);
+  } catch (e) {
+    console.error('analytics error', e);
+    // נסה בלי ה-RPC - שאילתות ישירות
+    await loadDataFallback();
+  }
+}
+
+async function loadDataFallback() {
+  const sinceISO = new Date(Date.now() - currentDays * 86400000).toISOString();
+
+  const [viewsRes, clicksRes] = await Promise.all([
+    sb.from('business_views').select('created_at').eq('business_id', currentBizId).gte('created_at', sinceISO),
+    sb.from('business_clicks').select('click_type,created_at').eq('business_id', currentBizId).gte('created_at', sinceISO)
+  ]);
+
+  const views = viewsRes.data || [];
+  const clicks = clicksRes.data || [];
+  const byType = (t) => clicks.filter(c => c.click_type === t).length;
+
+  document.getElementById('kpi-views').textContent = views.length.toLocaleString('he-IL');
+  document.getElementById('kpi-phone').textContent = byType('phone').toLocaleString('he-IL');
+  document.getElementById('kpi-whatsapp').textContent = byType('whatsapp').toLocaleString('he-IL');
+  document.getElementById('kpi-nav').textContent = byType('navigation').toLocaleString('he-IL');
+  document.getElementById('kpi-coupon-views').textContent = byType('coupon_view').toLocaleString('he-IL');
+  document.getElementById('kpi-coupon-redeems').textContent = byType('coupon_redeem').toLocaleString('he-IL');
+
+  // קיבוץ יומי
+  const dailyMap = {};
+  views.forEach(v => {
+    const day = v.created_at.slice(0,10);
+    dailyMap[day] = (dailyMap[day] || 0) + 1;
+  });
+  const daily = Object.entries(dailyMap)
+    .map(([day, views]) => ({day, views}))
+    .sort((a,b) => a.day.localeCompare(b.day));
+
+  drawChart(daily);
+  updateInsights({
+    total_views: views.length,
+    total_phone_clicks: byType('phone'),
+    total_coupon_redeems: byType('coupon_redeem'),
+    daily_views: daily
+  });
+}
+
+function drawChart(daily) {
+  const canvas = document.getElementById('chart-canvas');
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+
+  // יצירת מערך מלא של ימים (גם ימים בלי צפיות)
+  const allDays = [];
+  for (let i = currentDays - 1; i >= 0; i--) {
+    const d = new Date(Date.now() - i * 86400000);
+    const dayStr = d.toISOString().slice(0, 10);
+    const found = daily.find(x => x.day === dayStr);
+    allDays.push({ day: dayStr, views: found ? found.views : 0, date: d });
+  }
+
+  // הכנת canvas רטינה
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = 200 * dpr;
+  ctx.scale(dpr, dpr);
+  canvas.style.height = '200px';
+  ctx.clearRect(0, 0, rect.width, 200);
+
+  const W = rect.width;
+  const H = 200;
+  const padX = 30, padY = 20;
+  const chartW = W - 2 * padX;
+  const chartH = H - 2 * padY;
+
+  const max = Math.max(1, ...allDays.map(d => d.views));
+  const stepX = chartW / Math.max(1, allDays.length - 1);
+
+  // קווי רקע
+  ctx.strokeStyle = '#E5E7EB';
+  ctx.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = padY + (chartH * i / 4);
+    ctx.beginPath();
+    ctx.moveTo(padX, y);
+    ctx.lineTo(W - padX, y);
+    ctx.stroke();
+  }
+
+  // קו נתונים
+  const pts = allDays.map((d, i) => ({
+    x: padX + i * stepX,
+    y: padY + chartH - (d.views / max) * chartH,
+    views: d.views,
+    date: d.date
+  }));
+
+  // gradient fill
+  const gradient = ctx.createLinearGradient(0, padY, 0, H - padY);
+  gradient.addColorStop(0, 'rgba(245, 158, 11, 0.3)');
+  gradient.addColorStop(1, 'rgba(245, 158, 11, 0)');
+  ctx.fillStyle = gradient;
+  ctx.beginPath();
+  ctx.moveTo(pts[0].x, H - padY);
+  pts.forEach(p => ctx.lineTo(p.x, p.y));
+  ctx.lineTo(pts[pts.length - 1].x, H - padY);
+  ctx.closePath();
+  ctx.fill();
+
+  // הקו עצמו
+  ctx.strokeStyle = '#F59E0B';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  ctx.lineCap = 'round';
+  ctx.beginPath();
+  pts.forEach((p, i) => {
+    if (i === 0) ctx.moveTo(p.x, p.y);
+    else ctx.lineTo(p.x, p.y);
+  });
+  ctx.stroke();
+
+  // נקודות
+  ctx.fillStyle = '#F59E0B';
+  pts.forEach(p => {
+    if (p.views > 0) {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  });
+
+  // תוויות צירים
+  ctx.fillStyle = '#94A3B8';
+  ctx.font = '11px Heebo, sans-serif';
+  ctx.textAlign = 'center';
+
+  // X axis - 5 תוויות
+  const labelCount = 5;
+  for (let i = 0; i < labelCount; i++) {
+    const idx = Math.floor((allDays.length - 1) * i / (labelCount - 1));
+    const p = pts[idx];
+    const d = allDays[idx].date;
+    const label = `${d.getDate()}/${d.getMonth() + 1}`;
+    ctx.fillText(label, p.x, H - 4);
+  }
+
+  // Y axis - max
+  ctx.textAlign = 'right';
+  ctx.fillText(max.toLocaleString('he-IL'), padX - 4, padY + 4);
+  ctx.fillText('0', padX - 4, H - padY + 4);
+}
+
+function updateInsights(d) {
+  const views = d.total_views || 0;
+  const phones = d.total_phone_clicks || 0;
+  const redeems = d.total_coupon_redeems || 0;
+
+  let title, body;
+
+  if (views === 0) {
+    title = 'אין עדיין צפיות';
+    body = 'כשעסק שלך מתפרסם ולקוחות מגיעים, תראה את הנתונים כאן.';
+  } else if (phones / Math.max(1, views) > 0.15) {
+    title = 'שיעור המרה מצוין';
+    body = `${phones} מתוך ${views} מבקרים התקשרו אליך - שיעור המרה של ${Math.round(phones/views*100)}%, מעל הממוצע!`;
+  } else if (redeems > 0) {
+    title = 'הקופונים שלך עובדים';
+    body = `${redeems} לקוחות מימשו את הקופונים שלך ב-${currentDays} הימים האחרונים.`;
+  } else if (views > 50) {
+    title = 'יש לך תנועה - בוא נגדיל המרות';
+    body = `${views} אנשים צפו בכרטיס, אבל רק ${phones} התקשרו. שקול להוסיף קופון מושך או מספר טלפון בולט יותר.`;
+  } else {
+    title = `${views} צפיות ב-${currentDays} הימים האחרונים`;
+    body = `${phones} לחיצות חיוג, ${d.total_nav_clicks || 0} ניווטים. ככל שתוסיף קופונים תקבל יותר תנועה.`;
+  }
+
+  document.getElementById('insight-title').textContent = title;
+  document.getElementById('insight-body').textContent = body;
+}
+
+function changeRange(days) {
+  currentDays = days;
+  document.querySelectorAll('.range-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.days, 10) === days);
+  });
+  loadData();
+}
+
+function changeBiz(bizId) {
+  currentBizId = bizId;
+  const url = new URL(location);
+  url.searchParams.set('biz', bizId);
+  window.history.replaceState({}, '', url);
+  loadData();
+}
+
+window.changeRange = changeRange;
+window.changeBiz = changeBiz;
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+<style>@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }</style>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>אופקים שלי — עולה לאוויר בקרוב</title>
+<meta name="description" content="הקהילה הדיגיטלית של העיר אופקים. עסקים, בעלי מקצוע, תושבים — כולם במקום אחד. עולה לאוויר בקרוב.">
+<link rel="canonical" href="https://myofaqim.co.il/coming-soon">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+body{background:linear-gradient(180deg,#0A1530 0%,#0D1B3E 100%);color:var(--cream);min-height:100vh}
+.coming-page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:30px 20px;position:relative;overflow:hidden}
+.coming-stars{position:absolute;inset:0;pointer-events:none}
+.star{position:absolute;background:var(--gold);border-radius:50%;opacity:0.5;animation:twinkle 3s ease-in-out infinite}
+
+.coming-content{max-width:680px;text-align:center;position:relative;z-index:1}
+.coming-brand{font-family:var(--sans);font-size:48px;font-weight:900;color:var(--cream);letter-spacing:-0.02em;margin-bottom:10px}
+.coming-brand .accent{color:var(--gold);font-style:italic;font-weight:500}
+.coming-sub{font-size:12px;color:var(--gold);letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:48px}
+
+.coming-frame{border:1px solid rgba(200,169,94,0.3);padding:48px 36px;background:rgba(13,27,62,0.4);backdrop-filter:blur(6px);margin-bottom:32px}
+.coming-frame::before,.coming-frame::after{content:'';position:absolute;width:28px;height:28px;border:1.5px solid var(--gold)}
+
+.coming-title{font-family:var(--sans);font-size:clamp(36px,5vw,52px);font-weight:900;color:var(--cream);line-height:1.15;margin-bottom:18px;letter-spacing:-0.02em}
+.coming-title em{font-style:italic;color:var(--gold);font-weight:500;display:block;margin-top:6px}
+
+.coming-divider{width:60px;height:1px;background:var(--gold);margin:24px auto;position:relative}
+.coming-divider::before{content:'';position:absolute;width:8px;height:8px;background:var(--gold);transform:rotate(45deg);top:-4px;right:50%;margin-right:-4px}
+
+.coming-tagline{font-size:16px;line-height:1.7;color:rgba(255,255,255,0.8);max-width:480px;margin:0 auto 32px}
+
+.coming-features{display:flex;justify-content:center;gap:32px;flex-wrap:wrap;margin:32px 0}
+.feat-item{display:flex;flex-direction:column;gap:4px;text-align:center}
+.feat-num{font-family:var(--sans);font-size:36px;font-weight:900;color:var(--gold);line-height:1;letter-spacing:-0.02em}
+.feat-lbl{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:rgba(255,255,255,0.65);font-weight:700}
+
+.coming-cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:32px}
+.coming-btn-primary{padding:14px 28px;background:var(--gold);color:var(--navy);font-weight:800;letter-spacing:0.5px;font-size:14px;border-radius:2px;transition:background .2s}
+.coming-btn-primary:hover{background:#fff;color:var(--navy)}
+.coming-btn-secondary{padding:14px 28px;border:1.5px solid rgba(255,255,255,0.3);color:var(--cream);font-weight:700;font-size:14px;border-radius:2px;transition:all .2s}
+.coming-btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+
+.coming-footer{margin-top:32px;font-size:12px;color:rgba(255,255,255,0.4);letter-spacing:0.5px}
+.coming-footer a{color:var(--gold)}
+
+@keyframes twinkle{0%,100%{opacity:0.2;transform:scale(0.8)}50%{opacity:0.9;transform:scale(1.2)}}
+</style>
+</head>
+<body>
+<div class="coming-page">
+  <div class="coming-stars" id="stars"></div>
+
+  <div class="coming-content">
+    <div class="coming-brand">אופקים <span class="accent">שלי</span></div>
+    <div class="coming-sub">MyOfaqim.co.il</div>
+
+    <div class="coming-frame" style="position:relative">
+      <h1 class="coming-title">
+        עולה לאוויר
+        <em>בקרוב</em>
+      </h1>
+
+      <div class="coming-divider"></div>
+
+      <p class="coming-tagline">
+        הקהילה הדיגיטלית של העיר אופקים.<br>
+        עסקים, בעלי מקצוע, תושבים — כולם במקום אחד.
+      </p>
+
+      <div class="coming-features">
+        <div class="feat-item">
+          <div class="feat-num">45K</div>
+          <div class="feat-lbl">תושבים</div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-num">1,500</div>
+          <div class="feat-lbl">עסקים</div>
+        </div>
+        <div class="feat-item">
+          <div class="feat-num">∞</div>
+          <div class="feat-lbl">אפשרויות</div>
+        </div>
+      </div>
+
+      <div class="coming-cta">
+        <a href="/subscribe" class="coming-btn-primary">להישאר מעודכן</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="coming-btn-secondary">WhatsApp</a>
+      </div>
+    </div>
+
+    <div class="coming-footer">
+      © 2026 MyOfaqim.co.il · <a href="tel:0542338233">054-233-8233</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  function generateStars() {
+    const container = document.getElementById('stars');
+    let html = '';
+    for (let i = 0; i < 80; i++) {
+      const size = (Math.random() * 2 + 1).toFixed(1);
+      const top = (Math.random() * 100).toFixed(1);
+      const left = (Math.random() * 100).toFixed(1);
+      const delay = (Math.random() * 3).toFixed(2);
+      html += `<div class="star" style="width:${size}px;height:${size}px;top:${top}%;left:${left}%;animation-delay:${delay}s"></div>`;
+    }
+    container.innerHTML = html;
+  }
+  generateStars();
+</script>
+</body>
+</html>

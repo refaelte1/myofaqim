@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>שיעורי תורה באופקים | אופקים שלי</title>
+<meta name="description" content="לוח שיעורי תורה בעיר אופקים — מסכתות, פרשת השבוע, הלכה, חסידות, וזמני שיעורים.">
+<link rel="canonical" href="https://myofaqim.co.il/torah-lessons">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:title" content="שיעורי תורה באופקים">
+<meta property="og:description" content="לוח שיעורי תורה בעיר">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/zmanim">יהדות</a> · <span>שיעורי תורה</span></div>
+    <h1>שיעורי <em>תורה</em> באופקים</h1>
+    <p>לוח שיעורים בעיר אופקים — מסכתות, פרשת השבוע, הלכה, חסידות, מוסר ועוד. בחרו שיעור והצטרפו.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="tl-search" class="search-input" placeholder="חפשו לפי רב, נושא או מקום..." oninput="renderLessons()">
+      <select id="tl-day" class="filter-select" onchange="renderLessons()">
+        <option value="">כל הימים</option>
+        <option value="ראשון">ראשון</option>
+        <option value="שני">שני</option>
+        <option value="שלישי">שלישי</option>
+        <option value="רביעי">רביעי</option>
+        <option value="חמישי">חמישי</option>
+        <option value="שישי">שישי</option>
+        <option value="שבת">שבת</option>
+        <option value="יומי">יומי</option>
+      </select>
+    </div>
+
+    <div id="tl-count" class="result-count"></div>
+
+    <div id="tl-area" class="content-grid">
+      <div class="state-loading">טוען שיעורים...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>אתם נותנים שיעור בעיר ורוצים שיירשם?</h3>
+      <p>נשמח להוסיף את השיעור שלכם ללוח. צרו קשר ונעדכן.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+let tlSb;
+let allLessons = [];
+
+async function initTl() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initTl, 100); return; }
+  tlSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadLessons();
+}
+
+async function loadLessons() {
+  try {
+    const { data, error } = await tlSb.from('torah_lessons').select('*')
+      .order('day_of_week', { ascending: true });
+    if (error) throw error;
+    allLessons = (data || []).filter(l => l.is_active !== false);
+    renderLessons();
+  } catch (e) {
+    console.error('[torah-lessons] error:', e);
+    document.getElementById('tl-area').innerHTML =
+      '<div class="state-empty"><h3>בעיה זמנית</h3><p>לא הצלחנו לטעון את הלוח. נסו לרענן.</p></div>';
+  }
+}
+
+function renderLessons() {
+  const search = (document.getElementById('tl-search').value || '').toLowerCase();
+  const day = document.getElementById('tl-day').value;
+
+  let items = allLessons;
+  if (search) {
+    items = items.filter(l => {
+      const text = [l.title, l.rabbi_name, l.topic, l.location, l.description].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+  if (day) items = items.filter(l => l.day_of_week === day);
+
+  document.getElementById('tl-count').innerHTML = `נמצאו <strong>${items.length}</strong> שיעורים`;
+
+  const area = document.getElementById('tl-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>לא נמצאו שיעורים</h3><p>נסו לחפש בצורה אחרת או בחרו יום אחר.</p></div>';
+    return;
+  }
+
+  const esc = window.esc || (s => String(s ?? ''));
+  area.innerHTML = items.map(l => {
+    const phone = l.contact_phone || '';
+    const cleanPhone = phone.replace(/[^0-9]/g, '');
+    const waPhone = cleanPhone.startsWith('0') ? '972' + cleanPhone.slice(1) : cleanPhone;
+
+    return `
+      <div class="content-card">
+        <div class="content-card-header">
+          ${l.day_of_week ? `<span class="content-card-tag">${esc(l.day_of_week)}</span>` : ''}
+          ${l.time_str ? `<span class="content-card-tag blue">${esc(l.time_str)}</span>` : ''}
+        </div>
+        <h3>${esc(l.title || 'ללא שם')}</h3>
+
+        <div class="card-info">
+          ${l.rabbi_name ? `<div class="card-info-row"><strong>הרב:</strong> ${esc(l.rabbi_name)}</div>` : ''}
+          ${l.topic ? `<div class="card-info-row"><strong>נושא:</strong> ${esc(l.topic)}</div>` : ''}
+          ${l.location ? `<div class="card-info-row"><strong>מקום:</strong> ${esc(l.location)}</div>` : ''}
+        </div>
+
+        ${l.description ? `<p>${esc(l.description)}</p>` : ''}
+
+        ${phone ? `
+          <div class="card-actions">
+            <a href="tel:${esc(phone)}" class="card-btn primary">התקשרו</a>
+            <a href="https://wa.me/${esc(waPhone)}" target="_blank" rel="noopener" class="card-btn whatsapp">WhatsApp</a>
+          </div>
+        ` : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initTl);
+} else {
+  initTl();
+}
+</script>
+</body>
+</html>

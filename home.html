@@ -1,0 +1,2367 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+  <!-- SEO Primary -->
+  <title>אופקים שלי | החיים בעיר אופקים — חדשות, עסקים, נדל"ן וקהילה</title>
+  <meta name="description" content="הפלטפורמה הקהילתית של העיר אופקים. חדשות מקומיות, מדריך עסקים, קופונים בלעדיים, נדל"ן, דרושים, זמני תפילה, ושירותי קהילה — הכל במקום אחד.">
+  <meta name="keywords" content="אופקים, עסקים באופקים, חדשות אופקים, נדל&quot;ן אופקים, דרושים אופקים, קופונים אופקים, זמני תפילה אופקים, מבצעים אופקים">
+  <meta name="author" content="MyOfaqim.co.il">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1">
+  <link rel="canonical" href="https://myofaqim.co.il/">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="he_IL">
+  <meta property="og:url" content="https://myofaqim.co.il/">
+  <meta property="og:title" content="אופקים שלי — החיים בעיר אופקים">
+  <meta property="og:description" content="חדשות, עסקים, נדל&quot;ן וקהילה — הפלטפורמה הדיגיטלית של תושבי אופקים.">
+  <meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+  <meta property="og:site_name" content="אופקים שלי">
+
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="אופקים שלי">
+  <meta name="twitter:description" content="הפלטפורמה הקהילתית של העיר אופקים.">
+  <meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+
+  <!-- Icons -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <meta name="theme-color" content="#0D1B3E">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "url": "https://myofaqim.co.il/",
+    "name": "אופקים שלי",
+    "description": "הפלטפורמה הקהילתית של העיר אופקים",
+    "inLanguage": "he-IL",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://myofaqim.co.il/businesses?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": "אופקים שלי",
+      "url": "https://myofaqim.co.il/",
+      "logo": "https://myofaqim.co.il/logo-wide.png",
+      "telephone": "+972-54-233-8233"
+    }
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    "@id": "https://myofaqim.co.il/#org",
+    "name": "אופקים שלי",
+    "url": "https://myofaqim.co.il/",
+    "telephone": "+972-54-233-8233",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "אופקים",
+      "addressRegion": "דרום",
+      "addressCountry": "IL"
+    },
+    "areaServed": "אופקים, ישראל"
+  }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+  <style>
+    :root {
+      --navy:        #0D1B3E;
+      --navy-700:    #14254D;
+      --navy-600:    #1B315E;
+      --gold:        #C8A95E;
+      --gold-dk:     #A88B41;
+      --cream:       #FBFAF7;
+      --cream-warm:  #F5F1E8;
+      --paper:       #FFFFFF;
+      --ink:         #1A1A1A;
+      --ink-soft:    #4A4A4A;
+      --ink-mute:    #8A8A8A;
+      --line:        #E8E4DC;
+      --line-soft:   #F0EDE5;
+      --serif:       'Heebo', system-ui, sans-serif;
+      --sans:        'Heebo', system-ui, -apple-system, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--sans);
+      background: var(--cream);
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1.65;
+      font-weight: 400;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { font-family: var(--sans); cursor: pointer; border: none; background: none; }
+    img { max-width: 100%; display: block; }
+
+    /* Container */
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 32px;
+    }
+    @media (max-width: 720px) { .container { padding: 0 18px; } }
+
+    /* ──────── HEADER ──────── */
+    .site-header {
+      background: var(--paper);
+      border-bottom: 1px solid var(--line);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      backdrop-filter: saturate(180%) blur(12px);
+      background: rgba(255,255,255,0.96);
+    }
+    .header-top {
+      background: var(--navy);
+      color: var(--cream);
+      font-size: 12px;
+      padding: 8px 0;
+    }
+    .header-top .container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .header-top-info {
+      display: flex;
+      gap: 20px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.85);
+    }
+    .header-top-info span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .header-top-actions {
+      display: flex;
+      gap: 18px;
+    }
+    .header-top-actions a {
+      color: rgba(255,255,255,0.85);
+      font-weight: 500;
+      transition: color .15s;
+    }
+    .header-top-actions a:hover { color: var(--gold); }
+
+    .header-main {
+      padding: 22px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+    .brand-logo-img {
+      height: 52px;
+      width: auto;
+      flex-shrink: 0;
+    }
+    .brand-mark {
+      font-family: var(--sans);
+      font-weight: 900;
+      font-size: 32px;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      line-height: 1;
+    }
+    .brand-mark .accent {
+      color: var(--blue);
+      font-style: normal;
+      font-weight: 900;
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: var(--blue);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-weight: 700;
+      margin-top: 4px;
+      direction: ltr;
+    }
+    @media (max-width: 560px) {
+      .brand-logo-img { height: 40px; }
+      .brand-mark { font-size: 24px; }
+      .brand-sub { font-size: 10px; letter-spacing: 1.5px; }
+    }
+
+    /* Navigation */
+    .main-nav {
+      display: flex;
+      gap: 32px;
+      flex: 1;
+      justify-content: center;
+    }
+    .nav-item {
+      position: relative;
+    }
+    .nav-link {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--ink-soft);
+      padding: 28px 0;
+      position: relative;
+      transition: color .15s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .nav-link::after {
+      content: '';
+      position: absolute;
+      bottom: 18px;
+      right: 0;
+      width: 0;
+      height: 2px;
+      background: var(--gold);
+      transition: width .25s ease;
+    }
+    .nav-item:hover .nav-link { color: var(--navy); }
+    .nav-item:hover .nav-link::after { width: 100%; }
+    .nav-link svg {
+      width: 10px;
+      height: 10px;
+      opacity: 0.5;
+      transition: transform .2s;
+    }
+    .nav-item:hover .nav-link svg { transform: rotate(180deg); }
+
+    /* Dropdown */
+    .nav-dropdown {
+      position: absolute;
+      top: 100%;
+      right: -20px;
+      min-width: 240px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      box-shadow: 0 16px 48px rgba(13,27,62,0.12);
+      padding: 14px 0;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-6px);
+      transition: all .2s ease;
+      pointer-events: none;
+      z-index: 50;
+    }
+    .nav-item:hover .nav-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .nav-dropdown a {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 22px;
+      font-size: 14px;
+      color: var(--ink);
+      font-weight: 500;
+      transition: all .15s;
+      border-right: 2px solid transparent;
+    }
+    .nav-dropdown a:hover {
+      background: var(--cream-warm);
+      color: var(--gold-dk);
+      border-right-color: var(--gold);
+    }
+    .nav-dropdown a.featured {
+      color: var(--navy);
+      font-weight: 700;
+    }
+    .nav-dropdown .nav-divider {
+      height: 1px;
+      background: var(--line-soft);
+      margin: 8px 16px;
+    }
+    .nav-dropdown .nav-label {
+      padding: 6px 22px 2px;
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--ink-mute);
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .header-search-btn {
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy);
+      border: 1.5px solid var(--line);
+      border-radius: 2px;
+      transition: all .2s;
+    }
+    .header-search-btn:hover {
+      border-color: var(--navy);
+      background: var(--navy);
+      color: var(--cream);
+    }
+    .sep {
+      opacity: 0.4;
+      margin: 0 4px;
+    }
+    .live-clock {
+      font-family: var(--sans);
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 0.5px;
+      direction: ltr;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-clock::before {
+      content: '';
+      width: 6px;
+      height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.3; }
+    }
+    .btn-outline {
+      padding: 10px 20px;
+      border: 1.5px solid var(--navy);
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 2px;
+      transition: all .2s;
+      background: transparent;
+    }
+    .btn-outline:hover { background: var(--navy); color: var(--cream); }
+    .btn-filled {
+      padding: 10px 20px;
+      background: var(--navy);
+      color: var(--cream);
+      font-size: 14px;
+      font-weight: 700;
+      border-radius: 2px;
+      transition: background .2s;
+    }
+    .btn-filled:hover { background: var(--navy-700); }
+    .btn-gold {
+      padding: 10px 22px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 14px;
+      font-weight: 800;
+      border-radius: 2px;
+      transition: background .2s;
+    }
+    .btn-gold:hover { background: var(--gold-dk); color: var(--paper); }
+
+    /* Mobile menu */
+    .mobile-toggle {
+      display: none;
+      width: 36px;
+      height: 36px;
+      flex-direction: column;
+      justify-content: center;
+      gap: 4px;
+      padding: 0;
+    }
+    .mobile-toggle span {
+      display: block;
+      height: 2px;
+      background: var(--navy);
+      transition: all .25s;
+    }
+    @media (max-width: 1100px) {
+      .main-nav { display: none; }
+      .header-search-btn { display: none; }
+      .mobile-toggle { display: flex; }
+    }
+    @media (max-width: 720px) {
+      .header-actions .btn-filled { display: none; }
+    }
+
+    /* Mobile drawer */
+    .mobile-drawer {
+      display: none;
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: 85%;
+      max-width: 360px;
+      background: var(--paper);
+      box-shadow: -8px 0 32px rgba(0,0,0,0.18);
+      z-index: 1000;
+      padding: 24px;
+      overflow-y: auto;
+      transform: translateX(100%);
+      transition: transform .3s ease;
+    }
+    .mobile-drawer.open {
+      display: block;
+      transform: translateX(0);
+    }
+    .mobile-drawer-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+    .mobile-drawer-close {
+      width: 32px;
+      height: 32px;
+      font-size: 24px;
+      color: var(--ink-soft);
+      line-height: 1;
+    }
+    .mobile-drawer nav .mobile-main {
+      display: block;
+      padding: 14px 0;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--navy);
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .mobile-section {
+      border-bottom: 1px solid var(--line-soft);
+    }
+    .mobile-section summary {
+      padding: 14px 0;
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      user-select: none;
+    }
+    .mobile-section summary::-webkit-details-marker { display: none; }
+    .mobile-section summary .arrow {
+      font-size: 18px;
+      font-weight: 300;
+      color: var(--ink-mute);
+      transition: transform .2s;
+    }
+    .mobile-section[open] summary { color: var(--gold-dk); }
+    .mobile-section[open] .arrow { transform: rotate(45deg); }
+    .mobile-sub {
+      padding: 0 14px 14px;
+    }
+    .mobile-sub a {
+      display: block;
+      padding: 9px 0;
+      font-size: 14px;
+      color: var(--ink-soft);
+      font-weight: 500;
+      border-bottom: none;
+    }
+    .mobile-sub a:hover { color: var(--gold-dk); }
+    .mobile-drawer nav a:hover { color: var(--gold-dk); }
+    .mobile-drawer-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .mobile-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(13,27,62,0.5);
+      z-index: 999;
+    }
+    .mobile-overlay.active { display: block; }
+
+    /* ──────── HERO ──────── */
+    .hero {
+      background: var(--paper);
+      padding: 80px 0 100px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--line);
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: 50px;
+      right: -150px;
+      width: 400px;
+      height: 400px;
+      border: 1px solid var(--line);
+      border-radius: 50%;
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 80px;
+      left: -100px;
+      width: 280px;
+      height: 280px;
+      border: 1px solid var(--gold);
+      border-radius: 50%;
+      opacity: 0.15;
+      pointer-events: none;
+    }
+    .hero-tag {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-dk);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border: 1px solid var(--gold);
+      border-radius: 100px;
+      margin-bottom: 28px;
+      position: relative;
+    }
+    .hero h1 {
+      font-family: var(--sans);
+      font-size: clamp(40px, 6.5vw, 78px);
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+      margin-bottom: 24px;
+      max-width: 900px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+    .hero h1 em {
+      font-style: italic;
+      color: var(--gold-dk);
+      font-weight: 500;
+    }
+    .hero p.lead {
+      font-size: clamp(16px, 1.6vw, 19px);
+      color: var(--ink-soft);
+      line-height: 1.75;
+      max-width: 640px;
+      margin: 0 auto 40px;
+      position: relative;
+    }
+    .hero-cta {
+      display: inline-flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+    }
+    .hero-cta .btn-gold,
+    .hero-cta .btn-outline {
+      padding: 16px 32px;
+      font-size: 15px;
+    }
+
+    /* Search bar */
+    .search-bar-wrap {
+      max-width: 720px;
+      margin: 48px auto 0;
+      position: relative;
+    }
+    .search-bar {
+      display: flex;
+      background: var(--paper);
+      border: 1.5px solid var(--line);
+      border-radius: 2px;
+      box-shadow: 0 12px 40px rgba(13,27,62,0.06);
+      overflow: hidden;
+    }
+    .search-bar:focus-within { border-color: var(--gold); }
+    .search-bar input {
+      flex: 1;
+      padding: 18px 22px;
+      border: none;
+      font-size: 16px;
+      background: transparent;
+      font-family: var(--sans);
+      outline: none;
+      color: var(--ink);
+    }
+    .search-bar input::placeholder { color: var(--ink-mute); }
+    .search-bar button {
+      padding: 0 28px;
+      background: var(--navy);
+      color: var(--cream);
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .search-bar button:hover { background: var(--navy-700); }
+
+    /* Stats strip */
+    .stats-strip {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 36px 0;
+    }
+    .stats-strip .container {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 30px;
+      text-align: center;
+    }
+    .stat {
+      border-right: 1px solid rgba(255,255,255,0.12);
+      padding: 0 12px;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-num {
+      font-family: var(--sans);
+      font-size: 38px;
+      font-weight: 900;
+      color: var(--gold);
+      line-height: 1;
+    }
+    .stat-lbl {
+      font-size: 12px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      margin-top: 8px;
+      font-weight: 600;
+    }
+    @media (max-width: 720px) {
+      .stats-strip .container { grid-template-columns: repeat(2, 1fr); gap: 24px; }
+      .stat { border-right: none; }
+      .stat:nth-child(1), .stat:nth-child(2) { border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 18px; }
+    }
+
+    /* ──────── SECTION COMMON ──────── */
+    section.section {
+      padding: 80px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .section-head {
+      text-align: center;
+      margin-bottom: 56px;
+    }
+    .section-head .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--gold-dk);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .section-head h2 {
+      font-family: var(--sans);
+      font-size: clamp(30px, 4vw, 46px);
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      margin-bottom: 14px;
+    }
+    .section-head h2 em {
+      font-style: italic;
+      color: var(--gold-dk);
+      font-weight: 500;
+    }
+    .section-head p {
+      max-width: 600px;
+      margin: 0 auto;
+      color: var(--ink-soft);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .section-foot {
+      text-align: center;
+      margin-top: 48px;
+    }
+
+    /* ──────── ZMANIM ──────── */
+    /* ──────── FORUM PREVIEW SECTION ──────── */
+    .forum-section {
+      background: var(--cream-warm);
+      padding: 80px 0;
+      border-bottom: 1px solid var(--line);
+    }
+    .forum-wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .forum-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 36px;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+    .forum-head .titles { flex: 1; }
+    .forum-head .eyebrow {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--orange-dk);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+    .forum-head h2 {
+      font-family: var(--brand);
+      font-size: 36px;
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -0.02em;
+    }
+    .forum-head h2 em {
+      font-style: normal;
+      color: var(--blue);
+      font-weight: 900;
+    }
+    .forum-head p {
+      font-size: 14px;
+      color: var(--ink-soft);
+      margin-top: 8px;
+      max-width: 520px;
+    }
+    .forum-head .btn-link {
+      padding: 10px 22px;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background .2s;
+      white-space: nowrap;
+    }
+    .forum-head .btn-link:hover { background: var(--navy); }
+
+    .forum-posts-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
+    }
+
+    .forum-post {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 22px 24px;
+      transition: all .25s;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+    .forum-post:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(26, 46, 92, 0.08);
+      border-color: var(--blue);
+    }
+    .forum-post.pinned { border-right: 3px solid var(--orange); }
+
+    .forum-post-meta {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      font-size: 11px;
+      flex-wrap: wrap;
+    }
+    .forum-post-cat {
+      font-weight: 800;
+      color: var(--orange-dk);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+    }
+    .forum-post-meta .dot { color: var(--ink-mute); opacity: 0.5; }
+    .forum-post-author { color: var(--ink-soft); font-weight: 600; }
+    .forum-post-ago { color: var(--ink-mute); }
+
+    .forum-post-title {
+      font-family: var(--brand);
+      font-size: 17px;
+      font-weight: 800;
+      color: var(--navy);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+    }
+    .forum-post:hover .forum-post-title { color: var(--blue); }
+
+    .forum-post-excerpt {
+      font-size: 13px;
+      color: var(--ink-soft);
+      line-height: 1.6;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .forum-post-foot {
+      display: flex;
+      gap: 14px;
+      padding-top: 10px;
+      margin-top: auto;
+      border-top: 1px solid var(--line-soft);
+      font-size: 12px;
+      color: var(--ink-mute);
+      font-weight: 600;
+    }
+    .forum-post-stat {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .forum-empty {
+      grid-column: 1/-1;
+      text-align: center;
+      padding: 60px 20px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .forum-empty h3 {
+      font-family: var(--brand);
+      font-size: 20px;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .forum-empty p {
+      color: var(--ink-mute);
+      font-size: 14px;
+      margin-bottom: 14px;
+    }
+    .forum-empty a {
+      display: inline-block;
+      padding: 10px 22px;
+      background: var(--orange);
+      color: var(--navy);
+      font-weight: 700;
+      font-size: 13px;
+      border-radius: 6px;
+      text-decoration: none;
+    }
+
+    /* ──────── COUPONS GRID ──────── */
+    .coupons-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+    .coupon-card {
+      background: var(--paper);
+      border: 1px solid var(--line);
+      padding: 28px 26px;
+      transition: all .25s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      min-height: 240px;
+    }
+    .coupon-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 16px 40px rgba(13,27,62,0.08);
+      border-color: var(--gold);
+    }
+    .coupon-discount {
+      font-family: var(--sans);
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--gold-dk);
+      line-height: 1;
+      margin-bottom: 18px;
+    }
+    .coupon-discount small {
+      font-size: 20px;
+      color: var(--ink-mute);
+      font-weight: 500;
+    }
+    .coupon-title {
+      font-family: var(--sans);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.3;
+      margin-bottom: 8px;
+    }
+    .coupon-biz {
+      font-size: 13px;
+      color: var(--ink-mute);
+      font-weight: 600;
+      margin-bottom: 18px;
+      letter-spacing: 0.5px;
+    }
+    .coupon-action {
+      margin-top: auto;
+      padding-top: 18px;
+      border-top: 1px solid var(--line-soft);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 13px;
+    }
+    .coupon-action .expires { color: var(--ink-mute); }
+    .coupon-action .more {
+      color: var(--navy);
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+    .coupon-card.placeholder {
+      background: transparent;
+      border: 1.5px dashed var(--line);
+    }
+    .coupon-card.placeholder .coupon-discount { color: var(--line); }
+    .coupon-card.placeholder .coupon-title { color: var(--ink-mute); }
+
+    /* ──────── SERVICES GRID ──────── */
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 0;
+      border: 1px solid var(--line);
+      background: var(--line);
+      gap: 1px;
+    }
+    .service-card {
+      background: var(--paper);
+      padding: 36px 30px;
+      transition: background .2s;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .service-card:hover {
+      background: var(--cream-warm);
+    }
+    .service-card .ico {
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--navy);
+    }
+    .service-card h3 {
+      font-family: var(--sans);
+      font-size: 22px;
+      font-weight: 700;
+      color: var(--navy);
+    }
+    .service-card p {
+      font-size: 14px;
+      color: var(--ink-soft);
+      line-height: 1.7;
+      flex: 1;
+    }
+    .service-card .link {
+      font-size: 13px;
+      color: var(--gold-dk);
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: gap .2s;
+    }
+    .service-card:hover .link { gap: 14px; }
+
+    /* ──────── NEWS ──────── */
+    .news-section { background: var(--paper); }
+    .news-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      gap: 36px;
+      align-items: stretch;
+    }
+    @media (max-width: 880px) { .news-grid { grid-template-columns: 1fr; } }
+    .news-main, .news-side article {
+      display: flex;
+      flex-direction: column;
+    }
+    .news-img {
+      width: 100%;
+      height: 320px;
+      background: var(--cream-warm);
+      margin-bottom: 24px;
+      overflow: hidden;
+      position: relative;
+    }
+    .news-main h3 {
+      font-family: var(--sans);
+      font-size: 32px;
+      font-weight: 900;
+      color: var(--navy);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      margin-bottom: 12px;
+    }
+    .news-main p {
+      color: var(--ink-soft);
+      font-size: 16px;
+      line-height: 1.7;
+    }
+    .news-side {
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+    .news-side .news-img {
+      height: 140px;
+      margin-bottom: 14px;
+    }
+    .news-side h4 {
+      font-family: var(--sans);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--navy);
+      line-height: 1.35;
+      margin-bottom: 8px;
+    }
+    .news-side p {
+      font-size: 13px;
+      color: var(--ink-mute);
+      line-height: 1.6;
+    }
+    .news-cat {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold-dk);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+    .news-meta {
+      font-size: 12px;
+      color: var(--ink-mute);
+      margin-top: auto;
+      padding-top: 14px;
+      letter-spacing: 0.5px;
+    }
+
+    /* ──────── MODULES ──────── */
+    .modules-section {
+      background: var(--cream-warm);
+    }
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .module-card {
+      background: var(--paper);
+      padding: 40px 32px;
+      border: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all .25s;
+      min-height: 240px;
+    }
+    .module-card:hover {
+      border-color: var(--navy);
+      transform: translateY(-2px);
+    }
+    .module-number {
+      font-family: var(--sans);
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--gold-dk);
+      letter-spacing: 2px;
+    }
+    .module-card h3 {
+      font-family: var(--sans);
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--navy);
+      letter-spacing: -0.01em;
+    }
+    .module-card p {
+      color: var(--ink-soft);
+      flex: 1;
+      line-height: 1.7;
+    }
+    .module-card .link {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ──────── BUSINESS CTA ──────── */
+    .biz-cta {
+      background: var(--navy);
+      color: var(--cream);
+      padding: 100px 0;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .biz-cta::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      right: 5%;
+      width: 400px;
+      height: 400px;
+      border: 1px solid rgba(200,169,94,0.2);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+    .biz-cta::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 5%;
+      width: 240px;
+      height: 240px;
+      border: 1px solid rgba(200,169,94,0.15);
+      border-radius: 50%;
+      transform: translateY(-50%);
+    }
+    .biz-cta .eyebrow {
+      color: var(--gold);
+      font-size: 12px;
+      letter-spacing: 3px;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+      position: relative;
+    }
+    .biz-cta h2 {
+      font-family: var(--sans);
+      font-size: clamp(34px, 5vw, 56px);
+      font-weight: 900;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      max-width: 800px;
+      margin-left: auto;
+      margin-right: auto;
+      position: relative;
+    }
+    .biz-cta h2 em {
+      font-style: italic;
+      color: var(--gold);
+      font-weight: 500;
+    }
+    .biz-cta p {
+      max-width: 580px;
+      margin: 0 auto 40px;
+      color: rgba(255,255,255,0.75);
+      font-size: 17px;
+      line-height: 1.75;
+      position: relative;
+    }
+    .biz-cta-buttons {
+      display: inline-flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      justify-content: center;
+      position: relative;
+    }
+    .biz-cta .btn-gold,
+    .biz-cta .btn-outline-light {
+      padding: 16px 36px;
+      font-size: 15px;
+    }
+    .btn-outline-light {
+      border: 1.5px solid rgba(255,255,255,0.4);
+      color: var(--cream);
+      font-weight: 700;
+      transition: all .2s;
+    }
+    .btn-outline-light:hover {
+      border-color: var(--cream);
+      background: rgba(255,255,255,0.06);
+    }
+
+    /* ──────── FOOTER ──────── */
+    .site-footer {
+      background: var(--navy);
+      color: rgba(255,255,255,0.7);
+      padding: 64px 0 0;
+      border-top: 4px solid var(--gold);
+    }
+    .footer-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
+      gap: 40px;
+      margin-bottom: 48px;
+    }
+    @media (max-width: 1024px) { .footer-grid { grid-template-columns: 1fr 1fr 1fr; } }
+    @media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr 1fr; gap: 32px; } }
+    @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; } }
+
+    .footer-social {
+      display: flex;
+      gap: 12px;
+      margin-top: 22px;
+    }
+    .footer-social a {
+      width: 38px;
+      height: 38px;
+      border: 1px solid rgba(255,255,255,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: rgba(255,255,255,0.7);
+      transition: all .2s;
+    }
+    .footer-social a:hover {
+      border-color: var(--gold);
+      color: var(--gold);
+      transform: translateY(-2px);
+    }
+    .footer-contact a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .footer-contact a svg { opacity: 0.6; flex-shrink: 0; }
+    .footer-contact a:hover svg { opacity: 1; color: var(--gold); }
+
+    .footer-brand .brand-mark {
+      color: var(--cream);
+      font-size: 28px;
+    }
+    .footer-brand .brand-mark .accent {
+      color: #60A5FA;
+      font-style: normal;
+      font-weight: 900;
+    }
+    .footer-brand p {
+      margin-top: 16px;
+      line-height: 1.8;
+      font-size: 14px;
+      max-width: 320px;
+    }
+    .footer-col h5 {
+      color: var(--cream);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 22px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 11px; }
+    .footer-col a {
+      font-size: 14px;
+      color: rgba(255,255,255,0.7);
+      transition: color .15s;
+    }
+    .footer-col a:hover { color: var(--gold); }
+    .footer-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 14px;
+    }
+    .footer-contact a {
+      direction: ltr;
+      text-align: right;
+    }
+
+    .footer-bottom {
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 24px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 0.5px;
+    }
+    .footer-bottom .legal {
+      display: flex;
+      gap: 20px;
+    }
+
+    /* ──────── SHABBAT MODE ──────── */
+    .shabbat-mode {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(180deg, #0A1530 0%, #14254D 60%, #0D1B3E 100%);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 30px 20px;
+      overflow: hidden;
+    }
+    .shabbat-mode.active { display: flex; }
+
+    /* כוכבים ברקע */
+    .shabbat-stars {
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .star {
+      position: absolute;
+      background: var(--gold);
+      border-radius: 50%;
+      opacity: 0.6;
+      animation: twinkle 3s ease-in-out infinite;
+    }
+    @keyframes twinkle {
+      0%,100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 0.9; transform: scale(1.2); }
+    }
+
+    /* מנורת שבת */
+    .shabbat-menorah {
+      position: absolute;
+      top: 8%;
+      right: 50%;
+      transform: translateX(50%);
+      width: 200px;
+      height: 200px;
+      opacity: 0.08;
+      pointer-events: none;
+    }
+
+    .shabbat-content {
+      position: relative;
+      max-width: 720px;
+      width: 100%;
+      text-align: center;
+      color: var(--cream);
+      padding: 40px 30px;
+    }
+
+    .shabbat-frame {
+      border: 1px solid rgba(200,169,94,0.3);
+      padding: 50px 40px;
+      position: relative;
+      background: rgba(13,27,62,0.4);
+      backdrop-filter: blur(6px);
+    }
+    .shabbat-frame::before,
+    .shabbat-frame::after {
+      content: '';
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border: 1.5px solid var(--gold);
+    }
+    .shabbat-frame::before { top: -2px; right: -2px; border-bottom: none; border-left: none; }
+    .shabbat-frame::after { bottom: -2px; left: -2px; border-top: none; border-right: none; }
+
+    .shabbat-greeting {
+      font-size: 12px;
+      letter-spacing: 4px;
+      color: var(--gold);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      font-weight: 700;
+    }
+
+    .shabbat-title {
+      font-family: var(--sans);
+      font-size: clamp(54px, 9vw, 96px);
+      font-weight: 900;
+      color: var(--cream);
+      line-height: 1;
+      letter-spacing: -0.02em;
+      margin-bottom: 14px;
+      text-shadow: 0 4px 30px rgba(200,169,94,0.3);
+    }
+    .shabbat-title em {
+      display: block;
+      font-style: italic;
+      font-weight: 500;
+      color: var(--gold);
+      font-size: 0.7em;
+      margin-top: 8px;
+    }
+
+    .shabbat-divider {
+      width: 80px;
+      height: 1px;
+      background: var(--gold);
+      margin: 28px auto;
+      position: relative;
+    }
+    .shabbat-divider::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      background: var(--gold);
+      transform: rotate(45deg);
+      top: -4px;
+      right: 50%;
+      margin-right: -4px;
+    }
+
+    .shabbat-verse {
+      font-family: var(--sans);
+      font-size: clamp(18px, 2.4vw, 24px);
+      font-style: italic;
+      color: rgba(255,255,255,0.85);
+      max-width: 540px;
+      margin: 0 auto 32px;
+      line-height: 1.7;
+    }
+    .shabbat-verse-source {
+      display: block;
+      font-style: normal;
+      font-size: 13px;
+      color: var(--gold);
+      margin-top: 12px;
+      letter-spacing: 2px;
+    }
+
+    .shabbat-info {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: rgba(200,169,94,0.2);
+      margin: 36px 0 30px;
+      border: 1px solid rgba(200,169,94,0.2);
+    }
+    @media (max-width: 480px) { .shabbat-info { grid-template-columns: 1fr; } }
+    .shabbat-info-item {
+      background: rgba(13,27,62,0.6);
+      padding: 22px 18px;
+    }
+    .shabbat-info-lbl {
+      font-size: 10px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(200,169,94,0.8);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .shabbat-info-val {
+      font-family: var(--sans);
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--cream);
+      direction: ltr;
+    }
+
+    .shabbat-message {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      line-height: 1.8;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    .shabbat-bottom {
+      margin-top: 40px;
+      font-family: var(--sans);
+      font-size: 22px;
+      font-style: italic;
+      color: var(--gold);
+      letter-spacing: 1px;
+    }
+
+    /* Loading */
+    .loader { text-align: center; padding: 60px 20px; color: var(--ink-mute); }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════ SHABBAT MODE ═══════════════ -->
+<div class="shabbat-mode" id="shabbat-mode" aria-hidden="true">
+  <div class="shabbat-stars" id="shabbat-stars"></div>
+
+  <div class="shabbat-content">
+    <div class="shabbat-frame">
+      <div class="shabbat-greeting">אופקים שלי · MyOfaqim.co.il</div>
+
+      <h1 class="shabbat-title">
+        שבת שלום
+        <em id="shabbat-or-chag">ומבורכת</em>
+      </h1>
+
+      <div class="shabbat-divider"></div>
+
+      <p class="shabbat-verse">
+        "וַיְבָרֶךְ אֱלֹהִים אֶת יוֹם הַשְּׁבִיעִי וַיְקַדֵּשׁ אֹתוֹ"
+        <span class="shabbat-verse-source">— בראשית ב', ג'</span>
+      </p>
+
+      <div class="shabbat-info">
+        <div class="shabbat-info-item">
+          <div class="shabbat-info-lbl">כניסת שבת</div>
+          <div class="shabbat-info-val" id="sh-mode-in">—</div>
+        </div>
+        <div class="shabbat-info-item">
+          <div class="shabbat-info-lbl">צאת שבת</div>
+          <div class="shabbat-info-val" id="sh-mode-out">—</div>
+        </div>
+      </div>
+
+      <p class="shabbat-message">
+        האתר סגור לכבוד שבת קודש.<br>
+        ניפגש במוצאי השבת לעדכונים, חדשות וכל מה שקורה בעיר.
+      </p>
+
+      <div class="shabbat-bottom">לכבוד שבת מלכתא</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════ HEADER ═══════════════ -->
+<header class="site-header">
+  <div class="header-top">
+    <div class="container">
+      <div class="header-top-info">
+        <span id="live-clock" class="live-clock">—</span>
+        <span class="sep">·</span>
+        <span id="hebrew-date">—</span>
+        <span class="sep">·</span>
+        <span id="shabbat-times">—</span>
+      </div>
+      <div class="header-top-actions">
+        <a href="tel:0542338233">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener">WhatsApp</a>
+        <a href="/subscribe">ניוזלטר</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="header-main container">
+    <a href="/" class="brand">
+      <img src="/logo.png" alt="אופקים שלי" class="brand-logo-img" onerror="this.style.display='none'">
+      <div>
+        <div class="brand-mark">אופקים <span class="accent">שלי</span></div>
+        <div class="brand-sub">MyOfaqim.co.il</div>
+      </div>
+    </a>
+
+    <nav class="main-nav" aria-label="ניווט ראשי">
+      <div class="nav-item">
+        <a href="/" class="nav-link">בית</a>
+      </div>
+
+      <div class="nav-item">
+        <span class="nav-link">עסקים <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L1 3h10L6 8z"/></svg></span>
+        <div class="nav-dropdown">
+          <div class="nav-label">אינדקסים</div>
+          <a href="/businesses" class="featured">אלפון עסקים בעיר</a>
+          <a href="/professionals" class="featured">בעלי מקצוע</a>
+          <div class="nav-divider"></div>
+          <a href="/biz-signup">הצטרפות עסק חדש</a>
+          <a href="/biz">כניסה לאיזור עסקים</a>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <span class="nav-link">מבצעים <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L1 3h10L6 8z"/></svg></span>
+        <div class="nav-dropdown">
+          <a href="/deals" class="featured">קופונים והטבות</a>
+          <a href="/deals?type=supermarket">מבצעי סופרמרקטים</a>
+          <a href="/deals?type=stores">מבצעי חנויות</a>
+          <a href="/deals?type=weekly">מבצעי השבוע</a>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <span class="nav-link">קהילה <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L1 3h10L6 8z"/></svg></span>
+        <div class="nav-dropdown">
+          <a href="/forum" class="featured">פורום תושבים</a>
+          <a href="/community-events">לוח אירועים</a>
+          <a href="/community-events?type=mat">אירועי המתנ"ס</a>
+          <div class="nav-divider"></div>
+          <a href="/whatsapp-groups">קבוצות וואטסאפ</a>
+          <a href="/subscribe">הצטרפות לניוזלטר</a>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <span class="nav-link">יהדות <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L1 3h10L6 8z"/></svg></span>
+        <div class="nav-dropdown">
+          <a href="/zmanim" class="featured">זמני תפילה</a>
+          <a href="/zmanim?type=day">זמני היום</a>
+          <div class="nav-divider"></div>
+          <a href="/synagogues">בתי כנסת בעיר</a>
+          <a href="/mikvaot">מקוואות</a>
+          <a href="/religious-services">שירותי דת בעיר</a>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <span class="nav-link">לוחות <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L1 3h10L6 8z"/></svg></span>
+        <div class="nav-dropdown">
+          <a href="/realestate" class="featured">לוח נדל"ן</a>
+          <a href="/jobs" class="featured">לוח דרושים</a>
+          <div class="nav-divider"></div>
+          <a href="/realestate?type=sale">דירות למכירה</a>
+          <a href="/realestate?type=rent">דירות להשכרה</a>
+          <a href="/jobs?type=wanted">משרות פנויות</a>
+        </div>
+      </div>
+
+      <div class="nav-item">
+        <span class="nav-link">מידע בעיר <svg viewBox="0 0 12 12" fill="currentColor"><path d="M6 8L1 3h10L6 8z"/></svg></span>
+        <div class="nav-dropdown">
+          <div class="nav-label">עירייה ושירותים</div>
+          <a href="/news">חדשות העיר</a>
+          <a href="/public-services?cat=municipality">אלפון עירייה</a>
+          <div class="nav-label">תחבורה ובריאות</div>
+          <a href="/public-services?cat=transport">קווי אוטובוס ורכבת</a>
+          <a href="/public-services?cat=healthcare">קופות חולים</a>
+          <a href="/public-services?cat=banks">בנקים ודואר</a>
+          <a href="/public-services?cat=emergency">חירום</a>
+          <div class="nav-divider"></div>
+          <a href="/contact" class="featured">יצירת קשר</a>
+        </div>
+      </div>
+    </nav>
+
+    <div class="header-actions">
+      <button class="header-search-btn" onclick="toggleSearch()" aria-label="חיפוש">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      </button>
+      <a href="/biz-signup" class="btn-filled">הצטרפות כעסק</a>
+      <button class="mobile-toggle" onclick="toggleMobileMenu()" aria-label="תפריט">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- Mobile Drawer -->
+<div class="mobile-overlay" id="mobile-overlay" onclick="toggleMobileMenu()"></div>
+<div class="mobile-drawer" id="mobile-drawer">
+  <div class="mobile-drawer-head">
+    <div class="brand-mark" style="font-size:24px">אופקים <span class="accent">שלי</span></div>
+    <button class="mobile-drawer-close" onclick="toggleMobileMenu()" aria-label="סגור">×</button>
+  </div>
+
+  <nav>
+    <a href="/" class="mobile-main">בית</a>
+
+    <details class="mobile-section">
+      <summary>עסקים<span class="arrow">+</span></summary>
+      <div class="mobile-sub">
+        <a href="/businesses">אלפון עסקים בעיר</a>
+        <a href="/professionals">בעלי מקצוע</a>
+        <a href="/biz-signup">הצטרפות עסק חדש</a>
+        <a href="/biz">כניסה לאיזור עסקים</a>
+      </div>
+    </details>
+
+    <details class="mobile-section">
+      <summary>מבצעים<span class="arrow">+</span></summary>
+      <div class="mobile-sub">
+        <a href="/deals">קופונים והטבות</a>
+        <a href="/deals?type=supermarket">מבצעי סופרמרקטים</a>
+        <a href="/deals?type=stores">מבצעי חנויות</a>
+        <a href="/deals?type=weekly">מבצעי השבוע</a>
+      </div>
+    </details>
+
+    <details class="mobile-section">
+      <summary>קהילה<span class="arrow">+</span></summary>
+      <div class="mobile-sub">
+        <a href="/forum">פורום תושבים</a>
+        <a href="/community-events">לוח אירועים</a>
+        <a href="/whatsapp-groups">קבוצות וואטסאפ</a>
+        <a href="/subscribe">הצטרפות לניוזלטר</a>
+      </div>
+    </details>
+
+    <details class="mobile-section">
+      <summary>יהדות<span class="arrow">+</span></summary>
+      <div class="mobile-sub">
+        <a href="/zmanim">זמני תפילה והיום</a>
+        <a href="/synagogues">בתי כנסת בעיר</a>
+        <a href="/mikvaot">מקוואות</a>
+        <a href="/religious-services">שירותי דת</a>
+      </div>
+    </details>
+
+    <details class="mobile-section">
+      <summary>לוחות<span class="arrow">+</span></summary>
+      <div class="mobile-sub">
+        <a href="/realestate">לוח נדל"ן</a>
+        <a href="/jobs">לוח דרושים</a>
+      </div>
+    </details>
+
+    <details class="mobile-section">
+      <summary>מידע בעיר<span class="arrow">+</span></summary>
+      <div class="mobile-sub">
+        <a href="/news">חדשות העיר</a>
+        <a href="/public-services?cat=municipality">אלפון עירייה</a>
+        <a href="/public-services?cat=transport">תחבורה</a>
+        <a href="/public-services?cat=healthcare">קופות חולים</a>
+        <a href="/public-services?cat=banks">בנקים ודואר</a>
+        <a href="/public-services?cat=emergency">חירום</a>
+        <a href="/contact">יצירת קשר</a>
+      </div>
+    </details>
+  </nav>
+
+  <div class="mobile-drawer-actions">
+    <a href="/biz-signup" class="btn-filled" style="text-align:center">הצטרפות כעסק</a>
+    <a href="/biz" class="btn-outline" style="text-align:center">כניסה לאיזור עסקים</a>
+  </div>
+</div>
+
+<!-- ═══════════════ HERO ═══════════════ -->
+<section class="hero">
+  <div class="container">
+    <h1>הכל על העיר<br><em>במקום אחד</em></h1>
+    <p class="lead">חדשות מקומיות, מאות עסקים, קופונים בלעדיים, נדל"ן ודרושים — מקור אחד אמין לכל מה שקורה בעיר שלנו.</p>
+
+    <div class="hero-cta">
+      <a href="/businesses" class="btn-gold">גלה עסקים בעיר</a>
+      <a href="/deals" class="btn-outline">קופונים פעילים</a>
+    </div>
+
+    <div class="search-bar-wrap">
+      <form class="search-bar" action="/businesses" method="get">
+        <input type="text" name="q" placeholder="חפש עסק, שירות או מקצוע..." aria-label="חיפוש">
+        <button type="submit">חפש</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ STATS ═══════════════ -->
+<section class="stats-strip">
+  <div class="container">
+    <div class="stat">
+      <div class="stat-num" id="stat-businesses">—</div>
+      <div class="stat-lbl">עסקים רשומים</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-deals">—</div>
+      <div class="stat-lbl">קופונים פעילים</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num" id="stat-pros">—</div>
+      <div class="stat-lbl">בעלי מקצוע</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">45,000</div>
+      <div class="stat-lbl">תושבי העיר</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FORUM PREVIEW ═══════════════ -->
+<section class="forum-section">
+  <div class="container">
+    <div class="forum-wrap">
+      <div class="forum-head">
+        <div class="titles">
+          <div class="eyebrow">קהילה חיה</div>
+          <h2>על מה <em>מדברים</em> בעיר</h2>
+          <p>הצצה לשיחות החמות בפורום התושבים — שאלות, המלצות ועזרה הדדית.</p>
+        </div>
+        <a href="/forum" class="btn-link">לפורום המלא ←</a>
+      </div>
+
+      <div class="forum-posts-grid" id="forum-posts-grid">
+        <div class="loader" style="grid-column:1/-1">טוען פוסטים מהפורום...</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ COUPONS ═══════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">הטבות בלעדיות</div>
+      <h2>קופונים <em>חמים</em> השבוע</h2>
+      <p>הטבות והנחות בלעדיות לתושבי אופקים מהעסקים האהובים בעיר.</p>
+    </div>
+
+    <div class="coupons-grid" id="coupons-area">
+      <div class="loader" style="grid-column:1/-1">טוען קופונים...</div>
+    </div>
+
+    <div class="section-foot">
+      <a href="/deals" class="btn-outline">לכל הקופונים</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ NEWS ═══════════════ -->
+<section class="section news-section">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">מהעיר</div>
+      <h2>חדשות <em>מקומיות</em></h2>
+      <p>עדכונים, סיפורים ודיווחים מהעיר שלנו.</p>
+    </div>
+
+    <div class="news-grid" id="news-area">
+      <article class="news-main">
+        <div class="news-img" style="background:linear-gradient(135deg,var(--navy),var(--navy-600))"></div>
+        <div class="news-cat">קהילה</div>
+        <h3>חברה דיגיטלית חדשה: אופקים שלי משיקה את הפלטפורמה הקהילתית</h3>
+        <p>פלטפורמה מקיפה לתושבי העיר משלבת חדשות, עסקים, נדל"ן וקופונים בלעדיים. הפלטפורמה זמינה במובייל ובדסקטופ ומכוונת לשרת את 45 אלף תושבי העיר.</p>
+        <div class="news-meta">12 בנובמבר 2025 · 3 דקות קריאה</div>
+      </article>
+      <article>
+        <div class="news-img" style="background:linear-gradient(135deg,var(--gold),var(--gold-dk))"></div>
+        <div class="news-cat">פיתוח</div>
+        <h4>פרויקטים חדשים בשכונת אפיקי נחל מתקדמים בקצב מואץ</h4>
+        <p>מאות יחידות דיור חדשות צפויות להיכנס לשוק בשנה הקרובה.</p>
+        <div class="news-meta">10 בנובמבר 2025</div>
+      </article>
+      <article>
+        <div class="news-img" style="background:linear-gradient(135deg,var(--cream-warm),var(--line))"></div>
+        <div class="news-cat">תרבות</div>
+        <h4>אירועי שמחת תורה מאחדים את הקהילה</h4>
+        <p>הקפות שמחות ברחבי העיר עם השתתפות אלפי תושבים.</p>
+        <div class="news-meta">8 בנובמבר 2025</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ MODULES ═══════════════ -->
+<section class="section modules-section">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">הזירות שלנו</div>
+      <h2>הכל לתושבי <em>אופקים</em></h2>
+      <p>מודולים שמרכזים את כל מה שהעיר מציעה במקום אחד.</p>
+    </div>
+
+    <div class="modules-grid">
+      <a href="/businesses" class="module-card">
+        <div class="module-number">01</div>
+        <h3>מדריך עסקים</h3>
+        <p>מאות עסקים מקומיים — חנויות, מסעדות, שירותים. עם דירוגים, קופונים ופרטי קשר.</p>
+        <span class="link">לצפייה ←</span>
+      </a>
+      <a href="/realestate" class="module-card">
+        <div class="module-number">02</div>
+        <h3>זירת נדל"ן</h3>
+        <p>דירות למכירה ולהשכרה בכל שכונות העיר, פרויקטים חדשים, ומתווכים מקומיים.</p>
+        <span class="link">לחיפוש ←</span>
+      </a>
+      <a href="/jobs" class="module-card">
+        <div class="module-number">03</div>
+        <h3>לוח דרושים</h3>
+        <p>משרות פנויות בעיר, חברות מקומיות וחיפוש עבודה. ישירות בין מעסיקים לעובדים.</p>
+        <span class="link">למשרות ←</span>
+      </a>
+      <a href="/professionals" class="module-card">
+        <div class="module-number">04</div>
+        <h3>בעלי מקצוע</h3>
+        <p>שיפוצניקים, חשמלאים, אינסטלטורים ובעלי מקצוע מאומתים. עם זמינות בזמן אמת.</p>
+        <span class="link">לאינדקס ←</span>
+      </a>
+      <a href="/forum" class="module-card">
+        <div class="module-number">05</div>
+        <h3>פורום תושבים</h3>
+        <p>דיונים, המלצות, שאלות ועזרה הדדית. הקהילה שלנו במקום אחד.</p>
+        <span class="link">להצטרפות ←</span>
+      </a>
+      <a href="/public-services" class="module-card">
+        <div class="module-number">06</div>
+        <h3>שירותי קהילה</h3>
+        <p>קופות חולים, דואר, בנקים, עירייה, חירום ותחבורה. כל המידע במקום אחד.</p>
+        <span class="link">לרשימה ←</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ BUSINESS CTA ═══════════════ -->
+<section class="biz-cta">
+  <div class="container">
+    <div class="eyebrow">לבעלי עסקים</div>
+    <h2>הצטרפו ל-<em>מהפכה</em><br>הדיגיטלית של אופקים</h2>
+    <p>חשיפה למאות תושבים מקומיים בכל יום. דף עסק מקצועי, קופונים, פניות לקוחות, וניהול מלא — מסלולים מ-99 ₪ לחודש.</p>
+    <div class="biz-cta-buttons">
+      <a href="/biz-signup" class="btn-gold">להרשמת עסק</a>
+      <a href="/pricing" class="btn-outline-light">צפייה במסלולים</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════ FOOTER ═══════════════ -->
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand-mark">אופקים <span class="accent">שלי</span></div>
+        <p>הפלטפורמה הקהילתית של העיר אופקים. מקור מהימן אחד לכל מה שקורה בעיר.</p>
+        <div class="footer-social">
+          <a href="https://wa.me/972542338233" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884"/></svg>
+          </a>
+          <a href="https://facebook.com/myofaqim" target="_blank" rel="noopener" aria-label="Facebook">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </a>
+          <a href="https://instagram.com/myofaqim" target="_blank" rel="noopener" aria-label="Instagram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/></svg>
+          </a>
+          <a href="https://t.me/myofaqim" target="_blank" rel="noopener" aria-label="Telegram">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 000 12a12 12 0 0012 12 12 12 0 0012-12A12 12 0 0012 0a12 12 0 00-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 01.171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>עסקים ושירותים</h5>
+        <ul>
+          <li><a href="/businesses">אלפון עסקים</a></li>
+          <li><a href="/professionals">בעלי מקצוע</a></li>
+          <li><a href="/deals">קופונים והטבות</a></li>
+          <li><a href="/realestate">נדל"ן</a></li>
+          <li><a href="/jobs">דרושים</a></li>
+          <li><a href="/biz-signup">הצטרפות עסק</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>יהדות וקהילה</h5>
+        <ul>
+          <li><a href="/zmanim">זמני תפילה</a></li>
+          <li><a href="/synagogues">בתי כנסת</a></li>
+          <li><a href="/mikvaot">מקוואות</a></li>
+          <li><a href="/religious-services">שירותי דת</a></li>
+          <li><a href="/forum">פורום תושבים</a></li>
+          <li><a href="/community-events">אירועים</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>מידע ועירייה</h5>
+        <ul>
+          <li><a href="/news">חדשות העיר</a></li>
+          <li><a href="/public-services?cat=municipality">אלפון עירייה</a></li>
+          <li><a href="/public-services?cat=transport">תחבורה</a></li>
+          <li><a href="/public-services?cat=healthcare">קופות חולים</a></li>
+          <li><a href="/public-services?cat=banks">בנקים ודואר</a></li>
+          <li><a href="/public-services?cat=emergency">חירום</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>צור קשר</h5>
+        <div class="footer-contact">
+          <a href="tel:0542338233">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 10.8 19.79 19.79 0 01.58 2.18 2 2 0 012.55 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 7.5a16 16 0 006.59 6.59l.88-.88a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>
+            054-233-8233
+          </a>
+          <a href="https://wa.me/972542338233" target="_blank" rel="noopener">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163a11.867 11.867 0 01-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.817 11.817 0 018.413 3.488 11.824 11.824 0 013.48 8.414c-.003 6.557-5.338 11.892-11.893 11.892a11.9 11.9 0 01-5.688-1.448L.057 24z"/></svg>
+            WhatsApp
+          </a>
+          <a href="mailto:hello@myofaqim.co.il">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            hello@myofaqim.co.il
+          </a>
+          <a href="/contact" style="margin-top:6px;color:var(--gold);font-weight:600">טופס יצירת קשר ←</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <div>© 2026 MyOfaqim.co.il · כל הזכויות שמורות</div>
+      <div class="legal">
+        <a href="/about">אודות</a>
+        <a href="/privacy">מדיניות פרטיות</a>
+        <a href="/terms">תנאי שימוש</a>
+        <a href="/accessibility">הצהרת נגישות</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // window.SB_URL מ-site.js (window.SB_URL)
+  // window.SB_KEY מ-site.js (window.SB_KEY)
+  // ── Mobile menu
+  function toggleMobileMenu() {
+    document.getElementById('mobile-drawer').classList.toggle('open');
+    document.getElementById('mobile-overlay').classList.toggle('active');
+  }
+
+  // ── Hebrew date
+  const HE_MONTHS_GREG = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
+  const HE_DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
+
+  function setDateHeader() {
+    const now = new Date();
+    const dateStr = `יום ${HE_DAYS[now.getDay()]}, ${now.getDate()} ב${HE_MONTHS_GREG[now.getMonth()]}`;
+    const el = document.getElementById('hebrew-date');
+    if (el) el.textContent = dateStr;
+  }
+
+  // ── שעון חי
+  function updateLiveClock() {
+    const now = new Date();
+    const h = now.getHours().toString().padStart(2, '0');
+    const m = now.getMinutes().toString().padStart(2, '0');
+    const s = now.getSeconds().toString().padStart(2, '0');
+    const el = document.getElementById('live-clock');
+    if (el) el.textContent = `${h}:${m}:${s}`;
+  }
+  setInterval(updateLiveClock, 1000);
+  updateLiveClock();
+
+  // ── יצירת כוכבים במסך שבת
+  function generateStars() {
+    const container = document.getElementById('shabbat-stars');
+    if (!container) return;
+    let html = '';
+    for (let i = 0; i < 80; i++) {
+      const size = (Math.random() * 2 + 1).toFixed(1);
+      const top  = (Math.random() * 100).toFixed(1);
+      const left = (Math.random() * 100).toFixed(1);
+      const delay = (Math.random() * 3).toFixed(2);
+      html += `<div class="star" style="width:${size}px;height:${size}px;top:${top}%;left:${left}%;animation-delay:${delay}s"></div>`;
+    }
+    container.innerHTML = html;
+  }
+
+  // ── בדיקת מצב שבת
+  // נטען זמני שבת מ-API ובודק אם אנחנו בתוך טווח השבת
+  let shabbatTimes = null;
+
+  function isInShabbat() {
+    if (!shabbatTimes || !shabbatTimes.candles || !shabbatTimes.havdalah) return false;
+    const now = new Date();
+    const candles  = new Date(shabbatTimes.candles);
+    const havdalah = new Date(shabbatTimes.havdalah);
+    return now >= candles && now < havdalah;
+  }
+
+  function checkAndApplyShabbat() {
+    if (isInShabbat()) {
+      const modal = document.getElementById('shabbat-mode');
+      if (modal && !modal.classList.contains('active')) {
+        modal.classList.add('active');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+
+        // הצג זמני כניסה/יציאה
+        document.getElementById('sh-mode-in').textContent  = fmtTime(shabbatTimes.candles);
+        document.getElementById('sh-mode-out').textContent = fmtTime(shabbatTimes.havdalah);
+
+        // אם זה חג - הצג "וחג שמח"
+        if (shabbatTimes.is_chag) {
+          document.getElementById('shabbat-or-chag').textContent = 'וחג שמח';
+        }
+        generateStars();
+      }
+    }
+  }
+
+  // ── Search modal placeholder
+  function toggleSearch() {
+    const q = prompt('חפש עסק, שירות או מקצוע:');
+    if (q) window.location.href = '/businesses?q=' + encodeURIComponent(q);
+  }
+  window.toggleSearch = toggleSearch;
+
+  // ── Format time string HH:MM (כבר HH:MM, רק להחזיר אותו) - מ-site.js (window.fmtTimeStr)
+
+  // נשמור גם פונקציה ישנה לזמני שבת שהם ISO
+  function fmtTime(iso) { return window.fmtTimeStr(iso); }
+
+  // ── Load Forum Posts (preview on home)
+  async function loadForumPosts() {
+    try {
+      const sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+      const { data, error } = await sb.from('forum_posts').select('*')
+        .eq('is_active', true)
+        .order('is_pinned', { ascending: false })
+        .order('created_at', { ascending: false })
+        .limit(6);
+      if (error) throw error;
+
+      const grid = document.getElementById('forum-posts-grid');
+      if (!grid) return;
+
+      const CAT_LABELS = {
+        general: 'כללי', help: 'בקשת עזרה', recommend: 'המלצות',
+        municipal: 'עירייה', sell_buy: 'קנייה ומכירה', lost_found: 'אבד ונמצא'
+      };
+
+      function timeAgo(iso) {
+        const diff = (Date.now() - new Date(iso)) / 1000;
+        if (diff < 60) return 'עכשיו';
+        if (diff < 3600) return Math.floor(diff/60) + ' דק';
+        if (diff < 86400) return Math.floor(diff/3600) + ' שע׳';
+        if (diff < 604800) return Math.floor(diff/86400) + ' ימים';
+        return new Date(iso).toLocaleDateString('he-IL');
+      }
+      // esc מ-site.js (window.esc)
+
+      if (!data || !data.length) {
+        grid.innerHTML = `
+          <div class="forum-empty">
+            <h3>הקהילה רק מתחילה</h3>
+            <p>היו הראשונים לפרסם בפורום — שאלה, המלצה או נושא לדיון.</p>
+            <a href="/forum">לפתיחת הפורום</a>
+          </div>`;
+        return;
+      }
+
+      grid.innerHTML = data.map(p => `
+        <a href="/forum" class="forum-post ${p.is_pinned ? 'pinned' : ''}">
+          <div class="forum-post-meta">
+            <span class="forum-post-cat">${CAT_LABELS[p.category] || p.category || ''}</span>
+            <span class="dot">·</span>
+            <span class="forum-post-author">${esc(p.display_name || 'תושב/ת')}</span>
+            <span class="dot">·</span>
+            <span class="forum-post-ago">${timeAgo(p.created_at)}</span>
+          </div>
+          <h3 class="forum-post-title">${esc(p.title)}</h3>
+          ${p.body ? `<p class="forum-post-excerpt">${esc(p.body)}</p>` : ''}
+          <div class="forum-post-foot">
+            <span class="forum-post-stat">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+              ${p.replies_count || 0} תגובות
+            </span>
+            <span class="forum-post-stat">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+              ${p.likes_count || 0}
+            </span>
+          </div>
+        </a>
+      `).join('');
+    } catch(e) {
+      console.warn('[forum-preview]', e);
+      const grid = document.getElementById('forum-posts-grid');
+      if (grid) {
+        grid.innerHTML = `
+          <div class="forum-empty">
+            <h3>הקהילה רק מתחילה</h3>
+            <p>הפורום עולה לאוויר בקרוב. בינתיים, תוכלו להציץ בעמוד הפורום.</p>
+            <a href="/forum">לפורום ←</a>
+          </div>`;
+      }
+    }
+  }
+
+  // ── Load Shabbat times (in background, for Shabbat mode only)
+  async function loadShabbatTimesQuiet() {
+    try {
+      const res = await fetch('/.netlify/functions/zmanim');
+      if (!res.ok) return;
+      const data = await res.json();
+      const T = data.times || {};
+
+      if (T.candle_lighting || T.shabbat_end) {
+        const today = new Date();
+        const dow = today.getDay();
+        const fridayOffset = (5 - dow + 7) % 7;
+        const friday = new Date(today);
+        friday.setDate(today.getDate() + fridayOffset);
+        const saturday = new Date(friday);
+        saturday.setDate(friday.getDate() + 1);
+
+        function buildDate(dateObj, hhmm) {
+          if (!hhmm) return null;
+          const [h, m] = hhmm.split(':').map(Number);
+          const d = new Date(dateObj);
+          d.setHours(h, m, 0, 0);
+          return d.toISOString();
+        }
+
+        shabbatTimes = {
+          candles: buildDate(friday, T.candle_lighting),
+          havdalah: buildDate(saturday, T.shabbat_end),
+          is_chag: false
+        };
+
+        const hdr = document.getElementById('shabbat-times');
+        if (hdr && T.candle_lighting) {
+          hdr.textContent = 'כניסת שבת ' + T.candle_lighting;
+        }
+
+        checkAndApplyShabbat();
+        setInterval(checkAndApplyShabbat, 60000);
+      }
+    } catch(e) { console.warn('[shabbat]', e); }
+  }
+
+  // ── Load Stats & Coupons
+  async function loadStatsAndCoupons() {
+    const sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+    // Stats
+    try {
+      const [bizRes, dealsRes, prosRes] = await Promise.all([
+        sb.from('businesses').select('id', { count: 'exact', head: true }).eq('status','approved'),
+        sb.from('coupons').select('id', { count: 'exact', head: true }).eq('status','active'),
+        sb.from('professionals').select('id', { count: 'exact', head: true }).eq('status','approved')
+      ]);
+      document.getElementById('stat-businesses').textContent = bizRes.count   || 0;
+      document.getElementById('stat-deals').textContent      = dealsRes.count || 0;
+      document.getElementById('stat-pros').textContent       = prosRes.count  || 0;
+    } catch(e) { console.warn('[stats]', e); }
+
+    // Coupons
+    try {
+      const { data } = await sb.from('coupons')
+        .select('id, title, discount_value, discount_type, expires_at, business_id, businesses(name)')
+        .eq('status','active').limit(6).order('created_at', { ascending: false });
+
+      const area = document.getElementById('coupons-area');
+      if (!data || !data.length) {
+        area.innerHTML = `
+          <div class="coupon-card placeholder">
+            <div class="coupon-discount">—</div>
+            <div class="coupon-title">קופונים בקרוב</div>
+            <div class="coupon-biz">העסקים הראשונים עולים בקרוב</div>
+          </div>
+          <div class="coupon-card placeholder">
+            <div class="coupon-discount">—</div>
+            <div class="coupon-title">הצטרפו עכשיו</div>
+            <div class="coupon-biz">היו הראשונים לראות מבצעים</div>
+          </div>
+          <div class="coupon-card placeholder">
+            <div class="coupon-discount">—</div>
+            <div class="coupon-title">הירשמו לעדכונים</div>
+            <div class="coupon-biz">קבלו עדכונים על קופונים חדשים</div>
+          </div>`;
+        return;
+      }
+
+      area.innerHTML = data.map(c => {
+        const isPercent = c.discount_type === 'percent';
+        const value = c.discount_value || '';
+        const display = isPercent ? `${value}<small>% הנחה</small>` :
+                        c.discount_type === 'fixed' ? `${value}<small> ₪</small>` :
+                        `<small>הטבה</small>`;
+        const exp = c.expires_at
+          ? `בתוקף עד ${new Date(c.expires_at).toLocaleDateString('he-IL')}`
+          : 'מבצע מתמשך';
+        return `
+          <a href="/business?id=${c.business_id}" class="coupon-card">
+            <div class="coupon-discount">${display}</div>
+            <div class="coupon-title">${escape(c.title)}</div>
+            <div class="coupon-biz">${escape(c.businesses?.name || 'עסק מקומי')}</div>
+            <div class="coupon-action">
+              <span class="expires">${exp}</span>
+              <span class="more">לפרטים ←</span>
+            </div>
+          </a>`;
+      }).join('');
+    } catch(e) { console.warn('[coupons]', e); }
+  }
+
+  function escape(s) {
+    if (s == null) return '';
+    return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]);
+  }
+
+  function init() {
+    // Preview mode: ?shabbat=1 - לבדיקת מסך השבת
+    if (new URLSearchParams(window.location.search).get('shabbat') === '1') {
+      shabbatTimes = {
+        candles:  new Date(Date.now() - 60000).toISOString(),
+        havdalah: new Date(Date.now() + 86400000).toISOString(),
+        is_chag:  false
+      };
+      document.getElementById('sh-mode-in').textContent  = '17:30';
+      document.getElementById('sh-mode-out').textContent = '18:45';
+      const modal = document.getElementById('shabbat-mode');
+      modal.classList.add('active');
+      generateStars();
+      document.body.style.overflow = 'hidden';
+      return;
+    }
+
+    setDateHeader();
+    loadShabbatTimesQuiet();  // ברקע - רק לצורך מצב שבת
+    if (window.supabase) {
+      loadForumPosts();
+      loadStatsAndCoupons();
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.supabase) init();
+      else window.addEventListener('load', init, { once: true });
+    });
+  } else {
+    if (window.supabase) init();
+    else window.addEventListener('load', init, { once: true });
+  }
+</script>
+
+</body>
+</html>

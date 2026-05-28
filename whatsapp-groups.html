@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>קבוצות וואטסאפ באופקים | אופקים שלי</title>
+<meta name="description" content="קבוצות וואטסאפ של תושבי אופקים — קהילה, שכונות, יד שנייה, אירועים ועוד.">
+<link rel="canonical" href="https://myofaqim.co.il/whatsapp-groups">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="קבוצות וואטסאפ באופקים">
+<meta property="og:description" content="הצטרפו לקבוצות המקומיות">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<section class="page-hero">
+  <div class="container">
+    <div class="breadcrumb"><a href="/">דף הבית</a> · <a href="/">קהילה</a> · <span>קבוצות וואטסאפ</span></div>
+    <h1>קבוצות <em>וואטסאפ</em> באופקים</h1>
+    <p>קבוצות המקומיות של תושבי העיר — שכונות, הורים, יד שנייה, אירועים, דת ועוד. הצטרפו בלחיצה.</p>
+  </div>
+</section>
+
+<main class="page-main">
+  <div class="container">
+
+    <div class="tools-bar">
+      <input type="text" id="search" class="search-input" placeholder="חפשו קבוצה..." oninput="renderGroups()">
+    </div>
+
+    <div class="cat-bar" id="cat-bar">
+      <button class="cat-chip active" data-cat="all" onclick="filterCat('all', this)">הכל</button>
+      <button class="cat-chip" data-cat="general" onclick="filterCat('general', this)">כללי</button>
+      <button class="cat-chip" data-cat="neighborhood" onclick="filterCat('neighborhood', this)">שכונות</button>
+      <button class="cat-chip" data-cat="parents" onclick="filterCat('parents', this)">הורים</button>
+      <button class="cat-chip" data-cat="trade" onclick="filterCat('trade', this)">יד שנייה</button>
+      <button class="cat-chip" data-cat="religious" onclick="filterCat('religious', this)">דת</button>
+      <button class="cat-chip" data-cat="events" onclick="filterCat('events', this)">אירועים</button>
+      <button class="cat-chip" data-cat="business" onclick="filterCat('business', this)">עסקים</button>
+    </div>
+
+    <div id="result-count" class="result-count"></div>
+
+    <div id="groups-area" class="content-grid">
+      <div class="state-loading">טוען קבוצות...</div>
+    </div>
+
+    <div class="submit-cta">
+      <h3>יש לכם קבוצה בעיר שאתם רוצים להוסיף?</h3>
+      <p>נשמח להוסיף אותה לאינדקס. צרו קשר ונעדכן.</p>
+      <div class="cta-row">
+        <a href="tel:0542338233" class="btn-gold">054-233-8233</a>
+        <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-filled">WhatsApp</a>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+const CAT_LABELS = {
+  general: 'כללי',
+  neighborhood: 'שכונה',
+  parents: 'הורים',
+  trade: 'יד שנייה',
+  religious: 'דת',
+  torah: 'דת',
+  events: 'אירועים',
+  business: 'עסקים',
+  other: 'אחר'
+};
+
+let waSb, allGroups = [], currentCat = 'all';
+
+async function initWa() {
+  if (!window.supabase || !window.SB_URL) { setTimeout(initWa, 100); return; }
+  waSb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  await loadGroups();
+}
+
+async function loadGroups() {
+  try {
+    const { data, error } = await waSb.from('whatsapp_groups').select('*')
+      .order('member_count', { ascending: false, nullsFirst: false });
+    if (error) throw error;
+    allGroups = (data || []).filter(g => g.is_active !== false);
+    renderGroups();
+  } catch(e) {
+    console.error('[whatsapp-groups] error:', e);
+    document.getElementById('groups-area').innerHTML =
+      '<div class="state-empty"><h3>בעיה זמנית</h3><p>לא הצלחנו לטעון את הקבוצות. נסו לרענן.</p></div>';
+  }
+}
+
+function filterCat(cat, btn) {
+  currentCat = cat;
+  document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  renderGroups();
+}
+
+function renderGroups() {
+  const search = (document.getElementById('search').value || '').toLowerCase();
+  let items = allGroups;
+
+  if (currentCat !== 'all') {
+    items = items.filter(g => {
+      // טיפול ב-torah <-> religious
+      if (currentCat === 'religious') return g.category === 'religious' || g.category === 'torah';
+      return g.category === currentCat;
+    });
+  }
+
+  if (search) {
+    items = items.filter(g => {
+      const text = [g.name, g.description].filter(Boolean).join(' ').toLowerCase();
+      return text.includes(search);
+    });
+  }
+
+  const rc = document.getElementById('result-count');
+  rc.innerHTML = `נמצאו <strong>${items.length}</strong> קבוצות`;
+
+  const area = document.getElementById('groups-area');
+  if (!items.length) {
+    area.innerHTML = '<div class="state-empty"><h3>אין קבוצות בקטגוריה זו</h3><p>נסו קטגוריה אחרת או הקלידו חיפוש שונה.</p></div>';
+    return;
+  }
+
+  area.innerHTML = items.map(g => {
+    const catLabel = CAT_LABELS[g.category] || g.category || 'אחר';
+    const members = g.member_count
+      ? (window.fmt ? window.fmt(g.member_count) : g.member_count) + ' חברים'
+      : '';
+    return `
+      <div class="content-card">
+        <div class="content-card-header">
+          <span class="content-card-tag green">${window.esc ? window.esc(catLabel) : catLabel}</span>
+        </div>
+        <h3>${window.esc ? window.esc(g.name || '') : g.name}</h3>
+        ${g.description ? `<p>${window.esc ? window.esc(g.description) : g.description}</p>` : ''}
+        ${members ? `<div class="card-meta"><span>${members}</span></div>` : ''}
+        ${g.invite_link
+          ? `<div class="card-actions">
+              <a href="${window.esc ? window.esc(g.invite_link) : g.invite_link}" target="_blank" rel="noopener" class="card-btn whatsapp">
+                הצטרפות לקבוצה
+              </a>
+            </div>`
+          : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initWa);
+} else {
+  initWa();
+}
+</script>
+</body>
+</html>

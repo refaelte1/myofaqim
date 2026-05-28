@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>בדיקת מערכת | אופקים שלי</title>
+<meta name="robots" content="noindex,nofollow">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0F1E3D;
+    color: #fff;
+    padding: 20px;
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.6;
+    direction: rtl;
+  }
+  h1 { color: #F59E0B; margin-bottom: 4px; }
+  .sub { color: #94A3B8; font-size: 13px; margin-bottom: 20px; }
+  .test {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .test.pass { border-color: #16A34A; background: rgba(22,163,74,0.1); }
+  .test.fail { border-color: #DC2626; background: rgba(220,38,38,0.1); }
+  .test.warn { border-color: #F59E0B; background: rgba(245,158,11,0.1); }
+  .test-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 900; font-size: 14px;
+    flex-shrink: 0;
+  }
+  .pass .test-icon { background: #16A34A; }
+  .fail .test-icon { background: #DC2626; }
+  .warn .test-icon { background: #F59E0B; color: #1A2E5C; }
+  .test-name { font-weight: 700; flex: 1; min-width: 200px; }
+  .test-status { font-size: 12px; color: #94A3B8; font-family: monospace; }
+  .test-detail {
+    width: 100%; margin-top: 8px;
+    background: rgba(0,0,0,0.3); padding: 10px 14px;
+    border-radius: 6px; font-family: monospace; font-size: 12px;
+    color: #FBBF24;
+    word-break: break-all;
+  }
+  button {
+    background: #F59E0B; color: #1A2E5C;
+    border: none; padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 900; font-size: 14px;
+    cursor: pointer; margin-top: 16px;
+    width: 100%;
+  }
+  button:disabled { opacity: 0.5; }
+  .summary {
+    background: linear-gradient(135deg, #1A2E5C, #2563EB);
+    padding: 20px;
+    border-radius: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .summary-big {
+    font-size: 32px; font-weight: 900; color: #F59E0B;
+  }
+  .login-area {
+    background: rgba(245,158,11,0.15);
+    border: 1px solid rgba(245,158,11,0.4);
+    padding: 16px;
+    border-radius: 10px;
+    margin-bottom: 16px;
+    text-align: center;
+  }
+  .login-area button { background: #2563EB; color: #fff; }
+  .copy-btn {
+    background: #F59E0B; color: #1A2E5C;
+    border: none; padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 11px; font-weight: 800;
+    cursor: pointer; margin-top: 8px;
+    width: auto;
+  }
+</style>
+</head>
+<body>
+
+<h1>בדיקת מערכת אופקים שלי</h1>
+<div class="sub">בדיקה אוטומטית של חיבור DB, RLS ופעולות אדמין</div>
+
+<div id="login-area" class="login-area" style="display:none">
+  <p>אנא התחבר תחילה כדי להריץ את כל הבדיקות</p>
+  <button onclick="login()">התחבר עם Google</button>
+</div>
+
+<div id="summary" class="summary" style="display:none">
+  <div class="summary-big" id="summary-text">בודק...</div>
+  <div id="summary-detail" style="font-size:14px;margin-top:6px;color:rgba(255,255,255,0.85)"></div>
+</div>
+
+<div id="tests"></div>
+
+<button id="run-btn" onclick="runTests()">הרץ בדיקות מחדש</button>
+<button id="copy-btn" onclick="copyResults()" style="background:#94A3B8;margin-top:8px">העתק תוצאות לשליחה</button>
+
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+let sb = null;
+let session = null;
+let results = [];
+
+// פונקציית $ מ-site.js (window.$)
+// פונקציית esc מ-site.js (window.esc)
+function addResult(name, status, detail) {
+  results.push({ name, status, detail });
+  const div = document.createElement('div');
+  div.className = 'test ' + status;
+  div.innerHTML = `
+    <div class="test-icon">${status === 'pass' ? '✓' : status === 'fail' ? '✗' : '!'}</div>
+    <div class="test-name">${esc(name)}</div>
+    <div class="test-status">${status.toUpperCase()}</div>
+    ${detail ? `<div class="test-detail">${esc(detail)}</div>` : ''}
+  `;
+  $('tests').appendChild(div);
+}
+
+async function login() {
+  await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.href }
+  });
+}
+
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  const r = await sb.auth.getSession();
+  session = r.data.session;
+  if (!session) {
+    $('login-area').style.display = '';
+  }
+  await runTests();
+}
+
+async function runTests() {
+  $('tests').innerHTML = '';
+  results = [];
+  $('summary').style.display = '';
+  $('summary-text').textContent = 'בודק...';
+  $('summary-detail').textContent = '';
+  $('run-btn').disabled = true;
+
+  // ────── Test 1: חיבור Supabase ──────
+  try {
+    if (!sb) throw new Error('SB client not created');
+    addResult('1. חיבור Supabase', 'pass', 'Client created');
+  } catch (e) {
+    addResult('1. חיבור Supabase', 'fail', e.message);
+    finishTests(); return;
+  }
+
+  // ────── Test 2: Session ──────
+  if (!session) {
+    addResult('2. Session (התחברות)', 'warn', 'לא מחובר - בדיקות אדמין ידולגו');
+  } else {
+    addResult('2. Session (התחברות)', 'pass', `${session.user.email}`);
+    if (session.user.email !== 'refael@tedgi.co.il') {
+      addResult('2.1 בדיקת אדמין', 'warn', 'משתמש זה אינו אדמין - בדיקות מסוימות ידולגו');
+    }
+  }
+
+  // ────── Test 3: קריאה מ-businesses ──────
+  try {
+    const { data, error, count } = await sb.from('businesses')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('3. SELECT businesses', 'pass', `נמצאו ${count || 0} עסקים`);
+  } catch (e) {
+    addResult('3. SELECT businesses', 'fail', `${e.code || ''}: ${e.message}`);
+  }
+
+  // ────── Test 4: קריאה מ-synagogues ──────
+  try {
+    const { count, error } = await sb.from('synagogues')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('4. SELECT synagogues', 'pass', `נמצאו ${count || 0} בתי כנסת`);
+  } catch (e) {
+    addResult('4. SELECT synagogues', 'fail', `${e.code || ''}: ${e.message}`);
+  }
+
+  // ────── Test 5: jobs ──────
+  try {
+    const { count, error } = await sb.from('jobs')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('5. SELECT jobs', 'pass', `נמצאו ${count || 0} משרות`);
+  } catch (e) {
+    addResult('5. SELECT jobs', 'fail', `${e.code || ''}: ${e.message}`);
+  }
+
+  // ────── Test 6: realestate_listings ──────
+  try {
+    const { count, error } = await sb.from('realestate_listings')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('6. SELECT realestate_listings', 'pass', `נמצאו ${count || 0} נכסים`);
+  } catch (e) {
+    addResult('6. SELECT realestate_listings', 'fail', `${e.code || ''}: ${e.message}`);
+  }
+
+  // ────── Test 7: coupons ──────
+  try {
+    const { count, error } = await sb.from('coupons')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('7. SELECT coupons', 'pass', `נמצאו ${count || 0} קופונים`);
+  } catch (e) {
+    addResult('7. SELECT coupons', 'fail', `${e.code || ''}: ${e.message}`);
+  }
+
+  // ────── Test 8: admin_notifications ──────
+  try {
+    const { count, error } = await sb.from('admin_notifications')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('8. SELECT admin_notifications', 'pass', `נמצאו ${count || 0} התראות`);
+  } catch (e) {
+    addResult('8. SELECT admin_notifications', 'fail', `${e.code || ''}: ${e.message}`);
+  }
+
+  // ────── Test 9: push_subscriptions ──────
+  try {
+    const { count, error } = await sb.from('push_subscriptions')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('9. SELECT push_subscriptions', 'pass', `נמצאו ${count || 0} מנויים`);
+  } catch (e) {
+    addResult('9. SELECT push_subscriptions', 'fail', `${e.code || ''}: ${e.message}`);
+  }
+
+  // ────── Test 10: Storage Buckets ──────
+  try {
+    const { data, error } = await sb.storage.listBuckets();
+    if (error) throw error;
+    const buckets = (data || []).map(b => b.name);
+    const required = ['business-logos','business-covers','business-gallery','coupon-images','synagogue-images'];
+    const missing = required.filter(r => !buckets.includes(r));
+    if (missing.length === 0) {
+      addResult('10. Storage Buckets', 'pass', `כל הbuckets קיימים: ${buckets.join(', ')}`);
+    } else {
+      addResult('10. Storage Buckets', 'fail', `חסרים: ${missing.join(', ')}`);
+    }
+  } catch (e) {
+    addResult('10. Storage Buckets', 'fail', e.message);
+  }
+
+  // ────── Test 11: INSERT (אדמין בלבד) ──────
+  if (session && session.user.email === 'refael@tedgi.co.il') {
+    try {
+      const testName = '__TEST_DELETE_ME_' + Date.now();
+      const { data, error } = await sb.from('businesses').insert({
+        owner_id: session.user.id,
+        business_name: testName,
+        name: testName,
+        category: 'other',
+        address: 'בדיקה',
+        phone: '0500000000',
+        slug: 'test-' + Date.now()
+      }).select().single();
+      if (error) throw error;
+      // מחק מיד
+      await sb.from('businesses').delete().eq('id', data.id);
+      addResult('11. INSERT businesses (אדמין)', 'pass', 'יצירה ומחיקה הצליחו');
+    } catch (e) {
+      addResult('11. INSERT businesses (אדמין)', 'fail', `${e.code || ''}: ${e.message}`);
+    }
+  } else {
+    addResult('11. INSERT businesses (אדמין)', 'warn', 'דורש התחברות כאדמין');
+  }
+
+  // ────── Test 12: trivia_questions ──────
+  try {
+    const { count, error } = await sb.from('trivia_questions')
+      .select('*', { count: 'exact', head: true });
+    if (error) throw error;
+    addResult('12. SELECT trivia_questions', 'pass', `${count || 0} שאלות במערכת המשחקים`);
+  } catch (e) {
+    addResult('12. SELECT trivia_questions', 'warn', `${e.code || ''}: ${e.message} (אם זה בעיה - הרץ CREATE-GAMES-SYSTEM.sql)`);
+  }
+
+  finishTests();
+}
+
+function finishTests() {
+  $('run-btn').disabled = false;
+  const passed = results.filter(r => r.status === 'pass').length;
+  const failed = results.filter(r => r.status === 'fail').length;
+  const warned = results.filter(r => r.status === 'warn').length;
+  $('summary-text').textContent = `${passed} עבר, ${failed} נכשל, ${warned} אזהרות`;
+  $('summary-detail').textContent = failed > 0
+    ? '⚠️ יש בעיות - גלגל למטה לראות פרטים'
+    : '✅ הכל תקין!';
+}
+
+function copyResults() {
+  const text = '=== בדיקת מערכת אופקים שלי ===\n\n' +
+    results.map(r => `${r.status === 'pass' ? '✓' : r.status === 'fail' ? '✗' : '!'} ${r.name}\n   ${r.detail || ''}`).join('\n\n') +
+    `\n\n=== Session: ${session ? session.user.email : 'לא מחובר'} ===`;
+  navigator.clipboard.writeText(text).then(() => {
+    alert('הועתק! עכשיו תדביק לClaude');
+  });
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+else init();
+</script>
+</body>
+</html>

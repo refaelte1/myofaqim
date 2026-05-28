@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', { anonymize_ip: true, cookie_flags: 'SameSite=None;Secure' });
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+
+<title>המועדפים שלי | אופקים שלי</title>
+<meta name="description" content="כל מה שאהבת באתר - עסקים, קופונים, בעלי מקצוע, בתי כנסת ופוסטים בפורום במקום אחד.">
+<meta name="robots" content="noindex,follow">
+
+<meta property="og:title" content="המועדפים שלי - אופקים שלי">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:locale" content="he_IL">
+
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/icon-192.png">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, var(--cream) 0%, #FFFFFF 100%); }
+
+  .fav-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, #243B6E 60%, var(--blue) 100%);
+    color: #fff;
+    padding: 48px 24px 64px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .fav-hero::before {
+    content: ''; position: absolute; top: -100px; right: -80px;
+    width: 320px; height: 320px;
+    background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+  }
+  .fav-hero-content { position: relative; z-index: 1; max-width: 720px; margin: 0 auto; }
+  .fav-hero .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 6px 16px; border-radius: 100px;
+    font-size: 11px; font-weight: 800;
+    letter-spacing: 2px; color: var(--orange);
+    margin-bottom: 16px; text-transform: uppercase;
+  }
+  .fav-hero h1 {
+    font-size: clamp(28px, 5vw, 38px); font-weight: 900;
+    letter-spacing: -0.02em; margin: 0 0 10px;
+  }
+  .fav-hero p { opacity: 0.88; margin: 0; font-size: 15px; line-height: 1.6; }
+
+  .fav-user-card {
+    max-width: 720px; margin: -28px auto 32px;
+    padding: 0 16px; position: relative; z-index: 2;
+  }
+  .fav-user-card-inner {
+    background: #fff; border-radius: 16px; padding: 18px 22px;
+    box-shadow: 0 12px 32px rgba(26,46,92,0.1);
+    border: 1px solid var(--line);
+    display: flex; align-items: center; gap: 14px;
+  }
+  .fav-user-avatar {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+    color: var(--navy); display: flex; align-items: center; justify-content: center;
+    font-size: 20px; font-weight: 900;
+    flex-shrink: 0; overflow: hidden;
+  }
+  .fav-user-avatar img { width: 100%; height: 100%; object-fit: cover; }
+  .fav-user-info { flex: 1; min-width: 0; }
+  .fav-user-name { font-size: 16px; font-weight: 900; color: var(--navy); }
+  .fav-user-email { font-size: 12px; color: var(--ink-soft); margin-top: 2px; }
+
+  .filter-bar { max-width: 960px; margin: 0 auto 24px; padding: 0 16px; }
+  .filter-wrap {
+    background: #fff; border-radius: 14px;
+    box-shadow: 0 4px 16px rgba(26,46,92,0.06);
+    border: 1px solid var(--line); padding: 8px;
+    display: flex; gap: 6px; overflow-x: auto;
+  }
+  .filter-wrap::-webkit-scrollbar { display: none; }
+  .filter-chip {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 8px;
+    background: var(--cream); color: var(--navy);
+    border: 1.5px solid transparent; cursor: pointer;
+    font-family: inherit; font-size: 13px; font-weight: 800;
+    transition: all 0.15s; white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .filter-chip.active { background: var(--navy); color: #fff; border-color: var(--navy); }
+  .filter-chip .count {
+    background: rgba(245,158,11,0.2);
+    color: var(--orange-dk);
+    padding: 1px 7px; border-radius: 8px; font-size: 11px;
+  }
+  .filter-chip.active .count { background: rgba(245,158,11,0.25); color: var(--orange); }
+
+  .fav-section { max-width: 960px; margin: 0 auto 80px; padding: 0 16px; }
+  .fav-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 14px;
+  }
+
+  .fav-card {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; padding: 16px 18px;
+    transition: all 0.2s; position: relative;
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .fav-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(26,46,92,0.08);
+    border-color: var(--blue);
+  }
+
+  .fav-card .label {
+    display: inline-block;
+    background: rgba(37,99,235,0.08); color: var(--blue);
+    padding: 3px 9px; border-radius: 5px;
+    font-size: 10px; font-weight: 800;
+    letter-spacing: 1px; text-transform: uppercase;
+    width: fit-content;
+  }
+  .fav-card.business .label { background: rgba(245,158,11,0.1); color: var(--orange-dk); }
+  .fav-card.professional .label { background: rgba(124,58,237,0.1); color: #7C3AED; }
+  .fav-card.coupon .label { background: rgba(220,38,38,0.1); color: #DC2626; }
+  .fav-card.synagogue .label { background: rgba(101,163,13,0.1); color: var(--green); }
+  .fav-card.article .label { background: rgba(37,99,235,0.1); color: var(--blue); }
+  .fav-card.forum_post .label { background: rgba(26,46,92,0.1); color: var(--navy); }
+
+  .fav-card h3 {
+    font-size: 15px; font-weight: 900;
+    color: var(--navy); line-height: 1.35;
+    margin: 0; padding-left: 28px;
+  }
+  .fav-card .meta {
+    font-size: 12px; color: var(--ink-soft);
+    line-height: 1.5;
+  }
+  .fav-card .footer {
+    display: flex; justify-content: space-between; align-items: center;
+    padding-top: 8px; margin-top: 4px;
+    border-top: 1px solid var(--line);
+    font-size: 11px; color: var(--ink-mute);
+  }
+  .fav-card .footer a {
+    color: var(--blue); font-weight: 800; text-decoration: none;
+    display: flex; align-items: center; gap: 4px;
+  }
+
+  .fav-remove {
+    position: absolute; top: 12px; left: 12px;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: rgba(220,38,38,0.08); color: #DC2626;
+    border: none; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .fav-remove:hover { background: #DC2626; color: #fff; }
+
+  .state-msg {
+    text-align: center; padding: 60px 24px;
+    color: var(--ink-soft);
+  }
+  .state-msg-icon {
+    width: 64px; height: 64px;
+    background: var(--cream); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px; color: var(--ink-mute);
+  }
+  .state-msg h3 { font-size: 18px; font-weight: 800; color: var(--navy); margin: 0 0 8px; }
+  .state-msg p { font-size: 14px; line-height: 1.6; margin: 0 0 18px; max-width: 360px; margin-left: auto; margin-right: auto; }
+  .state-msg .btn-filled {
+    display: inline-block; padding: 12px 28px;
+    background: var(--orange); color: var(--navy);
+    border-radius: 10px; text-decoration: none; font-weight: 900;
+    border: none; cursor: pointer; font-family: inherit;
+  }
+
+  /* ── התראות פוש ── */
+  .push-banner {
+    max-width: 960px; margin: 0 auto 24px; padding: 0 16px;
+  }
+  .push-banner-inner {
+    background: linear-gradient(135deg, rgba(245,158,11,0.08) 0%, rgba(245,158,11,0.03) 100%);
+    border: 1.5px solid var(--orange);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .push-banner-icon {
+    width: 40px; height: 40px; border-radius: 12px;
+    background: var(--orange); color: var(--navy);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .push-banner-text { flex: 1; }
+  .push-banner-text strong { display: block; color: var(--navy); font-size: 14px; font-weight: 900; }
+  .push-banner-text span { color: var(--ink-soft); font-size: 12px; line-height: 1.5; }
+  .push-banner button {
+    background: var(--navy); color: #fff;
+    border: none; border-radius: 10px;
+    padding: 9px 18px; font-family: inherit;
+    font-weight: 800; font-size: 13px; cursor: pointer;
+    flex-shrink: 0;
+  }
+  .push-banner button:disabled { opacity: 0.6; cursor: default; }
+  .push-banner.enabled .push-banner-inner {
+    background: linear-gradient(135deg, rgba(101,163,13,0.08) 0%, rgba(101,163,13,0.03) 100%);
+    border-color: var(--green);
+  }
+  .push-banner.enabled .push-banner-icon { background: var(--green); color: #fff; }
+
+  @media (max-width: 480px) {
+    .fav-grid { grid-template-columns: 1fr; }
+    .fav-user-card-inner { padding: 14px 16px; }
+    .push-banner-inner { flex-direction: column; align-items: flex-start; }
+    .push-banner button { width: 100%; }
+  }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main>
+
+  <section class="fav-hero">
+    <div class="fav-hero-content">
+      <div class="eyebrow">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        אזור אישי
+      </div>
+      <h1>המועדפים שלי</h1>
+      <p>כל מה שאהבת באתר במקום אחד - עסקים, קופונים, בעלי מקצוע ועוד</p>
+    </div>
+  </section>
+
+  <div class="fav-user-card" id="user-card" style="display:none">
+    <div class="fav-user-card-inner">
+      <div class="fav-user-avatar" id="user-avatar">?</div>
+      <div class="fav-user-info">
+        <div class="fav-user-name" id="user-name">משתמש</div>
+        <div class="fav-user-email" id="user-email"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── התראות פוש ── -->
+  <div class="push-banner" id="push-banner" style="display:none">
+    <div class="push-banner-inner">
+      <div class="push-banner-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+          <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+        </svg>
+      </div>
+      <div class="push-banner-text">
+        <strong id="push-title">הפעל התראות פוש</strong>
+        <span id="push-desc">קבלו עדכון מיידי על קופונים חדשים וחדשות בעיר</span>
+      </div>
+      <button id="push-btn" onclick="togglePush()">הפעלה</button>
+    </div>
+  </div>
+
+  <div class="filter-bar" id="filter-bar" style="display:none">
+    <div class="filter-wrap">
+      <button class="filter-chip active" data-filter="all">הכל <span class="count" id="count-all">0</span></button>
+      <button class="filter-chip" data-filter="business">עסקים <span class="count" id="count-business">0</span></button>
+      <button class="filter-chip" data-filter="coupon">קופונים <span class="count" id="count-coupon">0</span></button>
+      <button class="filter-chip" data-filter="professional">בעלי מקצוע <span class="count" id="count-professional">0</span></button>
+      <button class="filter-chip" data-filter="synagogue">בתי כנסת <span class="count" id="count-synagogue">0</span></button>
+      <button class="filter-chip" data-filter="article">מאמרים <span class="count" id="count-article">0</span></button>
+      <button class="filter-chip" data-filter="forum_post">פוסטים <span class="count" id="count-forum_post">0</span></button>
+    </div>
+  </div>
+
+  <section class="fav-section">
+    <div id="fav-area">
+      <div class="state-msg">
+        <div class="state-msg-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+          </svg>
+        </div>
+        <h3>טוען...</h3>
+        <p>אנא המתינו</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// window.SB_URL מ-site.js (window.SB_URL)
+// window.SB_KEY מ-site.js (window.SB_KEY)
+let sb = null;
+let currentUser = null;
+let allFavs = [];
+let currentFilter = 'all';
+
+const LABELS = {
+  business: 'עסק', professional: 'בעל מקצוע', coupon: 'קופון',
+  synagogue: 'בית כנסת', article: 'מאמר', forum_post: 'פוסט פורום'
+};
+
+// פונקציית esc מ-site.js (window.esc)
+function timeAgo(date) {
+  if (!date) return '';
+  const diff = (Date.now() - new Date(date).getTime()) / 1000;
+  if (diff < 60) return 'עכשיו';
+  if (diff < 3600) return `לפני ${Math.floor(diff/60)} דקות`;
+  if (diff < 86400) return `לפני ${Math.floor(diff/3600)} שעות`;
+  if (diff < 604800) return `לפני ${Math.floor(diff/86400)} ימים`;
+  return new Date(date).toLocaleDateString('he-IL');
+}
+
+async function init() {
+  if (!window.supabase) { setTimeout(init, 200); return; }
+  sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session) {
+    showNotLoggedIn();
+    return;
+  }
+  currentUser = session.user;
+  showUserCard(currentUser);
+  document.getElementById('push-banner').style.display = '';
+  updatePushBanner();
+  await loadFavorites();
+}
+
+function showNotLoggedIn() {
+  document.getElementById('fav-area').innerHTML = `
+    <div class="state-msg">
+      <div class="state-msg-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <h3>נדרשת התחברות</h3>
+      <p>כדי לצפות במועדפים שלך, אנא התחבר תחילה</p>
+      <button class="btn-filled" onclick="if(typeof mofOpenAuth==='function')mofOpenAuth()">התחברות / הרשמה</button>
+    </div>`;
+}
+
+function showUserCard(user) {
+  const meta = user.user_metadata || {};
+  const name = meta.full_name || meta.name || user.email?.split('@')[0] || 'משתמש';
+  const initial = name.trim().charAt(0).toUpperCase();
+  const picture = meta.picture || meta.avatar_url;
+
+  document.getElementById('user-card').style.display = '';
+  document.getElementById('user-name').textContent = name;
+  document.getElementById('user-email').textContent = user.email || '';
+  const avatarEl = document.getElementById('user-avatar');
+  avatarEl.innerHTML = picture
+    ? `<img src="${picture}" alt="${name}" onerror="this.parentNode.textContent='${initial}'">`
+    : initial;
+}
+
+async function loadFavorites() {
+  try {
+    const { data, error } = await sb.from('user_favorites')
+      .select('*')
+      .order('created_at', { ascending: false });
+    if (error) throw error;
+    allFavs = data || [];
+    render();
+  } catch(e) {
+    document.getElementById('fav-area').innerHTML = `
+      <div class="state-msg">
+        <h3>שגיאה בטעינה</h3>
+        <p>${esc(e.message)}</p>
+      </div>`;
+  }
+}
+
+function render() {
+  // Update counts
+  const counts = { all: allFavs.length };
+  ['business','coupon','professional','synagogue','article','forum_post'].forEach(t => {
+    counts[t] = allFavs.filter(f => f.item_type === t).length;
+  });
+  Object.entries(counts).forEach(([k,v]) => {
+    const el = document.getElementById('count-' + k);
+    if (el) el.textContent = v;
+  });
+
+  document.getElementById('filter-bar').style.display = allFavs.length > 0 ? '' : 'none';
+
+  if (allFavs.length === 0) {
+    document.getElementById('fav-area').innerHTML = `
+      <div class="state-msg">
+        <div class="state-msg-icon">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+          </svg>
+        </div>
+        <h3>עדיין אין לך מועדפים</h3>
+        <p>לחיצה על הלב בכרטיסי עסקים, קופונים ובעלי מקצוע תוסיף אותם לכאן</p>
+        <a href="/businesses" class="btn-filled">גלו עסקים</a>
+      </div>`;
+    return;
+  }
+
+  const items = currentFilter === 'all' ? allFavs : allFavs.filter(f => f.item_type === currentFilter);
+
+  if (items.length === 0) {
+    document.getElementById('fav-area').innerHTML = `
+      <div class="state-msg">
+        <h3>אין פריטים בקטגוריה זו</h3>
+      </div>`;
+    return;
+  }
+
+  document.getElementById('fav-area').innerHTML = `
+    <div class="fav-grid">
+      ${items.map(renderCard).join('')}
+    </div>`;
+}
+
+function renderCard(fav) {
+  const d = fav.item_data || {};
+  const arrow = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`;
+  const links = {
+    business: `/business?id=${fav.item_id}`,
+    professional: '/professionals',
+    coupon: '/deals',
+    synagogue: '/synagogues',
+    article: d.url || '/news',
+    forum_post: `/forum?post=${fav.item_id}`
+  };
+
+  return `
+    <div class="fav-card ${fav.item_type}">
+      <button class="fav-remove" onclick="removeFav('${fav.id}')" title="הסר ממועדפים">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <span class="label">${LABELS[fav.item_type] || fav.item_type}</span>
+      <h3>${esc(d.title || d.name || 'ללא שם')}</h3>
+      ${d.description || d.subtitle ? `<div class="meta">${esc(d.description || d.subtitle)}</div>` : ''}
+      <div class="footer">
+        <span>נשמר ${timeAgo(fav.created_at)}</span>
+        <a href="${links[fav.item_type] || '/'}">פתח ${arrow}</a>
+      </div>
+    </div>`;
+}
+
+async function removeFav(favId) {
+  if (!confirm('להסיר מהמועדפים?')) return;
+  try {
+    const { error } = await sb.from('user_favorites').delete().eq('id', favId);
+    if (error) throw error;
+    allFavs = allFavs.filter(f => f.id !== favId);
+    render();
+  } catch(e) { alert('שגיאה: ' + e.message); }
+}
+
+// ───── Filter ─────
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    currentFilter = chip.dataset.filter;
+    render();
+  });
+});
+
+// ───── Push Notifications ─────
+const VAPID_PUBLIC_KEY = 'BIwLhM_dBVxBhWSWnDZqIH3WyiL-DjvAOmqyJfYjxOIzZw1XzAzpfPUOQRtTGEMa4PqfXk-zZSRshLqf0OPiKQM'; // יוחלף בעתיד
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+  const rawData = atob(base64);
+  return new Uint8Array([...rawData].map(c => c.charCodeAt(0)));
+}
+
+async function updatePushBanner() {
+  const banner = document.getElementById('push-banner');
+  const btn = document.getElementById('push-btn');
+  const title = document.getElementById('push-title');
+  const desc = document.getElementById('push-desc');
+
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+    banner.style.display = 'none';
+    return;
+  }
+
+  if (Notification.permission === 'denied') {
+    banner.classList.remove('enabled');
+    title.textContent = 'התראות חסומות';
+    desc.textContent = 'בהגדרות הדפדפן תוכל לאפשר התראות מאתר זה';
+    btn.disabled = true;
+    btn.textContent = 'חסום';
+    return;
+  }
+
+  if (Notification.permission === 'granted') {
+    // בודק אם יש מנוי פעיל
+    const reg = await navigator.serviceWorker.ready;
+    const sub = await reg.pushManager.getSubscription();
+    if (sub) {
+      banner.classList.add('enabled');
+      title.textContent = 'התראות פוש מופעלות';
+      desc.textContent = 'תקבלו עדכון מיידי על קופונים חדשים וחדשות';
+      btn.textContent = 'בטל';
+      return;
+    }
+  }
+
+  banner.classList.remove('enabled');
+  title.textContent = 'הפעל התראות פוש';
+  desc.textContent = 'קבלו עדכון מיידי על קופונים חדשים וחדשות בעיר';
+  btn.textContent = 'הפעלה';
+  btn.disabled = false;
+}
+
+async function togglePush() {
+  const btn = document.getElementById('push-btn');
+  btn.disabled = true;
+
+  try {
+    if (!('serviceWorker' in navigator)) {
+      throw new Error('הדפדפן שלך לא תומך בהתראות');
+    }
+
+    const reg = await navigator.serviceWorker.ready;
+    const existing = await reg.pushManager.getSubscription();
+
+    if (existing) {
+      // בטל מנוי
+      await existing.unsubscribe();
+      await sb.from('push_subscriptions').delete().eq('endpoint', existing.endpoint);
+    } else {
+      // הירשם
+      const permission = await Notification.requestPermission();
+      if (permission !== 'granted') throw new Error('יש לאשר התראות בדפדפן');
+
+      const sub = await reg.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+      });
+
+      const subJson = sub.toJSON();
+      await sb.from('push_subscriptions').upsert({
+        user_id: currentUser?.id || null,
+        endpoint: sub.endpoint,
+        p256dh_key: subJson.keys.p256dh,
+        auth_key: subJson.keys.auth,
+        user_agent: navigator.userAgent.slice(0, 200),
+        is_active: true
+      }, { onConflict: 'endpoint' });
+
+      // התראה ראשונה לאישור
+      reg.showNotification('אופקים שלי', {
+        body: 'נרשמת בהצלחה! תקבלו כאן עדכונים על קופונים וחדשות.',
+        icon: '/icon-192.png',
+        badge: '/icon-192.png',
+        tag: 'welcome'
+      });
+    }
+
+    await updatePushBanner();
+  } catch (e) {
+    alert('שגיאה: ' + e.message);
+    btn.disabled = false;
+  }
+}
+
+window.removeFav = removeFav;
+window.togglePush = togglePush;
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', init);
+} else {
+  init();
+}
+</script>
+</body>
+</html>

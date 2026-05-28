@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+
+<!-- Google Analytics (GA4) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-QKGZ7EHLP4"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-QKGZ7EHLP4', {
+    anonymize_ip: true,
+    cookie_flags: 'SameSite=None;Secure'
+  });
+</script>
+<!-- End Google Analytics -->
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>אזור עסקים | אופקים שלי</title>
+<meta name="description" content="אזור ניהול לעסקים רשומים — עריכת פרטים, יצירת קופונים, מעקב סטטיסטיקות וניהול לידים.">
+<link rel="canonical" href="https://myofaqim.co.il/biz">
+<meta property="og:image" content="https://myofaqim.co.il/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="אופקים שלי - הפלטפורמה הקהילתית של העיר אופקים">
+<meta property="og:locale" content="he_IL">
+<meta property="og:site_name" content="אופקים שלי">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://myofaqim.co.il/og-image.png">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#1A2E5C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+
+<style>
+.login-card{max-width:480px;margin:60px auto;background:var(--paper);border:1px solid var(--line);padding:48px 40px;text-align:center}
+.login-card h2{font-family:var(--sans);font-size:28px;color:var(--navy);margin-bottom:14px;letter-spacing:-0.01em}
+.login-card p{color:var(--ink-soft);margin-bottom:28px;line-height:1.7}
+
+.biz-dash-header{background:var(--navy);color:var(--cream);padding:32px 0;margin-bottom:0}
+.biz-dash-header .container{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap}
+.dash-title{flex:1}
+.dash-title .lbl{font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:8px}
+.dash-title h1{font-family:var(--sans);font-size:32px;font-weight:900;color:var(--cream);letter-spacing:-0.02em;line-height:1.2}
+.dash-title .user{font-size:13px;color:rgba(255,255,255,0.65);margin-top:6px}
+.dash-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.tab-bar{background:var(--paper);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:50;padding:0;margin-bottom:32px}
+.tab-bar .container{display:flex;gap:24px;overflow-x:auto;padding-top:14px;padding-bottom:0}
+.tab{padding:14px 0;font-size:14px;font-weight:600;color:var(--ink-soft);background:none;border:none;cursor:pointer;font-family:var(--sans);border-bottom:3px solid transparent;transition:all .15s;white-space:nowrap}
+.tab:hover{color:var(--navy)}
+.tab.active{color:var(--navy);border-bottom-color:var(--gold);font-weight:700}
+
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:32px}
+.stat-card{background:var(--paper);border:1px solid var(--line);padding:24px}
+.stat-card .num{font-family:var(--sans);font-size:32px;font-weight:900;color:var(--navy);letter-spacing:-0.02em;line-height:1;margin-bottom:6px}
+.stat-card .lbl{font-size:11px;font-weight:700;color:var(--ink-mute);letter-spacing:1.5px;text-transform:uppercase}
+.stat-card .trend{font-size:12px;font-weight:600;color:var(--green);margin-top:6px}
+
+.dash-card{background:var(--paper);border:1px solid var(--line);padding:32px;margin-bottom:24px}
+.dash-card-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-bottom:14px;border-bottom:1px solid var(--line-soft);flex-wrap:wrap;gap:12px}
+.dash-card-head h2{font-family:var(--sans);font-size:22px;font-weight:700;color:var(--navy);letter-spacing:-0.01em}
+
+.list-item{display:flex;justify-content:space-between;align-items:center;padding:16px 0;border-bottom:1px solid var(--line-soft);gap:14px;flex-wrap:wrap}
+.list-item:last-child{border-bottom:none}
+.list-item-info{flex:1;min-width:200px}
+.list-item-title{font-weight:700;color:var(--navy);font-size:15px;margin-bottom:4px}
+.list-item-meta{font-size:12px;color:var(--ink-mute)}
+.list-item-actions{display:flex;gap:6px}
+.mini-btn{padding:7px 14px;font-size:12px;font-weight:700;border-radius:2px;border:1px solid var(--line);background:var(--paper);cursor:pointer;font-family:var(--sans)}
+.mini-btn:hover{border-color:var(--navy);background:var(--cream-warm)}
+.mini-btn.danger{color:var(--red);border-color:rgba(192,57,43,0.3)}
+.mini-btn.danger:hover{background:rgba(192,57,43,0.06)}
+
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+@media(max-width:560px){.form-row{grid-template-columns:1fr}}
+
+.toggle-row{display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--line-soft)}
+.toggle-row:last-child{border-bottom:none}
+.toggle-row .lbl{font-weight:600;color:var(--navy);font-size:14px}
+.toggle-row .desc{font-size:12px;color:var(--ink-mute);margin-top:2px}
+.toggle{position:relative;width:46px;height:24px;background:var(--line);border-radius:24px;cursor:pointer;transition:background .2s}
+.toggle.on{background:var(--green)}
+.toggle::after{content:'';position:absolute;top:2px;right:2px;width:20px;height:20px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,0.2)}
+.toggle.on::after{transform:translateX(-22px)}
+
+.plan-status-card{background:linear-gradient(135deg,var(--navy) 0%,var(--navy-700) 100%);color:var(--cream);padding:32px;display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:24px}
+.plan-status-card .plan-name{font-family:var(--sans);font-size:28px;font-weight:900;color:var(--gold);margin-bottom:4px;letter-spacing:-0.01em}
+.plan-status-card .plan-status{font-size:12px;color:rgba(255,255,255,0.7);letter-spacing:1px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div id="header-placeholder"></div>
+
+<!-- LOGIN VIEW -->
+<div id="login-view" class="container" style="display:none">
+  <div class="login-card">
+    <h2>אזור עסקים</h2>
+    <p>היכנסו עם חשבון Google כדי לנהל את העסק שלכם, ליצור קופונים ולעקוב אחר ביצועים.</p>
+    <button class="btn-filled" style="width:100%;padding:14px" onclick="loginGoogle()">כניסה עם Google</button>
+    <p style="font-size:13px;margin-top:20px"><a href="/biz-signup" style="color:var(--gold-dk)">עדיין לא רשומים? להרשמה</a></p>
+  </div>
+</div>
+
+<!-- DASHBOARD VIEW -->
+<div id="dashboard-view" style="display:none">
+
+  <div class="biz-dash-header">
+    <div class="container">
+      <div class="dash-title">
+        <div class="lbl">אזור עסקים</div>
+        <h1 id="biz-title">—</h1>
+        <div class="user" id="user-email">—</div>
+      </div>
+      <div class="dash-actions">
+        <a href="#" id="view-public-link" class="btn-outline-light" target="_blank">צפייה כמבקר</a>
+        <button class="btn-outline-light" onclick="logout()">יציאה</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tab-bar">
+    <div class="container">
+      <button class="tab active" data-tab="overview" onclick="setTab('overview')">סקירה</button>
+      <button class="tab" data-tab="details" onclick="setTab('details')">פרטי העסק</button>
+      <button class="tab" data-tab="coupons" onclick="setTab('coupons')">קופונים</button>
+      <button class="tab" data-tab="leads" onclick="setTab('leads')">פניות</button>
+      <button class="tab" data-tab="plan" onclick="setTab('plan')">מסלול</button>
+    </div>
+  </div>
+
+  <main class="page-main" style="padding-top:0">
+    <div class="container">
+
+      <!-- OVERVIEW -->
+      <div id="tab-overview">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="num" id="stat-views">—</div>
+            <div class="lbl">צפיות (30 יום)</div>
+          </div>
+          <div class="stat-card">
+            <div class="num" id="stat-clicks">—</div>
+            <div class="lbl">קליקים לטלפון</div>
+          </div>
+          <div class="stat-card">
+            <div class="num" id="stat-coupons">—</div>
+            <div class="lbl">קופונים פעילים</div>
+          </div>
+          <div class="stat-card">
+            <div class="num" id="stat-leads">—</div>
+            <div class="lbl">פניות חדשות</div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>מצב הפרופיל</h2>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="lbl">העסק פעיל ומופיע באלפון</div>
+              <div class="desc">כיבוי יסיר את העסק מתוצאות חיפוש</div>
+            </div>
+            <div class="toggle on" id="toggle-active" onclick="toggleActive()"></div>
+          </div>
+          <div class="toggle-row">
+            <div>
+              <div class="lbl">העסק פתוח עכשיו</div>
+              <div class="desc">הצגת תווית "פתוח" באלפון</div>
+            </div>
+            <div class="toggle" id="toggle-open" onclick="toggleOpen()"></div>
+          </div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>פעולות מהירות</h2>
+          </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="btn-gold" onclick="setTab('coupons');setTimeout(openNewCoupon,200)">+ קופון חדש</button>
+            <button class="btn-outline" onclick="setTab('details')">עריכת פרטים</button>
+            <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-outline">תמיכה</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- DETAILS -->
+      <div id="tab-details" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>פרטי העסק</h2>
+            <button class="btn-filled" onclick="saveBizDetails()" id="save-details-btn">שמירה</button>
+          </div>
+          <div class="modal-err" id="details-err"></div>
+          <div class="success-msg" id="details-success" style="background:rgba(26,122,74,0.07);border:1.5px solid rgba(26,122,74,0.25);color:var(--green);padding:12px 16px;font-size:13px;font-weight:600;margin-bottom:16px;display:none;border-radius:2px">הפרטים נשמרו בהצלחה</div>
+
+          <div class="field-group">
+            <label>שם העסק</label>
+            <input type="text" id="d-name">
+          </div>
+
+          <div class="field-group">
+            <label>תיאור</label>
+            <textarea id="d-desc"></textarea>
+          </div>
+
+          <div class="form-row">
+            <div class="field-group" style="margin:0">
+              <label>טלפון</label>
+              <input type="tel" id="d-phone" dir="ltr">
+            </div>
+            <div class="field-group" style="margin:0">
+              <label>WhatsApp</label>
+              <input type="tel" id="d-wa" dir="ltr">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label>כתובת</label>
+            <input type="text" id="d-addr">
+          </div>
+
+          <div class="form-row">
+            <div class="field-group" style="margin:0">
+              <label>אימייל</label>
+              <input type="email" id="d-email" dir="ltr">
+            </div>
+            <div class="field-group" style="margin:0">
+              <label>אתר</label>
+              <input type="url" id="d-web" dir="ltr">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COUPONS -->
+      <div id="tab-coupons" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>קופונים פעילים</h2>
+            <button class="btn-gold" onclick="openNewCoupon()">+ קופון חדש</button>
+          </div>
+          <div id="coupons-list-area">
+            <div class="loader">טוען...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LEADS -->
+      <div id="tab-leads" style="display:none">
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>פניות לקוחות</h2>
+          </div>
+          <div id="leads-list-area">
+            <div class="loader">טוען...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PLAN -->
+      <div id="tab-plan" style="display:none">
+        <div class="plan-status-card">
+          <div>
+            <div class="plan-status">המסלול הנוכחי</div>
+            <div class="plan-name" id="current-plan">—</div>
+            <div style="font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px" id="plan-since">—</div>
+          </div>
+          <a href="https://wa.me/972542338233?text=היי, רוצה לשדרג את המסלול שלי" target="_blank" rel="noopener" class="btn-gold">לשדרוג המסלול</a>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>מה כלול במסלול שלי</h2>
+          </div>
+          <div id="plan-features">—</div>
+        </div>
+
+        <div class="dash-card">
+          <div class="dash-card-head">
+            <h2>צריכים עזרה?</h2>
+          </div>
+          <p style="color:var(--ink-soft);margin-bottom:14px;font-size:14px">לכל שאלה על המסלול, החיוב, או שדרוג — נציג שלנו זמין</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <a href="tel:0542338233" class="btn-filled">054-233-8233</a>
+            <a href="https://wa.me/972542338233" target="_blank" rel="noopener" class="btn-outline">WhatsApp</a>
+            <a href="/contact" class="btn-outline">טופס יצירת קשר</a>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<!-- COUPON MODAL -->
+<div class="modal-overlay" id="coupon-modal">
+  <div class="modal">
+    <div class="modal-head">
+      <h2 id="coupon-modal-title">קופון חדש</h2>
+      <button class="modal-close" onclick="closeCouponModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-err" id="coupon-err"></div>
+      <input type="hidden" id="c-id">
+
+      <div class="field-group">
+        <label>כותרת הקופון</label>
+        <input type="text" id="c-title" maxlength="80" placeholder="20% הנחה על כל החנות">
+      </div>
+
+      <div class="field-group">
+        <label>תיאור (אופציונלי)</label>
+        <textarea id="c-desc" placeholder="פרטים על הקופון: מי זכאי, איך לפדות..."></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="field-group" style="margin:0">
+          <label>אחוז הנחה</label>
+          <input type="number" id="c-discount" min="1" max="100" placeholder="20">
+        </div>
+        <div class="field-group" style="margin:0">
+          <label>תוקף עד</label>
+          <input type="date" id="c-until">
+        </div>
+      </div>
+
+      <div class="field-group">
+        <label>הגבלת ניצולים (0 = ללא הגבלה)</label>
+        <input type="number" id="c-limit" min="0" value="0">
+      </div>
+
+      <div class="modal-actions">
+        <button class="modal-cancel" onclick="closeCouponModal()">ביטול</button>
+        <button class="modal-submit" id="c-submit" onclick="saveCoupon()">שמירה</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+  const PLAN_DESCRIPTIONS = {
+    free: ['הופעה באלפון','שם, טלפון וכתובת','קטגוריה ותיאור קצר'],
+    basic: ['הופעה באלפון','תמונת קאבר','עד 3 קופונים פעילים','שעות פעילות','קישורים לרשתות'],
+    pro: ['כל מה ש-BASIC','קופונים ללא הגבלה','פרסום משרות','גלריית תמונות','סטטיסטיקות מלאות','דירוג גבוה באלפון'],
+    enterprise: ['כל מה ש-PRO','באנר בדף הבית','משרות ללא הגבלה','4 פוסטים מקודמים בחודש','עד 5 סניפים','נציג אישי 24/6','דוחות מותאמים']
+  };
+  const PLAN_NAMES = { free: 'FREE', basic: 'BASIC', pro: 'PRO', enterprise: 'ENTERPRISE' };
+
+  let sb, user = null, biz = null, currentTab = 'overview';
+
+  function setTab(t) {
+    currentTab = t;
+    ['overview','details','coupons','leads','plan'].forEach(x => {
+      $('tab-' + x).style.display = x === t ? '' : 'none';
+    });
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === t));
+    if (t === 'coupons') loadCoupons();
+    if (t === 'leads') loadLeads();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  async function loginGoogle() {
+    await sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: window.location.origin + '/biz' }
+    });
+  }
+
+  async function logout() {
+    await sb.auth.signOut();
+    window.location.reload();
+  }
+
+  async function loadBiz() {
+    try {
+      const { data } = await sb.from('businesses').select('*').eq('owner_id', user.id).maybeSingle();
+      if (!data) {
+        $('biz-title').textContent = 'לא נמצא עסק';
+        $('user-email').textContent = 'אין עסק רשום לאימייל זה. ' + (user.email || '');
+        return false;
+      }
+      biz = data;
+      $('biz-title').textContent = data.business_name;
+      $('user-email').textContent = user.email || '';
+      $('view-public-link').href = '/business?id=' + (data.slug || data.id);
+
+      // populate form
+      $('d-name').value = data.business_name || '';
+      $('d-desc').value = data.description || '';
+      $('d-phone').value = data.phone || '';
+      $('d-wa').value = data.whatsapp || '';
+      $('d-addr').value = data.address || '';
+      $('d-email').value = data.email || '';
+      $('d-web').value = data.website_url || '';
+
+      // toggles
+      if (data.is_active) $('toggle-active').classList.add('on');
+      else $('toggle-active').classList.remove('on');
+      if (data.is_open_now) $('toggle-open').classList.add('on');
+      else $('toggle-open').classList.remove('on');
+
+      // plan
+      const tier = data.plan_tier || 'free';
+      $('current-plan').textContent = PLAN_NAMES[tier] || 'FREE';
+      const features = PLAN_DESCRIPTIONS[tier] || [];
+      $('plan-features').innerHTML = features.map(f => `<div style="padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:14px"><span style="color:var(--green);font-weight:700;margin-left:8px">✓</span> ${esc(f)}</div>`).join('');
+
+      // stats
+      loadStats();
+
+      return true;
+    } catch(e) {
+      console.error(e);
+      return false;
+    }
+  }
+
+  async function loadStats() {
+    if (!biz) return;
+    try {
+      const since = new Date(Date.now() - 30*86400000).toISOString();
+      const [{ count: views }, { count: clicks }, { count: cnt }, { count: leads }] = await Promise.all([
+        sb.from('business_views').select('*', { count: 'exact', head: true }).eq('business_id', biz.id).gte('created_at', since),
+        sb.from('business_clicks').select('*', { count: 'exact', head: true }).eq('business_id', biz.id).gte('created_at', since),
+        sb.from('coupons').select('*', { count: 'exact', head: true }).eq('business_id', biz.id).eq('is_active', true).eq('status','active'),
+        sb.from('leads').select('*', { count: 'exact', head: true }).eq('business_id', biz.id).eq('status','new')
+      ]);
+      $('stat-views').textContent = views != null ? fmt(views) : '0';
+      $('stat-clicks').textContent = clicks != null ? fmt(clicks) : '0';
+      $('stat-coupons').textContent = cnt != null ? fmt(cnt) : '0';
+      $('stat-leads').textContent = leads != null ? fmt(leads) : '0';
+    } catch(e) {
+      ['views','clicks','coupons','leads'].forEach(s => $('stat-' + s).textContent = '0');
+    }
+  }
+
+  async function saveBizDetails() {
+    const errEl = $('details-err'), succEl = $('details-success');
+    errEl.classList.remove('show');
+    succEl.style.display = 'none';
+    const btn = $('save-details-btn');
+    btn.disabled = true; btn.textContent = 'שומר...';
+    try {
+      const { error } = await sb.from('businesses').update({
+        business_name: $('d-name').value.trim(),
+        description: $('d-desc').value.trim(),
+        phone: $('d-phone').value.trim(),
+        whatsapp: $('d-wa').value.trim() || null,
+        address: $('d-addr').value.trim() || null,
+        email: $('d-email').value.trim() || null,
+        website_url: $('d-web').value.trim() || null,
+        updated_at: new Date().toISOString()
+      }).eq('id', biz.id);
+      if (error) throw error;
+      succEl.style.display = 'block';
+      setTimeout(() => succEl.style.display = 'none', 3000);
+      btn.disabled = false; btn.textContent = 'שמירה';
+    } catch(e) {
+      errEl.textContent = 'שגיאה: ' + e.message;
+      errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'שמירה';
+    }
+  }
+
+  async function toggleActive() {
+    if (!biz) return;
+    const el = $('toggle-active');
+    const newState = !el.classList.contains('on');
+    el.classList.toggle('on', newState);
+    await sb.from('businesses').update({ is_active: newState }).eq('id', biz.id);
+    biz.is_active = newState;
+  }
+  async function toggleOpen() {
+    if (!biz) return;
+    const el = $('toggle-open');
+    const newState = !el.classList.contains('on');
+    el.classList.toggle('on', newState);
+    await sb.from('businesses').update({ is_open_now: newState }).eq('id', biz.id);
+    biz.is_open_now = newState;
+  }
+
+  // ── COUPONS ──
+  async function loadCoupons() {
+    if (!biz) return;
+    try {
+      const { data } = await sb.from('coupons').select('*').eq('business_id', biz.id).order('created_at', { ascending: false });
+      const area = $('coupons-list-area');
+      if (!data || !data.length) {
+        area.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--ink-mute);font-size:14px">עדיין לא יצרתם קופונים. <button class="btn-gold" onclick="openNewCoupon()" style="margin-top:14px">+ קופון ראשון</button></div>';
+        return;
+      }
+      area.innerHTML = data.map(c => `
+        <div class="list-item">
+          <div class="list-item-info">
+            <div class="list-item-title">${esc(c.title)} ${c.discount_percent ? `<span style="color:var(--red);font-weight:800">-${c.discount_percent}%</span>` : ''}</div>
+            <div class="list-item-meta">
+              ${c.is_active ? '<span style="color:var(--green);font-weight:600">פעיל</span>' : '<span style="color:var(--ink-mute)">לא פעיל</span>'} ·
+              נוצל ${c.uses_count || 0} פעמים ·
+              ${c.valid_until ? 'תוקף עד ' + new Date(c.valid_until).toLocaleDateString('he-IL') : 'ללא תפוגה'}
+            </div>
+          </div>
+          <div class="list-item-actions">
+            <button class="mini-btn" onclick="editCoupon('${c.id}')">עריכה</button>
+            <button class="mini-btn danger" onclick="deleteCoupon('${c.id}')">מחיקה</button>
+          </div>
+        </div>`).join('');
+    } catch(e) {
+      $('coupons-list-area').innerHTML = '<div style="color:var(--red);padding:20px">שגיאה: ' + esc(e.message) + '</div>';
+    }
+  }
+
+  function openNewCoupon() {
+    $('c-id').value = '';
+    $('c-title').value = ''; $('c-desc').value = '';
+    $('c-discount').value = ''; $('c-until').value = ''; $('c-limit').value = '0';
+    $('coupon-modal-title').textContent = 'קופון חדש';
+    $('coupon-modal').classList.add('active');
+  }
+
+  async function editCoupon(id) {
+    try {
+      const { data } = await sb.from('coupons').select('*').eq('id', id).single();
+      if (!data) return;
+      $('c-id').value = id;
+      $('c-title').value = data.title || '';
+      $('c-desc').value = data.description || '';
+      $('c-discount').value = data.discount_percent || '';
+      $('c-until').value = data.valid_until ? data.valid_until.slice(0, 10) : '';
+      $('c-limit').value = data.usage_limit || 0;
+      $('coupon-modal-title').textContent = 'עריכת קופון';
+      $('coupon-modal').classList.add('active');
+    } catch(e) { alert(e.message); }
+  }
+
+  function closeCouponModal() { $('coupon-modal').classList.remove('active'); }
+
+  async function saveCoupon() {
+    const errEl = $('coupon-err');
+    errEl.classList.remove('show');
+    const id = $('c-id').value;
+    const title = $('c-title').value.trim();
+    if (!title) {
+      errEl.textContent = 'נא להזין כותרת';
+      errEl.classList.add('show');
+      return;
+    }
+    const btn = $('c-submit');
+    btn.disabled = true; btn.textContent = 'שומר...';
+    const payload = {
+      business_id: biz.id,
+      title,
+      description: $('c-desc').value.trim() || null,
+      discount_percent: $('c-discount').value ? parseInt($('c-discount').value) : null,
+      valid_until: $('c-until').value || null,
+      usage_limit: parseInt($('c-limit').value || '0'),
+      is_active: true,
+      status: 'active'
+    };
+    try {
+      let error;
+      if (id) {
+        ({ error } = await sb.from('coupons').update(payload).eq('id', id));
+      } else {
+        ({ error } = await sb.from('coupons').insert(payload));
+      }
+      if (error) throw error;
+      closeCouponModal();
+      loadCoupons();
+      btn.disabled = false; btn.textContent = 'שמירה';
+    } catch(e) {
+      errEl.textContent = 'שגיאה: ' + e.message;
+      errEl.classList.add('show');
+      btn.disabled = false; btn.textContent = 'שמירה';
+    }
+  }
+
+  async function deleteCoupon(id) {
+    if (!confirm('למחוק את הקופון? פעולה זו לא ניתנת לביטול.')) return;
+    try {
+      await sb.from('coupons').delete().eq('id', id);
+      loadCoupons();
+    } catch(e) { alert(e.message); }
+  }
+
+  // ── LEADS ──
+  async function loadLeads() {
+    if (!biz) return;
+    try {
+      const { data } = await sb.from('leads').select('*').eq('business_id', biz.id).order('created_at', { ascending: false }).limit(50);
+      const area = $('leads-list-area');
+      if (!data || !data.length) {
+        area.innerHTML = '<div style="text-align:center;padding:40px 20px;color:var(--ink-mute);font-size:14px">עדיין לא נכנסו פניות.</div>';
+        return;
+      }
+      area.innerHTML = data.map(l => {
+        const phone = (l.client_phone || '').replace(/\D/g, '');
+        const wa = phone ? `https://wa.me/972${phone.replace(/^0/,'')}` : '';
+        const ago = Math.floor((Date.now() - new Date(l.created_at)) / 86400000);
+        return `
+          <div class="list-item">
+            <div class="list-item-info">
+              <div class="list-item-title">${esc(l.client_name || 'לקוח')} ${l.status === 'new' ? '<span style="background:var(--gold);color:var(--navy);font-size:10px;font-weight:800;padding:2px 8px;letter-spacing:1px;text-transform:uppercase">חדש</span>' : ''}</div>
+              <div class="list-item-meta" style="margin-bottom:6px"><span dir="ltr">${esc(l.client_phone || '')}</span> · ${ago === 0 ? 'היום' : ago + ' ימים'}</div>
+              ${l.message ? `<div style="font-size:13px;color:var(--ink-soft);line-height:1.6;background:var(--cream-warm);padding:10px;border-radius:2px;margin-top:6px">${esc(l.message)}</div>` : ''}
+            </div>
+            <div class="list-item-actions">
+              ${phone ? `<a href="tel:${phone}" class="mini-btn">חיוג</a>` : ''}
+              ${wa ? `<a href="${wa}" target="_blank" rel="noopener" class="mini-btn">WA</a>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    } catch(e) {
+      $('leads-list-area').innerHTML = '<div style="color:var(--red);padding:20px">שגיאה: ' + esc(e.message) + '</div>';
+    }
+  }
+
+  async function bizDashInit() {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) {
+      $('login-view').style.display = '';
+      return;
+    }
+    user = session.user;
+    const ok = await loadBiz();
+    if (!ok) {
+      // No business found - show login with explanation
+      $('login-view').style.display = '';
+      $('login-view').querySelector('h2').textContent = 'לא נמצא עסק';
+      $('login-view').querySelector('p').innerHTML = 'לא נמצא עסק רשום לחשבון שלכם.<br><br>אם זה חשבון חדש — נדרשת תחילה הרשמת עסק.';
+      $('login-view').querySelector('button').style.display = 'none';
+      return;
+    }
+    $('dashboard-view').style.display = '';
+  }
+
+  window.loginGoogle = loginGoogle;
+  window.logout = logout;
+  window.setTab = setTab;
+  window.saveBizDetails = saveBizDetails;
+  window.toggleActive = toggleActive;
+  window.toggleOpen = toggleOpen;
+  window.openNewCoupon = openNewCoupon;
+  window.closeCouponModal = closeCouponModal;
+  window.saveCoupon = saveCoupon;
+  window.editCoupon = editCoupon;
+  window.deleteCoupon = deleteCoupon;
+
+  if (document.readyState === 'loading')
+    document.addEventListener('DOMContentLoaded', () => { if(window.supabase) bizDashInit(); else window.addEventListener('load', bizDashInit, {once:true}); });
+  else { if(window.supabase) bizDashInit(); else window.addEventListener('load', bizDashInit, {once:true}); }
+</script>
+</body>
+</html>

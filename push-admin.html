@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<title>שליחת התראות פוש | אופקים שלי</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" type="image/png" href="/favicon-32.png">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/site.css">
+
+<style>
+  body { background: linear-gradient(180deg, var(--cream) 0%, #FFFFFF 100%); }
+
+  .admin-wrap { max-width: 720px; margin: 40px auto; padding: 0 16px; }
+  .admin-hero {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: #fff; padding: 28px 24px; border-radius: 20px;
+    margin-bottom: 24px; text-align: center;
+  }
+  .admin-hero h1 { font-size: 24px; font-weight: 900; margin: 0 0 6px; }
+  .admin-hero p { opacity: 0.85; font-size: 14px; margin: 0; }
+
+  .admin-card {
+    background: #fff; border-radius: 16px;
+    padding: 24px; box-shadow: 0 4px 20px rgba(26,46,92,0.05);
+    border: 1px solid var(--line); margin-bottom: 18px;
+  }
+
+  .stat-row {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 10px; margin-bottom: 20px;
+  }
+  .stat-box {
+    background: var(--cream); padding: 14px;
+    border-radius: 10px; text-align: center;
+  }
+  .stat-num { font-size: 22px; font-weight: 900; color: var(--navy); line-height: 1; }
+  .stat-lbl { font-size: 11px; color: var(--ink-soft); font-weight: 700; margin-top: 4px; }
+
+  .form-group { margin-bottom: 16px; }
+  .form-group label {
+    display: block; font-size: 13px; font-weight: 800;
+    color: var(--navy); margin-bottom: 6px;
+  }
+  .form-group input, .form-group textarea, .form-group select {
+    width: 100%; padding: 11px 14px; border: 1.5px solid var(--line);
+    border-radius: 10px; font-family: inherit; font-size: 14px;
+    background: #fff; color: var(--navy); resize: vertical;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    outline: none; border-color: var(--blue);
+  }
+  .form-group small { display: block; margin-top: 4px; color: var(--ink-mute); font-size: 12px; }
+
+  .preview-card {
+    background: #f7f9fc; border: 1px solid var(--line);
+    border-radius: 12px; padding: 14px; margin-bottom: 16px;
+    display: flex; gap: 10px; align-items: flex-start;
+  }
+  .preview-icon {
+    width: 32px; height: 32px; border-radius: 8px;
+    background: var(--navy); color: var(--orange);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .preview-content { flex: 1; min-width: 0; }
+  .preview-title { font-weight: 900; color: var(--navy); font-size: 14px; }
+  .preview-body { color: var(--ink-soft); font-size: 13px; line-height: 1.5; margin-top: 2px; }
+  .preview-time { font-size: 11px; color: var(--ink-mute); margin-top: 4px; }
+
+  .btn-send {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--orange) 0%, var(--orange-dk) 100%);
+    color: var(--navy); border: none; border-radius: 12px;
+    font-family: inherit; font-weight: 900; font-size: 15px;
+    cursor: pointer;
+  }
+  .btn-send:disabled { opacity: 0.6; cursor: default; }
+  .btn-send:hover:not(:disabled) { transform: translateY(-1px); }
+
+  .access-denied {
+    text-align: center; padding: 60px 24px;
+    background: #fff; border-radius: 16px;
+  }
+  .access-denied h2 { color: var(--red, #DC2626); font-size: 20px; margin: 0 0 8px; }
+  .access-denied p { color: var(--ink-soft); margin: 0 0 16px; }
+
+  .result-msg {
+    padding: 14px 18px; border-radius: 10px; margin-top: 14px;
+    font-weight: 700; font-size: 14px;
+  }
+  .result-msg.success { background: rgba(101,163,13,0.1); color: var(--green); border: 1px solid var(--green); }
+  .result-msg.error { background: rgba(220,38,38,0.1); color: #DC2626; border: 1px solid #DC2626; }
+</style>
+</head>
+<body>
+
+<div id="header-placeholder"></div>
+
+<main class="admin-wrap">
+
+  <div id="loading-state" style="text-align:center;padding:60px 24px">
+    <p>טוען...</p>
+  </div>
+
+  <div id="content" style="display:none">
+
+    <div class="admin-hero">
+      <h1>שליחת התראות פוש</h1>
+      <p>שלח התראה לכל המנויים הפעילים</p>
+    </div>
+
+    <div class="admin-card">
+      <div class="stat-row">
+        <div class="stat-box">
+          <div class="stat-num" id="stat-total">0</div>
+          <div class="stat-lbl">סה"כ מנויים</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-registered">0</div>
+          <div class="stat-lbl">משתמשים רשומים</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-num" id="stat-sent">0</div>
+          <div class="stat-lbl">התראות נשלחו</div>
+        </div>
+      </div>
+
+      <form id="push-form" onsubmit="event.preventDefault();sendPush();">
+        <div class="form-group">
+          <label>כותרת ההתראה</label>
+          <input type="text" id="title" required maxlength="65" placeholder="לדוגמה: מבצע חדש בעיר!" oninput="updatePreview()">
+          <small>עד 65 תווים</small>
+        </div>
+
+        <div class="form-group">
+          <label>גוף ההודעה</label>
+          <textarea id="message" required maxlength="180" rows="3" placeholder="לדוגמה: 30% הנחה כל החודש בכל סניפי הפיצריות באופקים" oninput="updatePreview()"></textarea>
+          <small>עד 180 תווים</small>
+        </div>
+
+        <div class="form-group">
+          <label>קישור (אופציונלי)</label>
+          <input type="text" id="url" placeholder="/deals או https://..." value="/">
+          <small>היכן יגיע המשתמש בלחיצה</small>
+        </div>
+
+        <div class="form-group">
+          <label>קהל יעד</label>
+          <select id="target">
+            <option value="all">כל המנויים</option>
+            <option value="registered">רק משתמשים רשומים</option>
+          </select>
+        </div>
+
+        <div class="preview-card">
+          <div class="preview-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            </svg>
+          </div>
+          <div class="preview-content">
+            <div class="preview-title" id="prev-title">כותרת ההתראה</div>
+            <div class="preview-body" id="prev-body">גוף ההודעה יופיע כאן</div>
+            <div class="preview-time">אופקים שלי · עכשיו</div>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-send" id="send-btn">שלח התראה</button>
+        <div id="result"></div>
+      </form>
+    </div>
+
+  </div>
+
+</main>
+
+<div id="footer-placeholder"></div>
+
+<script src="/site.js"></script>
+<script>
+'use strict';
+
+// משתמש ב-window.SB_URL ו-window.SB_KEY מ-site.js
+let sb = null;
+let currentSession = null;
+
+// פונקציית esc מ-site.js (window.esc)
+async function init() {
+  if (!window.supabase) {
+    if (!window._pushadmin_attempts) window._pushadmin_attempts = 0;
+    window._pushadmin_attempts++;
+    if (window._pushadmin_attempts > 50) {
+      document.getElementById('loading-state').innerHTML = '<p style="color:#DC2626">שגיאה בטעינת המערכת. אנא רענן את הדף.</p>';
+      return;
+    }
+    setTimeout(init, 200);
+    return;
+  }
+
+  try {
+    sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+    const { data: { session }, error: sessErr } = await sb.auth.getSession();
+
+    if (sessErr) throw sessErr;
+
+    if (!session) {
+      document.getElementById('loading-state').innerHTML = `
+        <div class="access-denied">
+          <h2>נדרשת התחברות</h2>
+          <p>יש להתחבר תחילה כדי לגשת לדף זה</p>
+          <a href="/" style="color:var(--blue);font-weight:700">חזרה לדף הבית</a>
+        </div>`;
+      return;
+    }
+
+    if ((session.user.email || '').toLowerCase() !== 'refael@tedgi.co.il') {
+      document.getElementById('loading-state').innerHTML = `
+        <div class="access-denied">
+          <h2>אין גישה</h2>
+          <p>דף זה מיועד למנהל האתר בלבד</p>
+          <a href="/" style="color:var(--blue);font-weight:700">חזרה לדף הבית</a>
+        </div>`;
+      return;
+    }
+    currentSession = session;
+
+    document.getElementById('loading-state').style.display = 'none';
+    document.getElementById('content').style.display = '';
+    await loadStats();
+  } catch (e) {
+    console.error('Push-admin init error:', e);
+    document.getElementById('loading-state').innerHTML = `<p style="color:#DC2626">שגיאה: ${e.message}</p><button onclick="location.reload()" style="margin-top:10px;background:#1A2E5C;color:#fff;border:none;padding:10px 20px;border-radius:8px;font-family:inherit;font-weight:700;cursor:pointer">רענן</button>`;
+  }
+}
+
+async function loadStats() {
+  try {
+    const [total, registered, logs] = await Promise.all([
+      sb.from('push_subscriptions').select('id', { count: 'exact', head: true }).eq('is_active', true),
+      sb.from('push_subscriptions').select('id', { count: 'exact', head: true }).eq('is_active', true).not('user_id', 'is', null),
+      sb.from('push_notifications_log').select('sent_count')
+    ]);
+    document.getElementById('stat-total').textContent = total.count || 0;
+    document.getElementById('stat-registered').textContent = registered.count || 0;
+    const sumSent = (logs.data || []).reduce((s, l) => s + (l.sent_count || 0), 0);
+    document.getElementById('stat-sent').textContent = sumSent;
+  } catch(e) {
+    console.warn('stats error', e);
+  }
+}
+
+function updatePreview() {
+  const t = document.getElementById('title').value || 'כותרת ההתראה';
+  const m = document.getElementById('message').value || 'גוף ההודעה יופיע כאן';
+  document.getElementById('prev-title').textContent = t;
+  document.getElementById('prev-body').textContent = m;
+}
+
+async function sendPush() {
+  const btn = document.getElementById('send-btn');
+  const result = document.getElementById('result');
+  const title = document.getElementById('title').value.trim();
+  const message = document.getElementById('message').value.trim();
+  const url = document.getElementById('url').value.trim() || '/';
+  const target = document.getElementById('target').value;
+
+  if (!title || !message) {
+    alert('יש למלא כותרת והודעה');
+    return;
+  }
+
+  if (!confirm(`לשלוח התראה ל${target === 'all' ? 'כל המנויים' : 'משתמשים רשומים'}?\n\n"${title}"\n${message}`)) {
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'שולח...';
+  result.innerHTML = '';
+
+  try {
+    const res = await fetch('/.netlify/functions/send-push', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + currentSession.access_token
+      },
+      body: JSON.stringify({ title, message, url, target })
+    });
+
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'שגיאת שרת');
+
+    result.innerHTML = `<div class="result-msg success">✓ ההתראה נשלחה ל-${data.sent} מנויים (מתוך ${data.total})${data.failed > 0 ? ' · ' + data.failed + ' נכשלו' : ''}</div>`;
+
+    // איפוס
+    document.getElementById('title').value = '';
+    document.getElementById('message').value = '';
+    updatePreview();
+    await loadStats();
+  } catch(e) {
+    result.innerHTML = `<div class="result-msg error">שגיאה: ${esc(e.message)}</div>`;
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'שלח התראה';
+  }
+}
+
+window.sendPush = sendPush;
+window.updatePreview = updatePreview;
+
+console.log('[push-admin] script loaded, starting init');
+init();
+</script>
+</body>
+</html>
