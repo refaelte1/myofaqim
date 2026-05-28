@@ -4,6 +4,8 @@
 // POST /.netlify/functions/newsletter-subscribe
 // body: { first_name, email, phone, wants_email, wants_sms, source }
 
+const { isHoneypotTripped, rateLimited } = require('./_antispam');
+
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://uexrxkzewfmhthrllsmd.supabase.co';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
@@ -217,6 +219,14 @@ exports.handler = async (event) => {
     payload = JSON.parse(event.body || '{}');
   } catch (e) {
     return json(400, { error: 'בקשה לא תקינה' });
+  }
+
+  // הגנת ספאם: honeypot -> הצלחה שקטה; rate-limit -> 429
+  if (isHoneypotTripped(payload)) {
+    return json(200, { ok: true, message: 'שלחנו לך מייל - בדוק את תיבת הדואר (וגם ספאם).' });
+  }
+  if (rateLimited(event, 'subscribe', 5, 10 * 60 * 1000)) {
+    return json(429, { error: 'יותר מדי בקשות. נסו שוב מאוחר יותר.' });
   }
 
   const firstName = (payload.first_name || '').trim();

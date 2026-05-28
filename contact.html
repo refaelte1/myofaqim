@@ -117,6 +117,7 @@
           <textarea id="c-msg" placeholder="כתבו לנו על מה מדובר..."></textarea>
         </div>
 
+        <input type="text" id="c-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
         <button class="btn-filled" style="width:100%;padding:14px" id="submit-btn" onclick="submitContact()">שלחו הודעה</button>
       </div>
 
@@ -176,7 +177,7 @@
 
     try {
       // ננסה לשלוח דרך Make.com webhook אם מוגדר
-      const payload = { name, phone, email, topic, message: msg, source: 'contact-form' };
+      const payload = { name, phone, email, topic, message: msg, source: 'contact-form', website: $('c-website').value };
       const res = await fetch('/.netlify/functions/contact-submit', {
         method: 'POST', headers: {'Content-Type':'application/json'},
         body: JSON.stringify(payload)

@@ -6,6 +6,8 @@
 //
 //  ללא תלות ב-@supabase/supabase-js - שימוש ב-fetch ישיר ל-REST API.
 
+const { isHoneypotTripped, rateLimited } = require('./_antispam');
+
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://uexrxkzewfmhthrllsmd.supabase.co';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SERVICE_KEY || '';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
@@ -195,6 +197,14 @@ exports.handler = async (event) => {
     body = JSON.parse(event.body || '{}');
   } catch (e) {
     return json(400, { error: 'Invalid JSON' });
+  }
+
+  // הגנת ספאם: honeypot -> הצלחה שקטה; rate-limit -> 429
+  if (isHoneypotTripped(body)) {
+    return json(200, { ok: true, message: 'תודה! ההודעה התקבלה.' });
+  }
+  if (rateLimited(event, 'contact', 5, 5 * 60 * 1000)) {
+    return json(429, { error: 'יותר מדי בקשות. נסו שוב בעוד כמה דקות.' });
   }
 
   const name = (body.name || '').trim();

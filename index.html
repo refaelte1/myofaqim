@@ -958,6 +958,7 @@
         <input type="email" id="r-email" dir="ltr" placeholder="name@example.com">
       </div>
 
+      <input type="text" id="r-website" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
       <button class="resident-submit" id="r-submit" onclick="submitResident()">הצטרפו לקהילה — חינם</button>
 
       <div class="resident-benefits">
@@ -1190,7 +1191,8 @@
           wants_email: true,
           wants_sms: !!phone,
           subscriber_type: 'resident',
-          source: 'coming-soon-home'
+          source: 'coming-soon-home',
+          website: $('r-website').value
         })
       });
 
