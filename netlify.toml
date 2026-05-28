@@ -69,7 +69,11 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
-# ── Redirects ────────────────────────────────────────────────
+# ── Redirects (rewrites, status 200) ─────────────────────────
+# הערה: דפים עם קובץ .html תואם (למשל /deals → deals.html) מטופלים
+# אוטומטית ע"י Netlify (pretty URLs) ואינם צריכים כלל כאן.
+
+# כתובות נקיות לדפים פרטיים/אדמין
 [[redirects]]
   from   = "/admin"
   to     = "/admin.html"
@@ -90,8 +94,7 @@
   to     = "/pricing.html"
   status = 200
 
-# Dynamic pages: /business/{slug}, /project/{slug}, /article/{slug}
-# These rewrite to the static HTML page; the page reads the slug from URL.
+# דפים דינמיים: הדף קורא את ה-slug מה-URL
 [[redirects]]
   from   = "/business/*"
   to     = "/business.html"
@@ -107,44 +110,14 @@
   to     = "/article.html"
   status = 200
 
-# Dynamic sitemap.xml served by Netlify Function
+# כתבות בלוג: /blog/<slug> → blog-<slug>.html
 [[redirects]]
-  from   = "/sitemap.xml"
-  to     = "/.netlify/functions/sitemap"
+  from   = "/blog/:slug"
+  to     = "/blog-:slug.html"
   status = 200
 
-[[redirects]]
-  from   = "/businesses"
-  to     = "/#businesses"
-  status = 200
-
-[[redirects]]
-  from   = "/coupons"
-  to     = "/#coupons"
-  status = 200
-
-[[redirects]]
-  from   = "/news"
-  to     = "/#news"
-  status = 200
-
-[[redirects]]
-  from   = "/forum"
-  to     = "/#forum"
-  status = 200
-
+# קישור ישן: /community → דף האירועים
 [[redirects]]
   from   = "/community"
-  to     = "/#community"
-  status = 200
-
-[[redirects]]
-  from   = "/professionals"
-  to     = "/#professionals"
-  status = 200
-
-# Catch-all for SPA routing (when full Next.js is added)
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
+  to     = "/community-events.html"
+  status = 301

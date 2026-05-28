@@ -15,6 +15,9 @@
  * ════════════════════════════════════════════════════
  */
 
+const { requireAdmin } = require('./_auth');
+const { sendSms } = require('./_sms');
+
 const RESEND_API_KEY = process.env.RESEND_API_KEY;
 const SITE_URL = 'https://myofaqim.co.il';
 const SENDER = 'אופקים שלי <hello@myofaqim.co.il>';
@@ -36,6 +39,9 @@ exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return json(405, { error: 'Method not allowed' });
   }
+
+  const auth = await requireAdmin(event);
+  if (!auth.ok) return json(auth.statusCode, { error: auth.error });
 
   let body;
   try { body = JSON.parse(event.body || '{}'); }
@@ -68,16 +74,8 @@ exports.handler = async (event) => {
       const hello = name ? `שלום ${name},\n\n` : '';
       const smsText = `${hello}העסק "${businessName}" אושר ופעיל באופקים שלי!\n\nתושבי העיר כבר רואים את העסק בקטלוג, יכולים להתקשר ולהזמין.\n\nלעדכון פרטים, תמונות וקופונים:\nmyofaqim.co.il/biz\n\nשדרוג חבילה: ${SUPPORT_PHONE}`;
 
-      const smsRes = await fetch(`${SITE_URL}/.netlify/functions/send-sms`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ phone, message: smsText }),
-      });
-      results.sms_sent = smsRes.ok;
-      if (!smsRes.ok) {
-        const errText = await smsRes.text();
-        console.warn('[approve] SMS failed:', smsRes.status, errText);
-      }
+      await sendSms(phone, smsText);
+      results.sms_sent = true;
     } catch (e) {
       console.warn('[approve] SMS error:', e.message);
     }

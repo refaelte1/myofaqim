@@ -3,6 +3,8 @@
 // GET /.netlify/functions/newsletter-confirm?token=UUID
 // מעדכן status=confirmed ומחזיר דף HTML ידידותי.
 
+const { sendSms } = require('./_sms');
+
 const SUPABASE_URL = process.env.SUPABASE_URL || 'https://uexrxkzewfmhthrllsmd.supabase.co';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const PUBLIC_KEY = process.env.SUPABASE_PUBLISHABLE_KEY || 'sb_publishable_OewpLipzA15en2yUlMKQsQ_HGHo8sVk';
@@ -272,17 +274,8 @@ async function sendConfirmationSms(phone, firstName, subscriberType) {
 
   const message = messages[subscriberType] || messages.resident;
 
-  const res = await fetch(`https://myofaqim.co.il/.netlify/functions/send-sms`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ phone, message }),
-  });
-
-  if (!res.ok) {
-    const errText = await res.text();
-    throw new Error(`SMS API returned ${res.status}: ${errText}`);
-  }
-  return res.json();
+  // קריאה ישירה למודול המשותף (server-to-server, ללא חשיפת endpoint ציבורי)
+  return sendSms(phone, message);
 }
 
 function escapeName(s) {

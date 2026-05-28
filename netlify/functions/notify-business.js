@@ -5,6 +5,8 @@
 //  type: 'contact' | 'coupon_request' | 'lead'
 // ============================================================
 
+const { requireAdmin } = require('./_auth');
+
 const MAKE_WEBHOOK = process.env.MAKE_BUSINESS_WEBHOOK_URL;
 const RESEND_KEY   = process.env.RESEND_API_KEY;
 const SB_URL       = process.env.SUPABASE_URL    || 'https://uexrxkzewfmhthrllsmd.supabase.co';
@@ -15,6 +17,13 @@ const T = require('./_email-template');
 
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') return { statusCode: 405, body: 'Method Not Allowed' };
+
+  // נגיש לאדמין בלבד. אם בעתיד נרצה להפעיל מהדפדפן (תושב→עסק),
+  // יש לקרוא ל-handler זה שרת-לשרת מתוך פונקציה אחרת ולא לחשוף ישירות.
+  const auth = await requireAdmin(event);
+  if (!auth.ok) {
+    return { statusCode: auth.statusCode, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ error: auth.error }) };
+  }
 
   let body;
   try { body = JSON.parse(event.body || '{}'); }

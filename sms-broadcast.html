@@ -435,8 +435,17 @@
   // window.SB_URL מ-site.js (window.SB_URL)
   // window.SB_KEY מ-site.js (window.SB_KEY)
   const sb = window.supabase.createClient(window.SB_URL, window.SB_KEY);
+  const ADMIN_EMAIL = 'refael@tedgi.co.il';
 
   let allSubs = [];
+
+  // מחזיר access_token של אדמין מאומת, או null
+  async function getAdminToken() {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session) return null;
+    if ((session.user.email || '').toLowerCase() !== ADMIN_EMAIL) return null;
+    return session.access_token;
+  }
 
   // ─── טעינת נמענים ─────────────────────────────────
   async function loadStats() {
@@ -541,12 +550,15 @@
     const phone = prompt('הקלד מספר טלפון לבדיקה:', '0542338233');
     if (!phone) return;
 
+    const token = await getAdminToken();
+    if (!token) { showAlert('error', '❌ נדרשת התחברות כמנהל'); return; }
+
     showAlert('warning', 'שולח הודעת בדיקה...');
 
     try {
       const res = await fetch('/.netlify/functions/send-sms', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
         body: JSON.stringify({ phone, message: msg }),
       });
       const data = await res.json();
@@ -574,6 +586,9 @@
       return;
     }
 
+    const token = await getAdminToken();
+    if (!token) { showAlert('error', '❌ נדרשת התחברות כמנהל'); return; }
+
     const btn = document.getElementById('send-btn');
     btn.disabled = true;
     btn.textContent = 'שולח...';
@@ -588,7 +603,7 @@
       try {
         const res = await fetch('/.netlify/functions/send-sms', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
           body: JSON.stringify({ phone: sub.phone, message: msg }),
         });
         if (res.ok) {
@@ -633,7 +648,16 @@
   document.getElementById('audience').addEventListener('change', updatePreview);
 
   // ─── התחלה ────────────────────────────────────────
-  loadStats();
+  (async function init() {
+    const token = await getAdminToken();
+    if (!token) {
+      showAlert('error', 'דף זה מיועד למנהל האתר בלבד. יש להתחבר תחילה.');
+      const btn = document.getElementById('send-btn');
+      if (btn) btn.disabled = true;
+      return;
+    }
+    loadStats();
+  })();
 </script>
 </body>
 </html>
