@@ -2,93 +2,166 @@
  * ════════════════════════════════════════════════════
  * Service Worker - אופקים שלי PWA
  *
- * - מאפשר עבודה offline
- * - מאיץ טעינה (cache assets)
- * - תומך ב"הוסף למסך הבית"
+ * אסטרטגיות:
+ *   • ניווט (דפי HTML)   → Network-first + navigation preload,
+ *                          נפילה לעמוד שמור ואז ל-/offline.html
+ *   • נכסים סטטיים        → Stale-While-Revalidate (מהיר + עובד offline)
+ *   • Google Fonts        → Cache-first (מטמון נפרד וקבוע)
+ *   • Push Notifications  → התראות בעברית/RTL
  * ════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'myofaqim-v1.1.0';
-const ASSETS_TO_CACHE = [
+const VERSION = 'v1.2.0';
+const CORE_CACHE = `myofaqim-core-${VERSION}`;
+const RUNTIME_CACHE = `myofaqim-runtime-${VERSION}`;
+const FONTS_CACHE = `myofaqim-fonts-${VERSION}`;
+const CURRENT_CACHES = [CORE_CACHE, RUNTIME_CACHE, FONTS_CACHE];
+
+const OFFLINE_URL = '/offline.html';
+
+// קבצים חיוניים — חייבים להישמר בהתקנה
+const CORE_ASSETS = [
   '/',
+  OFFLINE_URL,
   '/site.css',
   '/site.js',
-  '/logo.png',
-  '/logo-wide.png',
   '/manifest.json',
+  '/logo-wide.png',
+  '/logo-wide-mobile.png',
   '/icon-192.png',
   '/icon-512.png',
+  '/apple-touch-icon.png',
   '/favicon-32.png',
 ];
 
-// התקנה - שמירת קבצים בסיסיים ב-cache
+// דפים מרכזיים — נשמרים במאמץ-מיטבי (כישלון בודד לא מפיל את ההתקנה)
+const OPTIONAL_PAGES = [
+  '/home',
+  '/businesses',
+  '/deals',
+  '/zmanim',
+  '/forum',
+];
+
+// ── התקנה ────────────────────────────────────────────────────
 self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_VERSION)
-      .then((cache) => cache.addAll(ASSETS_TO_CACHE))
-      .then(() => self.skipWaiting())
-      .catch((err) => console.warn('[SW] Cache failed:', err))
-  );
+  event.waitUntil((async () => {
+    const cache = await caches.open(CORE_CACHE);
+    await cache.addAll(CORE_ASSETS);
+    await Promise.allSettled(OPTIONAL_PAGES.map((u) => cache.add(u)));
+    await self.skipWaiting();
+  })().catch((err) => console.warn('[SW] install failed:', err)));
 });
 
-// הפעלה - מחיקת מטמון ישן
+// ── הפעלה — ניקוי מטמון ישן + הפעלת navigation preload ────────
 self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((cacheNames) => {
-      return Promise.all(
-        cacheNames
-          .filter((name) => name !== CACHE_VERSION)
-          .map((name) => caches.delete(name))
-      );
-    }).then(() => self.clients.claim())
-  );
+  event.waitUntil((async () => {
+    if (self.registration.navigationPreload) {
+      try { await self.registration.navigationPreload.enable(); } catch {}
+    }
+    const names = await caches.keys();
+    await Promise.all(
+      names.filter((n) => !CURRENT_CACHES.includes(n)).map((n) => caches.delete(n))
+    );
+    await self.clients.claim();
+  })());
 });
 
-// אסטרטגיית fetch - Network First, fallback to Cache
-self.addEventListener('fetch', (event) => {
-  // רק GET requests
-  if (event.request.method !== 'GET') return;
+// ── אסטרטגיות עזר ─────────────────────────────────────────────
 
-  // דלג על: Supabase, API calls, פאנלים אדמיניסטרטיביים
-  const url = event.request.url;
-  if (url.includes('supabase.co') ||
-      url.includes('/.netlify/functions/') ||
-      url.includes('/admin') ||
-      url.includes('/sms-broadcast') ||
-      url.includes('hebcal.com') ||
-      url.includes('googletagmanager') ||
-      url.includes('google-analytics') ||
-      url.startsWith('chrome-extension:') ||
-      url.startsWith('moz-extension:') ||
-      url.startsWith('safari-extension:') ||
-      !url.startsWith('http')) {
-    return; // תן לדפדפן לטפל בזה רגיל
+// Cache-first: למשאבים קבועים (גופנים)
+async function cacheFirst(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+  try {
+    const response = await fetch(request);
+    if (response && (response.ok || response.type === 'opaque')) {
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (err) {
+    return cached || Response.error();
+  }
+}
+
+// Stale-While-Revalidate: מחזיר מהמטמון מיד ומרענן ברקע
+async function staleWhileRevalidate(request, cacheName) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  const network = fetch(request)
+    .then((response) => {
+      if (response && response.status === 200 && response.type === 'basic') {
+        cache.put(request, response.clone());
+      }
+      return response;
+    })
+    .catch(() => cached);
+  return cached || network;
+}
+
+// Network-first לניווטים, עם navigation preload ונפילה ל-offline
+async function networkFirstNavigation(event) {
+  const cache = await caches.open(RUNTIME_CACHE);
+  try {
+    const preloaded = await event.preloadResponse;
+    if (preloaded) {
+      cache.put(event.request, preloaded.clone());
+      return preloaded;
+    }
+    const response = await fetch(event.request);
+    if (response && response.status === 200) {
+      cache.put(event.request, response.clone());
+    }
+    return response;
+  } catch (err) {
+    return (
+      (await caches.match(event.request)) ||
+      (await caches.match(OFFLINE_URL)) ||
+      (await caches.match('/'))
+    );
+  }
+}
+
+// ── fetch ─────────────────────────────────────────────────────
+self.addEventListener('fetch', (event) => {
+  const request = event.request;
+  if (request.method !== 'GET') return;
+
+  let url;
+  try { url = new URL(request.url); } catch { return; }
+  if (!url.protocol.startsWith('http')) return;
+
+  // Google Fonts → Cache-first במטמון ייעודי
+  if (url.origin === 'https://fonts.googleapis.com' ||
+      url.origin === 'https://fonts.gstatic.com') {
+    event.respondWith(cacheFirst(request, FONTS_CACHE));
+    return;
   }
 
-  event.respondWith(
-    fetch(event.request)
-      .then((response) => {
-        // קח עותק של התגובה
-        const responseToCache = response.clone();
+  // משאבים שחייבים להיות תמיד חיים — תן לדפדפן לטפל ישירות
+  const href = request.url;
+  if (href.includes('supabase.co') ||
+      href.includes('/.netlify/functions/') ||
+      href.includes('/admin') ||
+      href.includes('/sms-broadcast') ||
+      href.includes('hebcal.com') ||
+      href.includes('googletagmanager') ||
+      href.includes('google-analytics')) {
+    return;
+  }
 
-        // שמור ב-cache (רק אם תקין ורק http/https)
-        if (response.status === 200 && response.type === 'basic' &&
-            (event.request.url.startsWith('http://') || event.request.url.startsWith('https://'))) {
-          caches.open(CACHE_VERSION)
-            .then((cache) => {
-              try { cache.put(event.request, responseToCache); } catch {}
-            });
-        }
+  // מכאן ואילך — רק same-origin
+  if (url.origin !== self.location.origin) return;
 
-        return response;
-      })
-      .catch(() => {
-        // אם הרשת נופלת - תן את הגרסה השמורה
-        return caches.match(event.request).then((cached) => {
-          return cached || caches.match('/');
-        });
-      })
-  );
+  // ניווטים (דפי HTML)
+  if (request.mode === 'navigate') {
+    event.respondWith(networkFirstNavigation(event));
+    return;
+  }
+
+  // נכסים סטטיים (css/js/תמונות/וכו')
+  event.respondWith(staleWhileRevalidate(request, RUNTIME_CACHE));
 });
 
 /* ════════════════════════════════════════════════════════════
