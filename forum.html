@@ -104,8 +104,8 @@
 
   .detail-content { max-width: 720px; margin: 0 auto; padding: 16px 12px 100px; }
   .post-full { background: #fff; border-radius: 18px; padding: 20px 22px; margin-bottom: 16px; box-shadow: 0 2px 10px rgba(26,46,92,0.06); }
-  .post-full h1 { font-size: 22px; font-weight: 900; color: #1A2E5C; margin: 12px 0; letter-spacing: -0.02em; line-height: 1.3; }
-  .post-full-body { font-size: 15px; line-height: 1.7; color: #1F2937; margin: 0 0 16px; white-space: pre-wrap; }
+  .post-full h1 { font-size: 22px; font-weight: 900; color: #1A2E5C; margin: 12px 0; letter-spacing: -0.02em; line-height: 1.3; overflow-wrap: break-word; }
+  .post-full-body { font-size: 15px; line-height: 1.7; color: #1F2937; margin: 0 0 16px; white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; }
 
   .reactions-bar { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 0; border-top: 1px solid #F0F2F5; margin-top: 12px; }
   .reaction-btn { background: #F5F5F0; border: 1px solid transparent; border-radius: 100px; padding: 6px 12px; cursor: pointer; font-family: inherit; font-size: 13px; font-weight: 700; color: #4B5563; display: flex; align-items: center; gap: 5px; transition: all .15s; }
@@ -119,7 +119,7 @@
   .reply-avatar { width: 26px; height: 26px; border-radius: 50%; background: linear-gradient(135deg, #94A3B8 0%, #6B7280 100%); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; flex-shrink: 0; overflow: hidden; }
   .reply-author { font-size: 12px; font-weight: 800; color: #1A2E5C; }
   .reply-time { font-size: 10px; color: #94A3B8; margin-right: auto; }
-  .reply-body { font-size: 14px; line-height: 1.55; color: #1F2937; white-space: pre-wrap; }
+  .reply-body { font-size: 14px; line-height: 1.55; color: #1F2937; white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word; }
   .reply-actions { display: flex; gap: 6px; margin-top: 6px; padding-top: 6px; border-top: 1px solid #F0F2F5; }
   .reply-action-btn { background: none; border: none; cursor: pointer; font-size: 11px; color: #6B7280; font-weight: 700; font-family: inherit; padding: 4px 8px; border-radius: 6px; }
   .reply-action-btn:hover { background: #F5F5F0; }
@@ -410,11 +410,12 @@ function renderPostCard(p) {
     </article>`;
 }
 
-async function openPost(id) {
+async function openPost(id, opts = {}) {
+  const silent = opts.silent === true;
   currentPostId = id;
   $('list-view').style.display = 'none';
   $('detail-view').classList.add('active');
-  $('detail-content').innerHTML = '<div class="loader">טוען...</div>';
+  if (!silent) $('detail-content').innerHTML = '<div class="loader">טוען...</div>';
   $('detail-actions').innerHTML = '';
 
   try {
@@ -502,7 +503,7 @@ async function openPost(id) {
           </div>`}
       </div>`;
 
-    window.scrollTo(0, 0);
+    if (!silent) window.scrollTo(0, 0);
   } catch(e) {
     $('detail-content').innerHTML = `<div class="empty-state"><h3>שגיאה</h3><p>${esc(e.message)}</p></div>`;
   }
@@ -547,7 +548,7 @@ async function toggleReaction(postId, replyId, type) {
     } else {
       await sb.from('forum_reactions').insert({ ...filter, user_id: currentUser.id, reaction_type: type });
     }
-    if (currentPostId) openPost(currentPostId);
+    if (currentPostId) openPost(currentPostId, { silent: true });
   } catch(e) { alert('שגיאה: ' + e.message); }
 }
 
@@ -592,7 +593,8 @@ async function submitReply(postId) {
       post_id: postId, author_id: currentUser.id, display_name: name, body: text
     });
     if (error) throw error;
-    openPost(postId);
+    const ta = $('reply-text'); if (ta) ta.value = '';
+    openPost(postId, { silent: true });
   } catch(e) { alert('שגיאה: ' + e.message); }
 }
 

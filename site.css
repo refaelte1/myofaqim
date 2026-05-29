@@ -44,6 +44,9 @@
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
+/* מניעת גלישה אופקית במובייל (שגרמה למודאל/תצוגות צפות "לברוח" ימינה ב-iOS).
+   overflow-x: clip לא יוצר scroll-container ולכן לא שובר position: sticky. */
+html, body { overflow-x: clip; max-width: 100%; }
 body {
   font-family: var(--sans);
   background: var(--cream);
