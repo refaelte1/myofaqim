@@ -1,0 +1,18 @@
+{
+  "name": "אופקים שלי",
+  "bundleId": "il.co.myofaqim",
+  "url": "https://myofaqim.co.il",
+  "imageUrl": "https://myofaqim.co.il/icon-512.png",
+  "splashColor": "#FBFAF7",
+  "progressBarColor": "#0D1B3E",
+  "statusBarColor": "#0D1B3E",
+  "permittedUrls": [
+    "myofaqim.co.il",
+    "uexrxkzewfmhthrllsmd.supabase.co",
+    "accounts.google.com",
+    "fonts.googleapis.com",
+    "fonts.gstatic.com"
+  ],
+  "appVersion": "1.0.0",
+  "appVersionCode": 1
+}
