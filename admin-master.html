@@ -499,7 +499,7 @@ const TABS = {
       { name: 'cover_image_url', label: 'תמונת קאבר', type: 'image', bucket: 'business-covers' },
       { name: 'gallery_urls', label: 'גלריית תמונות', type: 'images', bucket: 'business-gallery' },
       { name: 'address', label: 'כתובת מלאה' },
-      { name: 'neighborhood', label: 'שכונה' },
+      { name: 'neighborhood', label: 'שכונה', type: 'datalist' },
       { name: 'phone', label: 'טלפון ראשי' },
       { name: 'phone_secondary', label: 'טלפון נוסף' },
       { name: 'whatsapp', label: 'WhatsApp' },
@@ -574,7 +574,7 @@ const TABS = {
       { name: 'size_sqm', label: 'מ"ר', type: 'number' },
       { name: 'floor', label: 'קומה', type: 'number' },
       { name: 'price', label: 'מחיר (₪)', type: 'number' },
-      { name: 'neighborhood', label: 'שכונה' },
+      { name: 'neighborhood', label: 'שכונה', type: 'datalist' },
       { name: 'images', label: 'תמונות הנכס', type: 'images', bucket: 'business-gallery' },
       { name: 'has_parking', label: 'חניה', type: 'checkbox' },
       { name: 'has_elevator', label: 'מעלית', type: 'checkbox' },
@@ -610,7 +610,7 @@ const TABS = {
       { name: 'name', label: 'שם בית הכנסת', required: true },
       { name: 'nusach', label: 'נוסח', type: 'select', options: ['אשכנז','ספרד','עדות המזרח','חב"ד','תימני','מעורב','אחר'] },
       { name: 'address', label: 'כתובת' },
-      { name: 'neighborhood', label: 'שכונה' },
+      { name: 'neighborhood', label: 'שכונה', type: 'datalist' },
       { name: 'rabbi_name', label: 'שם הרב' },
       { name: 'rabbi_phone', label: 'טלפון הרב' },
       { name: 'gabai_name', label: 'שם הגבאי' },
@@ -1033,6 +1033,15 @@ function renderForm(data) {
       return `<div class="form-row">
         <label>${f.label}</label>
         <input type="number" name="${f.name}" value="${window.esc(val)}">
+      </div>`;
+    }
+    if (f.type === 'datalist') {
+      const opts = f.options || window.OFAKIM_NEIGHBORHOODS || [];
+      const listId = `dl-${f.name}`;
+      return `<div class="form-row">
+        <label>${f.label}${f.required ? ' *' : ''}</label>
+        <input type="text" name="${f.name}" value="${window.esc(val)}" list="${listId}" ${f.required ? 'required' : ''}>
+        <datalist id="${listId}">${opts.map(o => `<option value="${window.esc(o)}"></option>`).join('')}</datalist>
       </div>`;
     }
     if (f.type === 'date') {

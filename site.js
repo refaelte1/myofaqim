@@ -14,6 +14,57 @@ const fmt = n => n == null ? '' : Number(n).toLocaleString('he-IL');
 const HE_DAYS = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 const HE_MONTHS = ['ינואר','פברואר','מרץ','אפריל','מאי','יוני','יולי','אוגוסט','ספטמבר','אוקטובר','נובמבר','דצמבר'];
 
+// ── שכונות ואזורי שירות באופקים (מקור אמת יחיד) ──
+// משקף את data/neighborhoods.json
+const OFAKIM_SERVICE_AREAS = {
+  city: 'אופקים',
+  residential: [
+    { name: 'מישור הגפן', grid: "ג'-ד' / 2-3" },
+    { name: 'רמת שקד', grid: "ו'-ז' / 2-3" },
+    { name: 'שכונת בן גוריון', grid: "ה'-ו' / 4-5" },
+    { name: 'שכונת הרי"ף', grid: "ד' / 5" },
+    { name: 'שכונת שפירא', grid: "ז'-ח' / 5" },
+    { name: 'שכונת הפארק', grid: "ח'-ט' / 7-8" },
+    { name: 'שכונת חורשת נח', grid: "ד'-ה' / 8" }
+  ],
+  industrial_commercial: [
+    { name: 'אזור המלאכה', grid: "ב'-ג' / 5-6" },
+    { name: 'אזור התעשייה הצפוני', grid: "ג'-ד' / 6-7" },
+    { name: 'אזור התעשייה המזרחי', grid: "ה' / 6-7" },
+    { name: 'אזור תעשייה דרומי (בתכנון)', grid: "ח'-ט' / 1-3" }
+  ],
+  points_of_interest: [
+    { name: 'פארק אופקים', grid: "ו'-ז' / 7-8" },
+    { name: 'תחנת רכבת אופקים', grid: "ג' / 8" }
+  ]
+};
+// רשימת שמות שכונות המגורים (לטפסים ולהשלמה אוטומטית)
+const OFAKIM_NEIGHBORHOODS = OFAKIM_SERVICE_AREAS.residential.map(n => n.name);
+
+// בונה <option>-ים לרשימת שכונות (לאלמנט <select>)
+function neighborhoodOptions(selected) {
+  return OFAKIM_NEIGHBORHOODS
+    .map(n => `<option value="${esc(n)}"${n === selected ? ' selected' : ''}>${esc(n)}</option>`)
+    .join('');
+}
+
+// מזריק <datalist id="ofakim-neighborhoods-list"> משותף ל-DOM
+// כך שכל <input list="ofakim-neighborhoods-list"> יקבל השלמה אוטומטית
+function injectNeighborhoodsDatalist() {
+  if (!document.body || document.getElementById('ofakim-neighborhoods-list')) return;
+  const dl = document.createElement('datalist');
+  dl.id = 'ofakim-neighborhoods-list';
+  dl.innerHTML = OFAKIM_NEIGHBORHOODS.map(n => `<option value="${esc(n)}"></option>`).join('');
+  document.body.appendChild(dl);
+}
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', injectNeighborhoodsDatalist);
+  } else {
+    injectNeighborhoodsDatalist();
+  }
+}
+
 // ── HEADER HTML ──
 const HEADER_HTML = `
 <header class="site-header">
@@ -2124,3 +2175,9 @@ window.mofRequestPushPermission = mofRequestPushPermission;
 window.mofDismissPushBanner = mofDismissPushBanner;
 window.mofShowPushBanner = mofShowPushBanner;
 window.mofPushStatus = mofPushStatus;
+
+// חשוף שכונות ואזורי שירות לglobal
+window.OFAKIM_SERVICE_AREAS = OFAKIM_SERVICE_AREAS;
+window.OFAKIM_NEIGHBORHOODS = OFAKIM_NEIGHBORHOODS;
+window.neighborhoodOptions = neighborhoodOptions;
+window.injectNeighborhoodsDatalist = injectNeighborhoodsDatalist;
