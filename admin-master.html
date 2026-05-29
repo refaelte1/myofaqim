@@ -498,7 +498,7 @@ const TABS = {
       { name: 'logo_url', label: 'לוגו', type: 'image', bucket: 'business-logos' },
       { name: 'cover_image_url', label: 'תמונת קאבר', type: 'image', bucket: 'business-covers' },
       { name: 'gallery_urls', label: 'גלריית תמונות', type: 'images', bucket: 'business-gallery' },
-      { name: 'address', label: 'כתובת מלאה' },
+      { name: 'address', label: 'כתובת מלאה', type: 'address' },
       { name: 'neighborhood', label: 'שכונה', type: 'datalist' },
       { name: 'phone', label: 'טלפון ראשי' },
       { name: 'phone_secondary', label: 'טלפון נוסף' },
@@ -609,7 +609,7 @@ const TABS = {
     fields: [
       { name: 'name', label: 'שם בית הכנסת', required: true },
       { name: 'nusach', label: 'נוסח', type: 'select', options: ['אשכנז','ספרד','עדות המזרח','חב"ד','תימני','מעורב','אחר'] },
-      { name: 'address', label: 'כתובת' },
+      { name: 'address', label: 'כתובת', type: 'address' },
       { name: 'neighborhood', label: 'שכונה', type: 'datalist' },
       { name: 'rabbi_name', label: 'שם הרב' },
       { name: 'rabbi_phone', label: 'טלפון הרב' },
@@ -795,7 +795,7 @@ const TABS = {
       { name: 'name', label: 'שם השירות', required: true },
       { name: 'category', label: 'קטגוריה', type: 'select', options: ['emergency','municipality','health','education','welfare','culture','transport','religious','other'] },
       { name: 'description', label: 'תיאור השירות', type: 'textarea' },
-      { name: 'address', label: 'כתובת' },
+      { name: 'address', label: 'כתובת', type: 'address' },
       { name: 'phone', label: 'טלפון ראשי' },
       { name: 'phone_secondary', label: 'טלפון נוסף' },
       { name: 'whatsapp', label: 'WhatsApp' },
@@ -1042,6 +1042,12 @@ function renderForm(data) {
         <label>${f.label}${f.required ? ' *' : ''}</label>
         <input type="text" name="${f.name}" value="${window.esc(val)}" list="${listId}" ${f.required ? 'required' : ''}>
         <datalist id="${listId}">${opts.map(o => `<option value="${window.esc(o)}"></option>`).join('')}</datalist>
+      </div>`;
+    }
+    if (f.type === 'address') {
+      return `<div class="form-row">
+        <label>${f.label}${f.required ? ' *' : ''}</label>
+        <input type="text" class="gmaps-address" name="${f.name}" value="${window.esc(val)}" placeholder="רחוב ומספר, אופקים" ${f.required ? 'required' : ''}>
       </div>`;
     }
     if (f.type === 'date') {

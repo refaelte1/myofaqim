@@ -869,7 +869,7 @@ function renderBizEditor() {
     html = `
       <div class="field-group">
         <label>כתובת מלאה *</label>
-        <input type="text" id="f-address" value="${esc(i.address || '')}" placeholder="רחוב הרצל 45, אופקים">
+        <input type="text" id="f-address" class="gmaps-address" data-lat="#f-lat" data-lng="#f-lng" value="${esc(i.address || '')}" placeholder="רחוב הרצל 45, אופקים">
       </div>
       <div class="field-row three">
         <div class="field-group">
@@ -1069,7 +1069,7 @@ function renderShulEditor() {
       </div>
       <div class="field-group">
         <label>כתובת מלאה *</label>
-        <input type="text" id="f-address" value="${esc(i.address || '')}" placeholder="רחוב הרצל 12, אופקים">
+        <input type="text" id="f-address" class="gmaps-address" data-lat="#f-lat" data-lng="#f-lng" value="${esc(i.address || '')}" placeholder="רחוב הרצל 12, אופקים">
       </div>
       <div class="field-row three">
         <div class="field-group">

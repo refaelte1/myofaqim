@@ -65,6 +65,87 @@ if (typeof document !== 'undefined') {
   }
 }
 
+// ── Google Maps – השלמת כתובות (Places Autocomplete) ──
+// ⬇️ הדבק כאן את מפתח ה-Google Maps API (עם Places API מופעל,
+//    מומלץ להגביל את המפתח ל-referrer של הדומיין).
+const GOOGLE_MAPS_API_KEY = '';
+
+// גבולות משוערים של אופקים – להטיית התוצאות (לא חוסם ערים אחרות)
+const OFAKIM_BOUNDS = { south: 31.28, west: 34.58, north: 31.34, east: 34.65 };
+
+let _gmapsPromise = null;
+function loadGoogleMaps() {
+  if (window.google && window.google.maps && window.google.maps.places) return Promise.resolve();
+  if (_gmapsPromise) return _gmapsPromise;
+  if (!GOOGLE_MAPS_API_KEY) {
+    console.warn('GOOGLE_MAPS_API_KEY חסר ב-site.js — השלמת כתובות מושבתת.');
+    return Promise.reject(new Error('missing GOOGLE_MAPS_API_KEY'));
+  }
+  _gmapsPromise = new Promise((resolve, reject) => {
+    window.__gmapsReady = () => resolve();
+    const s = document.createElement('script');
+    s.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(GOOGLE_MAPS_API_KEY)}&libraries=places&language=he&region=IL&loading=async&callback=__gmapsReady`;
+    s.async = true;
+    s.defer = true;
+    s.onerror = () => reject(new Error('טעינת Google Maps נכשלה'));
+    document.head.appendChild(s);
+  });
+  return _gmapsPromise;
+}
+
+// מחבר השלמת כתובות ל-<input> בודד.
+// אם יש data-lat / data-lng (סלקטור) – ממלא קואורדינטות בבחירת מקום.
+function attachAddressAutocomplete(input) {
+  if (!input || input._gmapsAttached) return;
+  input._gmapsAttached = true;
+  loadGoogleMaps().then(() => {
+    const ac = new google.maps.places.Autocomplete(input, {
+      componentRestrictions: { country: 'il' },
+      fields: ['formatted_address', 'geometry', 'name'],
+      types: ['address'],
+    });
+    ac.setBounds(OFAKIM_BOUNDS);
+    ac.addListener('place_changed', () => {
+      const place = ac.getPlace();
+      if (!place || !place.geometry || !place.geometry.location) return;
+      const loc = place.geometry.location;
+      const latSel = input.getAttribute('data-lat');
+      const lngSel = input.getAttribute('data-lng');
+      if (latSel) { const el = document.querySelector(latSel); if (el) { el.value = loc.lat(); el.dispatchEvent(new Event('change', { bubbles: true })); } }
+      if (lngSel) { const el = document.querySelector(lngSel); if (el) { el.value = loc.lng(); el.dispatchEvent(new Event('change', { bubbles: true })); } }
+      input.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  }).catch(() => { input._gmapsAttached = false; });
+}
+
+// מחבר את כל ה-inputs בעלי class="gmaps-address" בתוך root (ברירת מחדל: כל הדף)
+function attachAddressAutocompletes(root) {
+  (root || document).querySelectorAll('input.gmaps-address').forEach(attachAddressAutocomplete);
+}
+
+// חיבור אוטומטי – גם לשדות סטטיים וגם לשדות שנוצרים דינמית (טפסי אדמין, רב-שלבי)
+function initAddressAutocomplete() {
+  attachAddressAutocompletes();
+  if (window.MutationObserver) {
+    new MutationObserver(muts => {
+      for (const m of muts) {
+        m.addedNodes.forEach(node => {
+          if (node.nodeType !== 1) return;
+          if (node.matches && node.matches('input.gmaps-address')) attachAddressAutocomplete(node);
+          if (node.querySelectorAll) node.querySelectorAll('input.gmaps-address').forEach(attachAddressAutocomplete);
+        });
+      }
+    }).observe(document.body, { childList: true, subtree: true });
+  }
+}
+if (typeof document !== 'undefined') {
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAddressAutocomplete);
+  } else {
+    initAddressAutocomplete();
+  }
+}
+
 // ── HEADER HTML ──
 const HEADER_HTML = `
 <header class="site-header">
@@ -2181,3 +2262,8 @@ window.OFAKIM_SERVICE_AREAS = OFAKIM_SERVICE_AREAS;
 window.OFAKIM_NEIGHBORHOODS = OFAKIM_NEIGHBORHOODS;
 window.neighborhoodOptions = neighborhoodOptions;
 window.injectNeighborhoodsDatalist = injectNeighborhoodsDatalist;
+
+// חשוף השלמת כתובות (Google Maps) לglobal
+window.loadGoogleMaps = loadGoogleMaps;
+window.attachAddressAutocomplete = attachAddressAutocomplete;
+window.attachAddressAutocompletes = attachAddressAutocompletes;
