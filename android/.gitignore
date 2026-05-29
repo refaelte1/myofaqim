@@ -1,0 +1,17 @@
+# קבצים שנוצרים ע"י Bubblewrap / Gradle — אסור להעלות ל-Git
+*.keystore
+*.jks
+app/
+gradle/
+gradlew
+gradlew.bat
+build.gradle
+settings.gradle
+gradle.properties
+local.properties
+.gradle/
+build/
+store_icon.png
+*.aab
+*.apk
+*.keystore.txt
