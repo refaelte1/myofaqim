@@ -227,7 +227,10 @@ CREATE TABLE IF NOT EXISTS forum_posts (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   author_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   display_name TEXT,
-  category TEXT,
+  category TEXT CHECK (category IN (
+    'general','help','recommend','municipal','sell_buy','lost_found',
+    'rides','babysit','gemach','community','neighborhood'
+  )),
   title TEXT NOT NULL,
   body TEXT,
   likes_count INTEGER DEFAULT 0,
