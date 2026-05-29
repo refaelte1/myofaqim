@@ -76,6 +76,11 @@
   .post-cat-tag.municipal { background: rgba(245,158,11,0.1); color: #D97706; }
   .post-cat-tag.sell_buy { background: rgba(124,58,237,0.08); color: #7C3AED; }
   .post-cat-tag.lost_found { background: rgba(236,72,153,0.08); color: #DB2777; }
+  .post-cat-tag.rides { background: rgba(13,148,136,0.08); color: #0D9488; }
+  .post-cat-tag.babysit { background: rgba(234,88,12,0.08); color: #EA580C; }
+  .post-cat-tag.gemach { background: rgba(180,83,9,0.08); color: #B45309; }
+  .post-cat-tag.community { background: rgba(79,70,229,0.08); color: #4F46E5; }
+  .post-cat-tag.neighborhood { background: rgba(71,85,105,0.1); color: #475569; }
 
   .post-bubble h2.post-title { font-size: 16px; font-weight: 800; color: #1A2E5C; margin: 0 0 8px; line-height: 1.35; letter-spacing: -0.01em; }
   .post-body-snippet { font-size: 14px; color: #4B5563; line-height: 1.55; margin: 0 0 12px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
@@ -183,11 +188,16 @@
     <div class="cat-bar" id="cat-bar">
       <button class="cat-chip active" data-cat="all">הכל <span class="count" id="cnt-all">0</span></button>
       <button class="cat-chip" data-cat="general">כללי <span class="count" id="cnt-general">0</span></button>
-      <button class="cat-chip" data-cat="help">עזרה <span class="count" id="cnt-help">0</span></button>
       <button class="cat-chip" data-cat="recommend">המלצות <span class="count" id="cnt-recommend">0</span></button>
+      <button class="cat-chip" data-cat="help">עזרה <span class="count" id="cnt-help">0</span></button>
+      <button class="cat-chip" data-cat="sell_buy">יד שנייה <span class="count" id="cnt-sell_buy">0</span></button>
+      <button class="cat-chip" data-cat="rides">טרמפים <span class="count" id="cnt-rides">0</span></button>
+      <button class="cat-chip" data-cat="babysit">בייביסיטר <span class="count" id="cnt-babysit">0</span></button>
+      <button class="cat-chip" data-cat="gemach">גמ״חים <span class="count" id="cnt-gemach">0</span></button>
+      <button class="cat-chip" data-cat="lost_found">אבידות <span class="count" id="cnt-lost_found">0</span></button>
+      <button class="cat-chip" data-cat="community">קהילות <span class="count" id="cnt-community">0</span></button>
+      <button class="cat-chip" data-cat="neighborhood">שכונות <span class="count" id="cnt-neighborhood">0</span></button>
       <button class="cat-chip" data-cat="municipal">עירייה <span class="count" id="cnt-municipal">0</span></button>
-      <button class="cat-chip" data-cat="sell_buy">מכירה <span class="count" id="cnt-sell_buy">0</span></button>
-      <button class="cat-chip" data-cat="lost_found">אבדות <span class="count" id="cnt-lost_found">0</span></button>
     </div>
 
     <div id="posts-feed" class="post-feed">
@@ -224,11 +234,16 @@
         <label>קטגוריה</label>
         <select id="np-category">
           <option value="general">כללי</option>
-          <option value="help">עזרה</option>
           <option value="recommend">המלצות</option>
-          <option value="municipal">עירייה</option>
-          <option value="sell_buy">מכירה/קנייה</option>
-          <option value="lost_found">אבדות</option>
+          <option value="help">עזרה ושאלות</option>
+          <option value="sell_buy">יד שנייה / מכירה</option>
+          <option value="rides">טרמפים ונסיעות</option>
+          <option value="babysit">בייביסיטר ושמרטפות</option>
+          <option value="gemach">גמ״חים</option>
+          <option value="lost_found">אבידות ומציאות</option>
+          <option value="community">קהילות ותחומי עניין</option>
+          <option value="neighborhood">לפי שכונה</option>
+          <option value="municipal">עירייה ושיפור פני העיר</option>
         </select>
       </div>
       <div class="form-field">
@@ -264,8 +279,10 @@ let readSet = new Set();
 let currentPostId = null;
 
 const CAT_LABELS = {
-  general: 'כללי', help: 'עזרה', recommend: 'המלצות',
-  municipal: 'עירייה', sell_buy: 'מכירה', lost_found: 'אבדות'
+  general: 'כללי', recommend: 'המלצות', help: 'עזרה',
+  sell_buy: 'יד שנייה', rides: 'טרמפים', babysit: 'בייביסיטר',
+  gemach: 'גמ״חים', lost_found: 'אבידות', community: 'קהילות',
+  neighborhood: 'שכונות', municipal: 'עירייה'
 };
 
 const REACTIONS = [
