@@ -6,6 +6,11 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="אופקים שלי">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
 <title>זמני היום והלכה | אופקים שלי</title>
 <meta name="description" content="זמני התפילה היומיים באופקים - עלות השחר, נץ החמה, סוף קריאת שמע, מנחה, צאת הכוכבים וזמני שבת. לוח זמנים מדויק לפי שיטות הפסיקה.">
 <meta property="og:title" content="זמני היום והלכה - אופקים שלי">
@@ -362,10 +367,14 @@ async function loadZmanim() {
     const T = data.times || {};
     const I = data.info || {};
 
-    // תאריכים
+    // תאריכים — מעדיפים את התאריך מ-2net, ואם חסר נופלים לחישוב מקומי מהמכשיר
     const today = new Date();
-    $('he-date').textContent = I.hebrew_date || data.hebrew_date || '';
-    $('gr-date').textContent = today.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+    let heFallback = '';
+    try {
+      heFallback = today.toLocaleDateString('he-IL-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch (e) { heFallback = ''; }
+    $('he-date').textContent = I.hebrew_date || data.hebrew_date || heFallback;
+    $('gr-date').textContent = today.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
     // שבת
     if (T.candles_lighting || T.shabbat_candles) {

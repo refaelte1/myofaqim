@@ -1,0 +1,68 @@
+{
+  "packageId": "il.co.myofaqim",
+  "host": "myofaqim.co.il",
+  "name": "אופקים שלי — MyOfaqim",
+  "launcherName": "אופקים שלי",
+  "display": "standalone",
+  "orientation": "portrait",
+  "themeColor": "#0D1B3E",
+  "themeColorDark": "#0D1B3E",
+  "navigationColor": "#0D1B3E",
+  "navigationColorDark": "#0D1B3E",
+  "navigationDividerColor": "#0D1B3E",
+  "navigationDividerColorDark": "#0D1B3E",
+  "backgroundColor": "#FBFAF7",
+  "enableNotifications": true,
+  "startUrl": "/",
+  "iconUrl": "https://myofaqim.co.il/icon-512.png",
+  "maskableIconUrl": "https://myofaqim.co.il/icon-512.png",
+  "splashScreenFadeOutDuration": 300,
+  "signingKey": {
+    "path": "./android.keystore",
+    "alias": "myofaqim"
+  },
+  "appVersionName": "1.0.0",
+  "appVersionCode": 1,
+  "shortcuts": [
+    {
+      "name": "אלפון עסקים",
+      "shortName": "עסקים",
+      "url": "/businesses",
+      "chosenIconUrl": "https://myofaqim.co.il/icon-192.png"
+    },
+    {
+      "name": "קופונים והטבות",
+      "shortName": "קופונים",
+      "url": "/deals",
+      "chosenIconUrl": "https://myofaqim.co.il/icon-192.png"
+    },
+    {
+      "name": "זמני תפילה",
+      "shortName": "זמנים",
+      "url": "/zmanim",
+      "chosenIconUrl": "https://myofaqim.co.il/icon-192.png"
+    },
+    {
+      "name": "פורום תושבים",
+      "shortName": "פורום",
+      "url": "/forum",
+      "chosenIconUrl": "https://myofaqim.co.il/icon-192.png"
+    }
+  ],
+  "generatorApp": "bubblewrap-cli",
+  "webManifestUrl": "https://myofaqim.co.il/manifest.json",
+  "fallbackType": "customtabs",
+  "features": {},
+  "alphaDependencies": {
+    "enabled": false
+  },
+  "enableSiteSettingsShortcut": true,
+  "isChromeOSOnly": false,
+  "isMetaQuest": false,
+  "fullScopeUrl": "https://myofaqim.co.il/",
+  "minSdkVersion": 21,
+  "fingerprints": [],
+  "additionalTrustedOrigins": [],
+  "retainedBundles": [],
+  "appVersion": "1.0.0"
+}

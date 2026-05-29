@@ -69,6 +69,20 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Digital Asset Links — קישור הדומיין לאפליקציית האנדרואיד (TWA)
+[[headers]]
+  for = "/.well-known/assetlinks.json"
+  [headers.values]
+    Content-Type  = "application/json"
+    Cache-Control = "public, max-age=3600"
+
+# Apple App Site Association — Universal Links לאפליקציית ה-iOS (ללא סיומת!)
+[[headers]]
+  for = "/.well-known/apple-app-site-association"
+  [headers.values]
+    Content-Type  = "application/json"
+    Cache-Control = "public, max-age=3600"
+
 # ── Redirects (rewrites, status 200) ─────────────────────────
 # הערה: דפים עם קובץ .html תואם (למשל /deals → deals.html) מטופלים
 # אוטומטית ע"י Netlify (pretty URLs) ואינם צריכים כלל כאן.

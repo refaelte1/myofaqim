@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>אין חיבור לאינטרנט | אופקים שלי</title>
+<meta name="theme-color" content="#0D1B3E">
+<link rel="apple-touch-icon" href="/icon-192.png">
+<style>
+  :root { --navy:#0D1B3E; --gold:#C8A95E; --cream:#FBFAF7; }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; margin: 0; }
+  body {
+    font-family: "Heebo", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 24px;
+  }
+  .card { max-width: 420px; }
+  img.logo { width: 120px; height: auto; margin-bottom: 24px; }
+  h1 { font-size: 1.6rem; margin: 0 0 12px; font-weight: 700; }
+  p { font-size: 1.05rem; line-height: 1.6; color: #3a4663; margin: 0 0 28px; }
+  button {
+    background: var(--navy);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 14px 32px;
+    font-size: 1rem;
+    font-family: inherit;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity .15s ease;
+  }
+  button:hover { opacity: .9; }
+  .hint { margin-top: 20px; font-size: .85rem; color: #8a93a8; }
+</style>
+</head>
+<body>
+  <main class="card">
+    <img class="logo" src="/icon-192.png" alt="אופקים שלי">
+    <h1>אין כרגע חיבור לאינטרנט</h1>
+    <p>לא הצלחנו לטעון את העמוד. בדקו את החיבור לרשת ונסו שוב — דפים שכבר ביקרתם בהם זמינים גם ללא חיבור.</p>
+    <button onclick="location.reload()">נסו שוב</button>
+    <p class="hint">אופקים שלי — הקהילה הדיגיטלית של אופקים</p>
+  </main>
+  <script>
+    // ניסיון טעינה מחדש אוטומטי ברגע שהחיבור חוזר
+    window.addEventListener('online', () => location.reload());
+  </script>
+</body>
+</html>
