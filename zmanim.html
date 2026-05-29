@@ -367,10 +367,14 @@ async function loadZmanim() {
     const T = data.times || {};
     const I = data.info || {};
 
-    // תאריכים
+    // תאריכים — מעדיפים את התאריך מ-2net, ואם חסר נופלים לחישוב מקומי מהמכשיר
     const today = new Date();
-    $('he-date').textContent = I.hebrew_date || data.hebrew_date || '';
-    $('gr-date').textContent = today.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' });
+    let heFallback = '';
+    try {
+      heFallback = today.toLocaleDateString('he-IL-u-ca-hebrew', { day: 'numeric', month: 'long', year: 'numeric' });
+    } catch (e) { heFallback = ''; }
+    $('he-date').textContent = I.hebrew_date || data.hebrew_date || heFallback;
+    $('gr-date').textContent = today.toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
     // שבת
     if (T.candles_lighting || T.shabbat_candles) {

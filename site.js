@@ -58,11 +58,7 @@ const HEADER_HTML = `
 
   <div class="header-main container">
     <a href="/" class="brand">
-      <img src="/logo.png" alt="אופקים שלי" class="brand-logo-img" onerror="this.style.display='none'">
-      <div>
-        <div class="brand-mark">אופקים <span class="accent">שלי</span></div>
-        <div class="brand-sub">MyOfaqim.co.il</div>
-      </div>
+      <img src="/logo-wide-full.png" alt="אופקים שלי — MyOfaqim.co.il" class="brand-logo-img" onerror="this.onerror=null;this.src='/logo.png'">
     </a>
 
     <nav class="main-nav" aria-label="ניווט ראשי">
