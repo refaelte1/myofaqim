@@ -131,6 +131,7 @@
   .kpi-card.coupon .kpi-icon { background: linear-gradient(135deg, #DC2626, #EF4444); color: #fff; }
   .kpi-card.whatsapp .kpi-icon { background: linear-gradient(135deg, #25D366, #128C7E); color: #fff; }
   .kpi-card.coupon-view .kpi-icon { background: linear-gradient(135deg, #7C3AED, #A78BFA); color: #fff; }
+  .kpi-card.lead .kpi-icon { background: linear-gradient(135deg, #0EA5E9, #0284C7); color: #fff; }
 
   .kpi-content { flex: 1; min-width: 0; }
   .kpi-num {
@@ -342,6 +343,16 @@
           <div class="kpi-label">קופונים שמומשו</div>
         </div>
       </div>
+
+      <div class="kpi-card lead">
+        <div class="kpi-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        </div>
+        <div class="kpi-content">
+          <div class="kpi-num" id="kpi-leads">0</div>
+          <div class="kpi-label">פניות</div>
+        </div>
+      </div>
     </div>
 
     <!-- Chart -->
@@ -452,17 +463,23 @@ async function loadData() {
   const sinceISO = new Date(Date.now() - currentDays * 86400000).toISOString();
 
   try {
-    // אגרגציה ישירה מטבלת האירועים האמיתית (business_events).
-    // RLS מאפשר לבעל העסק לקרוא את האירועים של העסק שלו.
-    const { data, error } = await sb
-      .from('business_events')
-      .select('kind,occurred_at')
-      .eq('business_id', currentBizId)
-      .gte('occurred_at', sinceISO)
-      .limit(50000);
-    if (error) throw error;
+    // אגרגציה ישירה מטבלת האירועים האמיתית (business_events) + ספירת פניות
+    // מטבלת leads. RLS מאפשר לבעל העסק לקרוא את האירועים והפניות של העסק שלו.
+    const [eventsRes, leadsRes] = await Promise.all([
+      sb.from('business_events')
+        .select('kind,occurred_at')
+        .eq('business_id', currentBizId)
+        .gte('occurred_at', sinceISO)
+        .limit(50000),
+      sb.from('leads')
+        .select('id', { count: 'exact', head: true })
+        .eq('business_id', currentBizId)
+        .gte('created_at', sinceISO)
+    ]);
+    if (eventsRes.error) throw eventsRes.error;
 
-    const events = data || [];
+    const events = eventsRes.data || [];
+    const leadCount = leadsRes.count || 0;
     const cnt = (k) => events.reduce((n, e) => n + (e.kind === k ? 1 : 0), 0);
 
     const d = {
@@ -480,6 +497,7 @@ async function loadData() {
     document.getElementById('kpi-nav').textContent = d.total_nav_clicks.toLocaleString('he-IL');
     document.getElementById('kpi-coupon-views').textContent = d.total_coupon_views.toLocaleString('he-IL');
     document.getElementById('kpi-coupon-redeems').textContent = d.total_coupon_redeems.toLocaleString('he-IL');
+    document.getElementById('kpi-leads').textContent = leadCount.toLocaleString('he-IL');
 
     // קיבוץ צפיות יומי לגרף
     const dailyMap = {};
@@ -493,10 +511,10 @@ async function loadData() {
       .sort((a, b) => a.day.localeCompare(b.day));
 
     drawChart(daily);
-    updateInsights({ ...d, daily_views: daily });
+    updateInsights({ ...d, total_leads: leadCount, daily_views: daily });
   } catch (e) {
     console.error('analytics error', e);
-    ['kpi-views','kpi-phone','kpi-whatsapp','kpi-nav','kpi-coupon-views','kpi-coupon-redeems']
+    ['kpi-views','kpi-phone','kpi-whatsapp','kpi-nav','kpi-coupon-views','kpi-coupon-redeems','kpi-leads']
       .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '0'; });
     drawChart([]);
     updateInsights({ total_views: 0 });
