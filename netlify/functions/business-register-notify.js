@@ -41,6 +41,23 @@ function json(status, data) {
   };
 }
 
+// מחזיר { email, name } של חשבון בעל העסק דרך Auth Admin API (service key).
+// auth.users אינו נגיש דרך PostgREST, ולכן משתמשים ב-endpoint הייעודי.
+async function getOwnerAccount(ownerId) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/admin/users/${encodeURIComponent(ownerId)}`, {
+      headers: { 'apikey': SERVICE_KEY, 'Authorization': `Bearer ${SERVICE_KEY}` },
+    });
+    if (!res.ok) return {};
+    const u = await res.json();
+    const meta = u.user_metadata || u.raw_user_meta_data || {};
+    return { email: u.email || null, name: meta.full_name || meta.name || null };
+  } catch (e) {
+    console.warn('[reg-notify] owner account lookup failed:', e.message);
+    return {};
+  }
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod !== 'POST') {
     return json(405, { error: 'Method not allowed' });
@@ -68,7 +85,7 @@ exports.handler = async (event) => {
   try {
     const url = `${SUPABASE_URL}/rest/v1/businesses` +
       `?slug=eq.${encodeURIComponent(slug)}` +
-      `&select=business_name,name,phone,email,owner_name,plan,plan_tier,status,created_at` +
+      `&select=business_name,name,phone,email,owner_id,owner_name,plan,plan_tier,status,created_at` +
       `&limit=1`;
     const res = await fetch(url, {
       headers: {
@@ -97,14 +114,24 @@ exports.handler = async (event) => {
   }
 
   const bizName = (biz.business_name || biz.name || 'העסק שלך').trim();
-  const ownerName = (biz.owner_name || '').trim();
-  const firstName = ownerName ? ownerName.split(' ')[0] : '';
   const plan = (biz.plan_tier || biz.plan || 'free').toLowerCase();
+
+  // שדה המייל בטופס אופציונלי. כשהוא ריק — נופלים חזרה למייל של חשבון
+  // בעל העסק (auth.users), שתמיד קיים כי ההרשמה דורשת התחברות.
+  // כך גם משלימים שם לפנייה כשאין owner_name.
+  let toEmail = (biz.email || '').trim();
+  let ownerName = (biz.owner_name || '').trim();
+  if (biz.owner_id && (!toEmail || !ownerName)) {
+    const acct = await getOwnerAccount(biz.owner_id);
+    if (!toEmail) toEmail = (acct.email || '').trim();
+    if (!ownerName) ownerName = (acct.name || '').trim();
+  }
+  const firstName = ownerName ? ownerName.split(' ')[0] : '';
 
   const results = { email_sent: false, sms_sent: false };
 
   // ── מייל אישור הרשמה דרך Resend (תבנית קיימת מ-send-welcome) ──
-  if (biz.email && RESEND_API_KEY) {
+  if (toEmail && RESEND_API_KEY) {
     try {
       const { subject, html } = welcome.getEmailContent('business', ownerName, {
         bizName,
@@ -118,7 +145,7 @@ exports.handler = async (event) => {
         },
         body: JSON.stringify({
           from: welcome.FROM_EMAIL,
-          to: [biz.email],
+          to: [toEmail],
           subject,
           html,
         }),
