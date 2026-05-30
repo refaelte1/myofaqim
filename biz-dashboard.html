@@ -449,68 +449,58 @@ async function loadData() {
   document.getElementById('current-biz-name').textContent = biz?.business_name || biz?.name || 'עסק';
   document.getElementById('chart-subtitle').textContent = `${currentDays} הימים האחרונים`;
 
-  try {
-    const { data, error } = await sb.rpc('get_business_analytics', {
-      p_business_id: currentBizId,
-      p_days: currentDays
-    });
-
-    if (error) throw error;
-    if (data && data.error) throw new Error(data.error);
-
-    const d = data || {};
-    document.getElementById('kpi-views').textContent = (d.total_views || 0).toLocaleString('he-IL');
-    document.getElementById('kpi-phone').textContent = (d.total_phone_clicks || 0).toLocaleString('he-IL');
-    document.getElementById('kpi-whatsapp').textContent = (d.total_whatsapp_clicks || 0).toLocaleString('he-IL');
-    document.getElementById('kpi-nav').textContent = (d.total_nav_clicks || 0).toLocaleString('he-IL');
-    document.getElementById('kpi-coupon-views').textContent = (d.total_coupon_views || 0).toLocaleString('he-IL');
-    document.getElementById('kpi-coupon-redeems').textContent = (d.total_coupon_redeems || 0).toLocaleString('he-IL');
-
-    drawChart(d.daily_views || []);
-    updateInsights(d);
-  } catch (e) {
-    console.error('analytics error', e);
-    // נסה בלי ה-RPC - שאילתות ישירות
-    await loadDataFallback();
-  }
-}
-
-async function loadDataFallback() {
   const sinceISO = new Date(Date.now() - currentDays * 86400000).toISOString();
 
-  const [viewsRes, clicksRes] = await Promise.all([
-    sb.from('business_views').select('created_at').eq('business_id', currentBizId).gte('created_at', sinceISO),
-    sb.from('business_clicks').select('click_type,created_at').eq('business_id', currentBizId).gte('created_at', sinceISO)
-  ]);
+  try {
+    // אגרגציה ישירה מטבלת האירועים האמיתית (business_events).
+    // RLS מאפשר לבעל העסק לקרוא את האירועים של העסק שלו.
+    const { data, error } = await sb
+      .from('business_events')
+      .select('kind,occurred_at')
+      .eq('business_id', currentBizId)
+      .gte('occurred_at', sinceISO)
+      .limit(50000);
+    if (error) throw error;
 
-  const views = viewsRes.data || [];
-  const clicks = clicksRes.data || [];
-  const byType = (t) => clicks.filter(c => c.click_type === t).length;
+    const events = data || [];
+    const cnt = (k) => events.reduce((n, e) => n + (e.kind === k ? 1 : 0), 0);
 
-  document.getElementById('kpi-views').textContent = views.length.toLocaleString('he-IL');
-  document.getElementById('kpi-phone').textContent = byType('phone').toLocaleString('he-IL');
-  document.getElementById('kpi-whatsapp').textContent = byType('whatsapp').toLocaleString('he-IL');
-  document.getElementById('kpi-nav').textContent = byType('navigation').toLocaleString('he-IL');
-  document.getElementById('kpi-coupon-views').textContent = byType('coupon_view').toLocaleString('he-IL');
-  document.getElementById('kpi-coupon-redeems').textContent = byType('coupon_redeem').toLocaleString('he-IL');
+    const d = {
+      total_views:          cnt('business_view'),
+      total_phone_clicks:   cnt('phone_click'),
+      total_whatsapp_clicks: cnt('whatsapp_click'),
+      total_nav_clicks:     cnt('directions_click'),
+      total_coupon_views:   cnt('coupon_view'),
+      total_coupon_redeems: cnt('coupon_redeem'),
+    };
 
-  // קיבוץ יומי
-  const dailyMap = {};
-  views.forEach(v => {
-    const day = v.created_at.slice(0,10);
-    dailyMap[day] = (dailyMap[day] || 0) + 1;
-  });
-  const daily = Object.entries(dailyMap)
-    .map(([day, views]) => ({day, views}))
-    .sort((a,b) => a.day.localeCompare(b.day));
+    document.getElementById('kpi-views').textContent = d.total_views.toLocaleString('he-IL');
+    document.getElementById('kpi-phone').textContent = d.total_phone_clicks.toLocaleString('he-IL');
+    document.getElementById('kpi-whatsapp').textContent = d.total_whatsapp_clicks.toLocaleString('he-IL');
+    document.getElementById('kpi-nav').textContent = d.total_nav_clicks.toLocaleString('he-IL');
+    document.getElementById('kpi-coupon-views').textContent = d.total_coupon_views.toLocaleString('he-IL');
+    document.getElementById('kpi-coupon-redeems').textContent = d.total_coupon_redeems.toLocaleString('he-IL');
 
-  drawChart(daily);
-  updateInsights({
-    total_views: views.length,
-    total_phone_clicks: byType('phone'),
-    total_coupon_redeems: byType('coupon_redeem'),
-    daily_views: daily
-  });
+    // קיבוץ צפיות יומי לגרף
+    const dailyMap = {};
+    events.forEach(e => {
+      if (e.kind !== 'business_view' || !e.occurred_at) return;
+      const day = e.occurred_at.slice(0, 10);
+      dailyMap[day] = (dailyMap[day] || 0) + 1;
+    });
+    const daily = Object.entries(dailyMap)
+      .map(([day, views]) => ({ day, views }))
+      .sort((a, b) => a.day.localeCompare(b.day));
+
+    drawChart(daily);
+    updateInsights({ ...d, daily_views: daily });
+  } catch (e) {
+    console.error('analytics error', e);
+    ['kpi-views','kpi-phone','kpi-whatsapp','kpi-nav','kpi-coupon-views','kpi-coupon-redeems']
+      .forEach(id => { const el = document.getElementById(id); if (el) el.textContent = '0'; });
+    drawChart([]);
+    updateInsights({ total_views: 0 });
+  }
 }
 
 function drawChart(daily) {
