@@ -232,3 +232,8 @@ exports.handler = async (event) => {
     };
   }
 };
+
+// ── ייצוא לשימוש חוזר משרת-לשרת (למשל business-register-notify) ──
+// שמירה על exports.handler הקיים — הוספת properties בלבד.
+module.exports.getEmailContent = getEmailContent;
+module.exports.FROM_EMAIL = FROM_EMAIL;

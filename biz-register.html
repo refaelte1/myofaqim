@@ -1030,6 +1030,14 @@ async function submitForm() {
     const { error } = await sb.from('businesses').insert(payload);
     if (error) throw error;
 
+    // שליחת מייל אישור (Resend) + SMS שההרשמה ממתינה לאישור.
+    // best-effort: לא חוסם את מסך ההצלחה גם אם נכשל.
+    fetch('/.netlify/functions/business-register-notify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ slug })
+    }).catch(() => {});
+
     $('wizard').style.display = 'none';
     $('success-screen').style.display = '';
     window.scrollTo({ top: 0, behavior: 'smooth' });
