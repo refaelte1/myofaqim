@@ -480,6 +480,7 @@ async function copyCode() {
     textArea.select();
     document.execCommand('copy');
     document.body.removeChild(textArea);
+    trackRedeem(currentCoupon.id);
     alert('הקוד הועתק: ' + code);
   }
 }
@@ -488,12 +489,19 @@ async function trackView(id) {
   try {
     await cpSb.rpc('increment_deal_view', { deal_id: id }).then(() => {}).catch(() => {});
   } catch {}
+  // תיעוד צפייה בקופון לדשבורד העסקי (business_events). coupon_id=null כי
+  // deals.id אינו coupons.id; הדשבורד סופר לפי business_id.
+  const bizId = currentCoupon && currentCoupon.businesses && currentCoupon.businesses.id;
+  if (bizId && typeof mofTrackClick === 'function') mofTrackClick(bizId, 'coupon_view', null, null);
 }
 
 async function trackRedeem(id) {
   try {
     await cpSb.rpc('increment_deal_redeem', { deal_id: id }).then(() => {}).catch(() => {});
   } catch {}
+  // תיעוד מימוש קופון לדשבורד העסקי (business_events)
+  const bizId = currentCoupon && currentCoupon.businesses && currentCoupon.businesses.id;
+  if (bizId && typeof mofTrackClick === 'function') mofTrackClick(bizId, 'coupon_redeem', null, null);
 }
 
 // ESC closes modal
