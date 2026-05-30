@@ -1104,3 +1104,23 @@ img { max-width: 100%; display: block; }
 }
 .result-count strong { color: var(--navy); font-weight: 800; }
 
+
+/* ── Google Maps: קישורי כתובת ומפות מוטמעות (site-wide) ── */
+.maps-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: #1A73E8;
+  text-decoration: none;
+  font-weight: 600;
+}
+.maps-link:hover { text-decoration: underline; }
+.maps-link svg { flex: 0 0 auto; }
+.map-embed {
+  margin-top: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  line-height: 0;
+}
+.map-embed iframe { display: block; width: 100%; border: 0; }

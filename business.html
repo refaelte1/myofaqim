@@ -418,6 +418,8 @@
         <div class="info-grid" id="contact-grid"></div>
 
         <div class="social-grid" id="social-grid" style="margin-top:12px"></div>
+
+        <div id="biz-map"></div>
       </div>
 
       <!-- Features -->
@@ -691,6 +693,11 @@ function render(b) {
     </a>`);
   }
   $('contact-grid').innerHTML = contactItems.join('');
+
+  // מפה אינטראקטיבית מוטמעת לפי כתובת העסק
+  if (b.address && typeof window.mapEmbed === 'function') {
+    $('biz-map').innerHTML = window.mapEmbed(b.address, { height: 300 });
+  }
 
   // Social Links
   const socials = [];

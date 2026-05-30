@@ -162,7 +162,7 @@ function renderSynagogues() {
               ${s.gabai_phone ? `<a href="tel:${esc(s.gabai_phone)}" style="color:var(--blue);font-weight:700;margin-right:6px">${esc(s.gabai_phone)}</a>` : ''}
             </div>
           ` : ''}
-          ${s.address ? `<div class="card-info-row"><strong>כתובת:</strong> ${esc(s.address)}</div>` : ''}
+          ${s.address ? `<div class="card-info-row"><strong>כתובת:</strong> ${window.mapsLink(s.address, {city: s.neighborhood})}</div>` : ''}
           ${s.neighborhood ? `<div class="card-info-row"><strong>שכונה:</strong> ${esc(s.neighborhood)}</div>` : ''}
         </div>
 

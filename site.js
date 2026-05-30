@@ -779,6 +779,60 @@ window.fmt = fmt;
 window.$ = $;
 window.fmtTimeStr = fmtTimeStr;
 
+/* ── Google Maps helpers (site-wide) ─────────────────────────
+   GMAPS_KEY: מפתח Google Maps Embed API. מפתח Embed הוא ציבורי
+   מעצם טבעו (רץ בדפדפן) — יש להגביל אותו ב-Google Cloud Console
+   ל-HTTP referrer של myofaqim.co.il ולהפעיל "Maps Embed API" בלבד.
+   אם הערך ריק — מפות מוטמעות נופלות אוטומטית למצב ללא-מפתח
+   (output=embed), כך שהכל עובד גם לפני הזנת המפתח.
+   קישורי הניווט (mapsLink) אינם דורשים מפתח כלל. */
+const GMAPS_KEY = '';
+
+const MAP_PIN_SVG = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>';
+
+// בונה שאילתת חיפוש מכתובת (מוסיף עיר/מדינה רק אם חסרים)
+function mapsQuery(address, city) {
+  const c = city || 'אופקים';
+  const parts = [address];
+  if (c && !address.includes(c)) parts.push(c);
+  if (!address.includes('ישראל')) parts.push('ישראל');
+  return encodeURIComponent(parts.join(', '));
+}
+
+// כתובת → URL לחיפוש/ניווט בגוגל מפות (ללא מפתח)
+function mapsHref(address, city) {
+  return 'https://www.google.com/maps/search/?api=1&query=' + mapsQuery(address, city);
+}
+
+// כתובת → קישור לחיץ (לרשימות). opts: {label, city, className, onclick}
+function mapsLink(address, opts) {
+  opts = opts || {};
+  if (!address) return '';
+  const label = opts.label != null ? opts.label : address;
+  const cls = opts.className || 'maps-link';
+  const onclick = opts.onclick ? ' onclick="' + opts.onclick + '"' : '';
+  return '<a href="' + mapsHref(address, opts.city) + '" target="_blank" rel="noopener" class="' + cls + '"'
+    + onclick + ' title="פתח בגוגל מפות">' + MAP_PIN_SVG + '<span>' + esc(label) + '</span></a>';
+}
+
+// כתובת → מפה אינטראקטיבית מוטמעת (לדפי פרט). opts: {city, height}
+function mapEmbed(address, opts) {
+  opts = opts || {};
+  if (!address) return '';
+  const q = mapsQuery(address, opts.city);
+  const src = GMAPS_KEY
+    ? 'https://www.google.com/maps/embed/v1/place?key=' + GMAPS_KEY + '&q=' + q + '&language=he&region=IL'
+    : 'https://maps.google.com/maps?q=' + q + '&hl=he&z=16&output=embed';
+  const h = opts.height || 280;
+  return '<div class="map-embed"><iframe src="' + src + '" width="100%" height="' + h
+    + '" loading="lazy" allowfullscreen referrerpolicy="no-referrer-when-downgrade" title="מפה: ' + esc(address) + '"></iframe></div>';
+}
+
+window.GMAPS_KEY = GMAPS_KEY;
+window.mapsHref = mapsHref;
+window.mapsLink = mapsLink;
+window.mapEmbed = mapEmbed;
+
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', siteInit);
 } else {

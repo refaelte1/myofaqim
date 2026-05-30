@@ -184,7 +184,7 @@
           ${b.description ? `<p class="biz-desc">${esc(b.description)}</p>` : ''}
           ${b.rating ? `<div class="biz-rating">${stars(b.rating)} <span>${b.rating}/5${b.rating_count ? ` (${b.rating_count})` : ''}</span></div>` : ''}
           <div class="biz-meta">
-            ${b.address ? `<span class="biz-meta-item">${esc(b.address)}</span>` : ''}
+            ${b.address ? `<span class="biz-meta-item">${window.mapsLink(b.address, {className:'maps-link', onclick:'event.stopPropagation()'})}</span>` : ''}
           </div>
         </div>
         <div class="biz-actions" onclick="event.stopPropagation()">

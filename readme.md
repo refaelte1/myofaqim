@@ -135,6 +135,21 @@ UPDATE profiles SET role = 'admin' WHERE email = 'refael@tedgi.co.il';
 
 ---
 
+## Google Maps בכתובות (site-wide)
+
+עזרי מפה משותפים ב-`site.js`:
+- `mapsLink(address, opts)` — כתובת לחיצה שפותחת גוגל מפות (לרשימות:
+  בתי כנסת, מקוואות, שירותים, אלפון עסקים). **לא דורש מפתח.**
+- `mapEmbed(address, opts)` — מפה אינטראקטיבית מוטמעת (דף עסק בודד).
+
+**מפתח:** משתנה `GMAPS_KEY` בראש בלוק העזרים ב-`site.js` (כרגע ריק).
+- ריק → מפות מוטמעות עובדות במצב ללא-מפתח (`output=embed`).
+- מומלץ: ב-Google Cloud Console להפעיל **Maps Embed API**, ליצור מפתח,
+  להגביל אותו ל-HTTP referrer של `myofaqim.co.il`, ולהדביק ב-`GMAPS_KEY`.
+  מפתח Embed הוא ציבורי מעצם טבעו (רץ בדפדפן) — ההגבלה לדומיין היא ההגנה.
+
+---
+
 ## עיצוב
 
 **צבעים:**
