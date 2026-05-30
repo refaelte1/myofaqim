@@ -285,6 +285,11 @@
           </div>
         </div>
 
+        <label style="display:flex;align-items:flex-start;gap:8px;margin-bottom:16px;font-size:13px;color:var(--ink-soft);line-height:1.5;cursor:pointer">
+          <input type="checkbox" id="agree-terms" style="margin-top:3px;flex-shrink:0;width:16px;height:16px;cursor:pointer">
+          <span>קראתי ואני מאשר/ת את <a href="/terms" target="_blank" rel="noopener" style="color:var(--gold-dk);font-weight:700">תנאי השימוש</a> ו<a href="/privacy" target="_blank" rel="noopener" style="color:var(--gold-dk);font-weight:700">מדיניות הפרטיות</a></span>
+        </label>
+
         <div style="display:flex;gap:10px;flex-wrap:wrap">
           <button class="btn-outline" onclick="goToStep(1)" style="flex:1;min-width:140px">← חזרה</button>
           <button class="btn-filled" onclick="submitProSignup()" id="signup-submit" style="flex:2;min-width:200px;padding:14px">הצטרפות</button>
@@ -355,6 +360,7 @@
     if (!bio) return err('תיאור מקצועי חובה');
     if (!phone) return err('טלפון חובה');
     if (!email) return err('אימייל חובה');
+    if (!$('agree-terms').checked) return err('יש לאשר את תנאי השימוש ומדיניות הפרטיות');
 
     const btn = $('signup-submit');
     btn.disabled = true; btn.textContent = 'שולח...';
