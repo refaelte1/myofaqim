@@ -1894,13 +1894,14 @@ window.mofTrackView = async function(businessId) {
 
   try {
     const { data: { session } } = await window.mofSB.auth.getSession();
-    await window.mofSB.from('business_views').insert({
+    await window.mofSB.from('business_events').insert({
       business_id: businessId,
-      visitor_id: mofGetVisitorId(),
+      kind: 'business_view',
       user_id: session?.user?.id || null,
+      session_id: mofGetVisitorId(),
       referrer: document.referrer ? document.referrer.slice(0, 200) : null,
       user_agent: navigator.userAgent.slice(0, 200),
-      device_type: mofDeviceType()
+      meta: { device: mofDeviceType() }
     });
     localStorage.setItem(key, String(Date.now()));
   } catch (e) {
@@ -1908,18 +1909,32 @@ window.mofTrackView = async function(businessId) {
   }
 };
 
+// מיפוי סוגי לחיצה (מ-business.html) לערכי enum של business_events.kind
+const MOF_EVENT_KIND = {
+  phone: 'phone_click',
+  whatsapp: 'whatsapp_click',
+  navigation: 'directions_click',
+  website: 'website_click',
+  coupon_view: 'coupon_view',
+  coupon_claim: 'coupon_claim',
+  coupon_redeem: 'coupon_redeem',
+  lead: 'lead_submit'
+};
+
 // רישום לחיצה
 window.mofTrackClick = async function(businessId, clickType, target, couponId) {
   if (!businessId || !window.mofSB) return;
+  const kind = MOF_EVENT_KIND[clickType] || clickType;
   try {
     const { data: { session } } = await window.mofSB.auth.getSession();
-    await window.mofSB.from('business_clicks').insert({
+    await window.mofSB.from('business_events').insert({
       business_id: businessId,
-      click_type: clickType,
-      click_target: target ? String(target).slice(0, 200) : null,
+      kind: kind,
       coupon_id: couponId || null,
-      visitor_id: mofGetVisitorId(),
-      user_id: session?.user?.id || null
+      user_id: session?.user?.id || null,
+      session_id: mofGetVisitorId(),
+      user_agent: navigator.userAgent.slice(0, 200),
+      meta: target ? { target: String(target).slice(0, 200) } : null
     });
   } catch (e) {
     console.warn('click track failed', e);
