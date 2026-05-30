@@ -1,0 +1,8 @@
+# Dependencies (Netlify installs functions deps at build time)
+node_modules/
+package-lock.json
+
+# Logs & misc
+*.log
+.DS_Store
+.netlify/

@@ -47,7 +47,9 @@ myofaqim-clean/
 ├── admin.html              ← פאנל ניהול (לאדמין בלבד)
 │
 ├── netlify.toml            ← קונפיגורציה של Netlify
+├── search.html             ← חיפוש חכם (AI) באתר
 ├── netlify/functions/
+│   ├── ai-search.js        ← מנוע החיפוש החכם (OpenAI + Supabase)
 │   ├── zmanim.js           ← API לזמני תפילה
 │   ├── newsletter-*.js     ← ניוזלטר
 │   ├── contact-submit.js   ← טופס יצירת קשר
@@ -89,6 +91,8 @@ UPDATE profiles SET role = 'admin' WHERE email = 'refael@tedgi.co.il';
 4. Environment Variables:
    - `SUPABASE_URL` = https://uexrxkzewfmhthrllsmd.supabase.co
    - `SUPABASE_SERVICE_KEY` = (שלח שלך מ-Supabase Settings → API)
+   - `OPENAI_API_KEY` = (למנוע החיפוש החכם — מ-platform.openai.com)
+   - `OPENAI_MODEL` = (אופציונלי, ברירת מחדל `gpt-4o-mini`)
    - `RESEND_API_KEY` = (אופציונלי — לשליחת מיילים)
    - `MAKE_BUSINESS_WEBHOOK_URL` = (אופציונלי — Make.com)
    - `MAKE_CONTACT_WEBHOOK_URL` = (אופציונלי — Make.com)
@@ -103,6 +107,31 @@ UPDATE profiles SET role = 'admin' WHERE email = 'refael@tedgi.co.il';
 - [ ] התחברות אדמין ב-`/admin` עובדת
 - [ ] טופס יצירת קשר שולח
 - [ ] מצב שבת מופיע בכניסת השבת (`?shabbat=1` לתצוגה מוקדמת)
+
+---
+
+## חיפוש חכם (AI) — `/search`
+
+מנוע חיפוש שמבין שפה חופשית ("איפה יש מניין קרוב", "פיצה פתוחה עכשיו",
+"חשמלאי באזור") במקום חיפוש מילולי בלבד. הלוגיקה ב-`netlify/functions/ai-search.js`:
+
+1. **שכבת כוונה** — OpenAI מתרגם את השאלה ל-JSON מובנה (קטגוריות, מילות
+   מפתח + נרדפות, האם "קרוב", תפילה/שעה). המפתח נשמר בצד-שרת בלבד.
+2. **שכבת אחזור** — שליפה מ-Supabase, דירוג לפי התאמת מילים + מרחק
+   גאוגרפי (Haversine) ממיקום המשתמש.
+3. **שכבת תשובה** — OpenAI מנסח משפט תשובה טבעי בעברית מעל התוצאות.
+
+**עמידות:** אם `OPENAI_API_KEY` חסר או הקריאה נכשלת — נפילה אוטומטית
+לחיפוש מילולי עם מילון נרדפות בסיסי, כך שהחיפוש לעולם לא נשבר.
+
+**הגבלת קצב:** 30 בקשות/דקה לכל IP (הגנה מפני עלויות AI מיותרות).
+
+### תנאי מקדים למיון "קרוב"
+
+מיון לפי מרחק עובד רק לרשומות שיש להן `lat`/`lng`. נכון לעכשיו השדות
+ריקים בטבלאות `synagogues`, `businesses`, `public_services`, `mikvehs`.
+יש למלא קואורדינטות (ידנית או דרך geocoding של כתובות) כדי לאפשר מיון
+אמיתי לפי קרבה. ללא קואורדינטות התוצאות עדיין מוצגות — ממוינות לפי רלוונטיות.
 
 ---
 

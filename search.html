@@ -285,10 +285,10 @@
 
   <section class="search-hero">
     <div class="search-hero-inner">
-      <h1>חיפוש באתר</h1>
-      <p>חיפוש מקיף בעסקים, בעלי מקצוע, קופונים, בתי כנסת, שיעורי תורה, שירותי קהילה ומאמרים</p>
+      <h1>חיפוש חכם באתר</h1>
+      <p>שאלו בשפה חופשית — "איפה יש מניין קרוב", "פיצה פתוחה עכשיו", "חשמלאי באזור" — והבינה המלאכותית תמצא עבורכם</p>
       <div class="search-box">
-        <input type="text" id="search-input" placeholder="מה תרצו לחפש? (לדוגמה: פיצה, חשמלאי, בית כנסת...)" autocomplete="off">
+        <input type="text" id="search-input" placeholder="שאלו כל דבר... (למשל: איפה יש מניין קרוב בשבע בבוקר)" autocomplete="off">
         <button onclick="performSearch()">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
@@ -306,8 +306,10 @@
       <button class="filter-chip" data-filter="professional">בעלי מקצוע <span class="count" id="count-professional">0</span></button>
       <button class="filter-chip" data-filter="coupon">קופונים <span class="count" id="count-coupon">0</span></button>
       <button class="filter-chip" data-filter="synagogue">בתי כנסת <span class="count" id="count-synagogue">0</span></button>
+      <button class="filter-chip" data-filter="mikveh">מקוואות <span class="count" id="count-mikveh">0</span></button>
       <button class="filter-chip" data-filter="lesson">שיעורי תורה <span class="count" id="count-lesson">0</span></button>
       <button class="filter-chip" data-filter="service">שירותים <span class="count" id="count-service">0</span></button>
+      <button class="filter-chip" data-filter="event">אירועים <span class="count" id="count-event">0</span></button>
       <button class="filter-chip" data-filter="article">מאמרים <span class="count" id="count-article">0</span></button>
     </div>
   </div>
@@ -353,7 +355,6 @@
 // window.SB_KEY מ-site.js (window.SB_KEY)
 let sb = null;
 let currentFilter = 'all';
-let allResults = { business: [], professional: [], coupon: [], synagogue: [], lesson: [], service: [], article: [] };
 
 const ICONS = {
   business: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4v18"/><path d="M19 21V11l-6-4"/></svg>`,
@@ -362,17 +363,21 @@ const ICONS = {
   synagogue: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
   lesson: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>`,
   service: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>`,
+  mikveh: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69l5.66 5.66a8 8 0 1 1-11.31 0z"/></svg>`,
+  event: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`,
   article: `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`,
 };
 
 const LABELS = {
   business: 'עסק', professional: 'בעל מקצוע', coupon: 'קופון',
-  synagogue: 'בית כנסת', lesson: 'שיעור תורה', service: 'שירות', article: 'מאמר'
+  synagogue: 'בית כנסת', mikveh: 'מקווה', lesson: 'שיעור תורה',
+  service: 'שירות', event: 'אירוע', article: 'מאמר'
 };
 
 const GROUP_TITLES = {
   business: 'עסקים', professional: 'בעלי מקצוע', coupon: 'קופונים',
-  synagogue: 'בתי כנסת', lesson: 'שיעורי תורה', service: 'שירותי קהילה', article: 'מאמרים'
+  synagogue: 'בתי כנסת', mikveh: 'מקוואות', lesson: 'שיעורי תורה',
+  service: 'שירותי קהילה', event: 'אירועים', article: 'מאמרים'
 };
 
 // מאמרים סטטיים (לא ב-DB)
@@ -390,6 +395,48 @@ function searchFor(q) {
   performSearch();
 }
 
+// ── מיקום משתמש (best-effort, לא חוסם) ──
+let cachedCoords = null, coordsDenied = false;
+function requestCoords(timeout = 6000) {
+  return new Promise(resolve => {
+    if (cachedCoords) return resolve(cachedCoords);
+    if (coordsDenied || !navigator.geolocation) return resolve(null);
+    navigator.geolocation.getCurrentPosition(
+      pos => { cachedCoords = { lat: pos.coords.latitude, lng: pos.coords.longitude }; resolve(cachedCoords); },
+      () => { coordsDenied = true; resolve(null); },
+      { enableHighAccuracy: false, timeout, maximumAge: 300000 }
+    );
+  });
+}
+
+let lastData = null; // { answer, results, total, ai, has_geo, wants_nearby }
+
+function showLoading(msg) {
+  document.getElementById('results-area').innerHTML = `
+    <div class="search-state">
+      <div class="search-state-icon">
+        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite">
+          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
+        </svg>
+      </div>
+      <h3>${msg || 'מחפש...'}</h3>
+      <p>הבינה המלאכותית מנתחת את השאלה וסורקת את האתר</p>
+    </div>
+    <style>@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }</style>`;
+}
+
+// קריאה למנוע ה-AI בצד השרת (Netlify Function)
+async function callAI(query, coords) {
+  const res = await fetch('/.netlify/functions/ai-search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ q: query, lat: coords ? coords.lat : undefined, lng: coords ? coords.lng : undefined })
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok || !data || !data.ok) throw new Error((data && data.error) || ('ai-search ' + res.status));
+  return data;
+}
+
 async function performSearch() {
   const query = document.getElementById('search-input').value.trim();
   if (!query) return;
@@ -399,67 +446,87 @@ async function performSearch() {
   url.searchParams.set('q', query);
   window.history.replaceState({}, '', url);
 
-  // הצג טעינה
-  document.getElementById('results-area').innerHTML = `
-    <div class="search-state">
-      <div class="search-state-icon">
-        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation: spin 1s linear infinite">
-          <circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>
-        </svg>
-      </div>
-      <h3>מחפש...</h3>
-      <p>בודקים בכל המאגרים</p>
-    </div>
-    <style>@keyframes spin { from { transform: rotate(0); } to { transform: rotate(360deg); } }</style>
-  `;
+  showLoading();
 
-  // אפס תוצאות
-  allResults = { business: [], professional: [], coupon: [], synagogue: [], lesson: [], service: [], article: [] };
+  try {
+    let data = await callAI(query, cachedCoords);
 
+    // אם השאלה דורשת "קרוב" וטרם שותף מיקום — בקש פעם אחת והרץ שוב
+    if (data.wants_nearby && !data.has_geo && navigator.geolocation && !coordsDenied) {
+      const c = await requestCoords();
+      if (c) { try { data = await callAI(query, c); } catch (_) { /* שומרים על התוצאה הראשונה */ } }
+    }
+
+    lastData = {
+      answer: data.answer || '',
+      results: data.results || {},
+      total: data.total || 0,
+      ai: !!data.ai,
+      has_geo: !!data.has_geo,
+      wants_nearby: !!data.wants_nearby,
+    };
+    renderResults();
+  } catch (e) {
+    // נפילה חיננית: אם פונקציית ה-AI לא זמינה — חיפוש מילולי רגיל
+    await keywordSearch(query);
+  }
+}
+
+// ── חיפוש מילולי (גיבוי, ללא AI) — מנרמל לאותו מבנה תצוגה ──
+async function keywordSearch(query) {
+  if (!sb) { showLoading('טוען...'); setTimeout(() => keywordSearch(query), 300); return; }
   const q = query.toLowerCase();
+  const L = `%${query}%`;
+  const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
 
-  // חיפוש במקביל בכל המקורות
-  const [biz, pro, coup, syn, lesson, svc] = await Promise.allSettled([
-    sb.from('businesses').select('id,name,short_description,description,category_slug,city,status').or(`name.ilike.%${query}%,short_description.ilike.%${query}%,description.ilike.%${query}%`).limit(20),
-    sb.from('professionals').select('id,full_name,profession,bio,city,status').or(`full_name.ilike.%${query}%,profession.ilike.%${query}%,bio.ilike.%${query}%`).limit(20),
-    sb.from('coupons').select('id,title,description,business_id,status,expires_at').or(`title.ilike.%${query}%,description.ilike.%${query}%`).limit(20),
-    sb.from('synagogues').select('id,name,address,nusach').or(`name.ilike.%${query}%,address.ilike.%${query}%`).limit(20),
-    sb.from('torah_lessons').select('id,topic,teacher,location_name,day_of_week').or(`topic.ilike.%${query}%,teacher.ilike.%${query}%`).limit(20),
-    sb.from('public_services').select('id,name,subname,category,address,phone').or(`name.ilike.%${query}%,subname.ilike.%${query}%,address.ilike.%${query}%`).limit(20)
+  const [biz, pro, coup, syn, mik, lesson, svc] = await Promise.allSettled([
+    sb.from('businesses').select('id,name,business_name,short_description,description,category,city,status,is_active').or(`name.ilike.${L},business_name.ilike.${L},short_description.ilike.${L},description.ilike.${L},category.ilike.${L}`).limit(20),
+    sb.from('professionals').select('id,name,category,tagline,description,status').or(`name.ilike.${L},category.ilike.${L},tagline.ilike.${L},description.ilike.${L}`).limit(20),
+    sb.from('coupons').select('id,title,description,status,expires_at').or(`title.ilike.${L},description.ilike.${L}`).limit(20),
+    sb.from('synagogues').select('id,name,address,nusach').or(`name.ilike.${L},address.ilike.${L}`).limit(20),
+    sb.from('mikvehs').select('id,name,address,type,phone').or(`name.ilike.${L},address.ilike.${L}`).limit(20),
+    sb.from('torah_lessons').select('id,title,topic,rabbi_name,location,day_of_week').or(`title.ilike.${L},topic.ilike.${L},rabbi_name.ilike.${L}`).limit(20),
+    sb.from('public_services').select('id,name,subname,address,phone').or(`name.ilike.${L},subname.ilike.${L},address.ilike.${L}`).limit(20)
   ]);
 
-  // עיבוד תוצאות
-  if (biz.status === 'fulfilled' && biz.value.data) {
-    allResults.business = biz.value.data.filter(b => b.status !== 'rejected' && b.status !== 'pending');
-  }
-  if (pro.status === 'fulfilled' && pro.value.data) {
-    allResults.professional = pro.value.data.filter(p => p.status !== 'rejected' && p.status !== 'pending');
-  }
-  if (coup.status === 'fulfilled' && coup.value.data) {
-    allResults.coupon = coup.value.data.filter(c => !c.expires_at || new Date(c.expires_at) > new Date());
-  }
-  if (syn.status === 'fulfilled' && syn.value.data) allResults.synagogue = syn.value.data;
-  if (lesson.status === 'fulfilled' && lesson.value.data) allResults.lesson = lesson.value.data;
-  if (svc.status === 'fulfilled' && svc.value.data) allResults.service = svc.value.data;
+  const data = r => (r.status === 'fulfilled' && r.value && r.value.data) ? r.value.data : [];
+  const results = { business: [], professional: [], coupon: [], synagogue: [], mikveh: [], lesson: [], service: [], event: [], article: [] };
 
-  // מאמרים סטטיים
-  allResults.article = STATIC_ARTICLES.filter(a =>
-    a.title.toLowerCase().includes(q) ||
-    a.desc.toLowerCase().includes(q) ||
-    a.keywords.toLowerCase().includes(q)
-  );
+  results.business = data(biz)
+    .filter(b => b.is_active !== false && b.status !== 'rejected' && b.status !== 'pending')
+    .map(b => ({ type: 'business', id: b.id, title: b.name || b.business_name || 'עסק', subtitle: b.short_description || b.description || b.category || 'עסק באופקים', footer: b.city || 'אופקים', url: `/business?id=${b.id}` }));
+  results.professional = data(pro)
+    .filter(p => p.status !== 'rejected' && p.status !== 'pending')
+    .map(p => ({ type: 'professional', id: p.id, title: p.name || 'בעל מקצוע', subtitle: [p.category, p.tagline].filter(Boolean).join(' · ') || 'בעל מקצוע באופקים', footer: 'אופקים', url: '/professionals' }));
+  results.coupon = data(coup)
+    .filter(c => !c.expires_at || new Date(c.expires_at) > new Date())
+    .map(c => ({ type: 'coupon', id: c.id, title: c.title || 'הטבה', subtitle: c.description || 'הטבה לתושבי אופקים', footer: c.expires_at ? 'תוקף: ' + new Date(c.expires_at).toLocaleDateString('he-IL') : 'פעיל', url: '/deals' }));
+  results.synagogue = data(syn)
+    .map(s => ({ type: 'synagogue', id: s.id, title: s.name || 'בית כנסת', subtitle: [s.address, s.nusach ? 'נוסח ' + s.nusach : ''].filter(Boolean).join(' · ') || 'בית כנסת באופקים', footer: 'פרטים מלאים', url: '/synagogues' }));
+  results.mikveh = data(mik)
+    .map(m => ({ type: 'mikveh', id: m.id, title: m.name || 'מקווה', subtitle: [m.type, m.address].filter(Boolean).join(' · ') || 'מקווה באופקים', footer: m.phone || 'פרטים', url: '/mikvaot' }));
+  results.lesson = data(lesson)
+    .map(l => ({ type: 'lesson', id: l.id, title: l.title || l.topic || 'שיעור תורה', subtitle: [l.rabbi_name, l.location, (l.day_of_week != null ? 'יום ' + days[l.day_of_week] : '')].filter(Boolean).join(' · ') || 'שיעור תורה', footer: 'שיעור תורה', url: '/torah-lessons' }));
+  results.service = data(svc)
+    .map(s => ({ type: 'service', id: s.id, title: s.name || 'שירות', subtitle: [s.subname, s.address].filter(Boolean).join(' · ') || 'שירות ציבורי', footer: s.phone || '', url: '/public-services' }));
+  results.article = STATIC_ARTICLES
+    .filter(a => a.title.toLowerCase().includes(q) || a.desc.toLowerCase().includes(q) || a.keywords.toLowerCase().includes(q))
+    .map(a => ({ type: 'article', id: a.id, title: a.title, subtitle: a.desc, footer: 'מאמר באתר', url: a.url }));
 
+  const total = Object.values(results).reduce((s, a) => s + a.length, 0);
+  lastData = { answer: total ? `נמצאו ${total} תוצאות עבור "${query}".` : '', results, total, ai: false, has_geo: false, wants_nearby: false };
   renderResults();
 }
 
 function renderResults() {
-  const total = Object.values(allResults).reduce((sum, arr) => sum + arr.length, 0);
+  if (!lastData) return;
+  const { results, total, answer } = lastData;
 
   // עדכון counts
   document.getElementById('count-all').textContent = total;
-  Object.keys(allResults).forEach(k => {
+  Object.keys(results).forEach(k => {
     const el = document.getElementById('count-' + k);
-    if (el) el.textContent = allResults[k].length;
+    if (el) el.textContent = results[k].length;
   });
 
   // הצג סרגל סינון
@@ -467,6 +534,7 @@ function renderResults() {
 
   if (total === 0) {
     document.getElementById('results-area').innerHTML = `
+      ${answer ? aiAnswerBox(answer) : ''}
       <div class="search-state">
         <div class="search-state-icon">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -474,13 +542,13 @@ function renderResults() {
           </svg>
         </div>
         <h3>לא נמצאו תוצאות</h3>
-        <p>נסו לחפש מילה אחרת או חיפושים פופולריים</p>
+        <p>נסו לנסח אחרת או לבחור מההצעות</p>
         <div class="suggestions">
           <div class="suggestion-chips" style="justify-content:center">
             <button class="suggestion-chip" onclick="searchFor('פיצה')">פיצה</button>
+            <button class="suggestion-chip" onclick="searchFor('בית כנסת קרוב')">בית כנסת קרוב</button>
             <button class="suggestion-chip" onclick="searchFor('חשמלאי')">חשמלאי</button>
-            <button class="suggestion-chip" onclick="searchFor('סופרמרקט')">סופרמרקט</button>
-            <button class="suggestion-chip" onclick="searchFor('קופון')">קופון</button>
+            <button class="suggestion-chip" onclick="searchFor('קופת חולים')">קופת חולים</button>
           </div>
         </div>
       </div>`;
@@ -488,14 +556,14 @@ function renderResults() {
   }
 
   // ארגן לפי קבוצות
-  const html = Object.entries(allResults)
-    .filter(([cat, items]) => items.length > 0)
+  const html = Object.entries(results)
+    .filter(([, items]) => items.length > 0)
     .filter(([cat]) => currentFilter === 'all' || currentFilter === cat)
     .map(([cat, items]) => `
       <div class="result-group" data-cat="${cat}">
         <div class="result-group-header">
-          <div class="result-group-icon">${ICONS[cat]}</div>
-          <div class="result-group-title">${GROUP_TITLES[cat]}</div>
+          <div class="result-group-icon">${ICONS[cat] || ''}</div>
+          <div class="result-group-title">${GROUP_TITLES[cat] || cat}</div>
           <div class="result-group-count">${items.length} ${items.length === 1 ? 'תוצאה' : 'תוצאות'}</div>
         </div>
         <div class="result-grid">
@@ -504,74 +572,34 @@ function renderResults() {
       </div>
     `).join('');
 
-  document.getElementById('results-area').innerHTML = html || `
+  const showAnswer = (currentFilter === 'all' && answer) ? aiAnswerBox(answer) : '';
+  document.getElementById('results-area').innerHTML = showAnswer + (html || `
     <div class="search-state">
       <h3>אין תוצאות בקטגוריה זו</h3>
       <p>נסו לבחור קטגוריה אחרת</p>
-    </div>`;
+    </div>`);
+}
+
+// תיבת תשובת ה-AI (כמו "סקירת AI" בגוגל)
+function aiAnswerBox(answer) {
+  return `<div style="display:flex;gap:12px;align-items:flex-start;background:linear-gradient(135deg,rgba(99,102,241,.10),rgba(168,85,247,.08));border:1px solid rgba(99,102,241,.25);border-radius:14px;padding:16px 18px;margin:0 0 22px;">
+    <div style="flex:0 0 auto;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#6366f1,#a855f7);display:flex;align-items:center;justify-content:center;color:#fff;">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.9 5.8L20 8l-4.9 3.6 1.9 5.8L12 13.8 7 17.4l1.9-5.8L4 8l6.1-.2z"/></svg>
+    </div>
+    <div style="font-size:14.5px;line-height:1.65;color:var(--ink);align-self:center;">${esc(answer)}</div>
+  </div>`;
 }
 
 function renderCard(type, item) {
   const arrow = `<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>`;
-
-  if (type === 'business') {
-    return `<a href="/business?id=${item.id}" class="result-card business">
-      <span class="label">${LABELS.business}</span>
-      <h3>${esc(item.name)}</h3>
-      <div class="meta">${esc(item.short_description || item.description || 'עסק באופקים')}</div>
-      <div class="footer"><span>${esc(item.city || 'אופקים')}</span><span class="arrow">צפה ${arrow}</span></div>
-    </a>`;
-  }
-  if (type === 'professional') {
-    return `<a href="/professionals" class="result-card professional">
-      <span class="label">${LABELS.professional}</span>
-      <h3>${esc(item.full_name)}</h3>
-      <div class="meta">${esc(item.profession || '')}${item.bio ? ' · ' + esc(item.bio.slice(0,80)) : ''}</div>
-      <div class="footer"><span>${esc(item.city || 'אופקים')}</span><span class="arrow">צפה ${arrow}</span></div>
-    </a>`;
-  }
-  if (type === 'coupon') {
-    return `<a href="/deals" class="result-card coupon">
-      <span class="label">${LABELS.coupon}</span>
-      <h3>${esc(item.title)}</h3>
-      <div class="meta">${esc(item.description || 'הטבה לתושבי אופקים')}</div>
-      <div class="footer"><span>${item.expires_at ? 'תוקף: ' + new Date(item.expires_at).toLocaleDateString('he-IL') : 'פעיל'}</span><span class="arrow">צפה ${arrow}</span></div>
-    </a>`;
-  }
-  if (type === 'synagogue') {
-    return `<a href="/synagogues" class="result-card synagogue">
-      <span class="label">${LABELS.synagogue}</span>
-      <h3>${esc(item.name)}</h3>
-      <div class="meta">${esc(item.address || '')}${item.nusach ? ' · נוסח ' + esc(item.nusach) : ''}</div>
-      <div class="footer"><span>פרטים מלאים</span><span class="arrow">צפה ${arrow}</span></div>
-    </a>`;
-  }
-  if (type === 'lesson') {
-    const days = ['ראשון','שני','שלישי','רביעי','חמישי','שישי','שבת'];
-    return `<a href="/prayer-times#lessons" class="result-card lesson">
-      <span class="label">${LABELS.lesson}</span>
-      <h3>${esc(item.topic)}</h3>
-      <div class="meta">${esc(item.teacher || '')}${item.location_name ? ' · ' + esc(item.location_name) : ''}${item.day_of_week !== undefined ? ' · יום ' + days[item.day_of_week] : ''}</div>
-      <div class="footer"><span>שיעור תורה</span><span class="arrow">צפה ${arrow}</span></div>
-    </a>`;
-  }
-  if (type === 'service') {
-    return `<a href="/public-services" class="result-card service">
-      <span class="label">${LABELS.service}</span>
-      <h3>${esc(item.name)}</h3>
-      <div class="meta">${esc(item.subname || '')}${item.address ? ' · ' + esc(item.address) : ''}</div>
-      <div class="footer"><span>${esc(item.phone || '')}</span><span class="arrow">פרטים ${arrow}</span></div>
-    </a>`;
-  }
-  if (type === 'article') {
-    return `<a href="${item.url}" class="result-card article">
-      <span class="label">${LABELS.article}</span>
-      <h3>${esc(item.title)}</h3>
-      <div class="meta">${esc(item.desc)}</div>
-      <div class="footer"><span>מאמר באתר</span><span class="arrow">קרא ${arrow}</span></div>
-    </a>`;
-  }
-  return '';
+  const dist = (item.distance_km != null)
+    ? ` <span style="color:#6366f1;font-weight:600;">· ~${item.distance_km} ק"מ ממך</span>` : '';
+  return `<a href="${item.url || '#'}" class="result-card ${type}">
+    <span class="label">${LABELS[type] || ''}</span>
+    <h3>${esc(item.title || '')}</h3>
+    <div class="meta">${esc(item.subtitle || '')}</div>
+    <div class="footer"><span>${esc(item.footer || '')}${dist}</span><span class="arrow">צפה ${arrow}</span></div>
+  </a>`;
 }
 
 // סינון
