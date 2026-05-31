@@ -8,11 +8,11 @@
  * ════════════════════════════════════════════════════
  */
 
-const CACHE_VERSION = 'myofaqim-v1.1.0';
+const CACHE_VERSION = 'myofaqim-v1.2.0';
 const ASSETS_TO_CACHE = [
   '/',
-  '/site.css',
-  '/site.js',
+  '/site.css?v=20260531',
+  '/site.js?v=20260531',
   '/logo.png',
   '/logo-wide.png',
   '/manifest.json',
